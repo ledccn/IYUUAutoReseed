@@ -1,0 +1,13 @@
+HTTP/1.1 100 Continue
+
+HTTP/1.1 200 OK
+Server: nginx/1.1.19
+Date: Fri, 11 Aug 2017 13:22:00 GMT
+Content-Type: image/jpeg
+Content-Length: 62574
+Connection: close
+Cache-Control: max-age=7257600
+Expires: Fri, 03 Nov 2017 13:22:00 GMT
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Frame-Option: DENY
+

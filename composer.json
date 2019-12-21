@@ -1,0 +1,6 @@
+{
+    "require": {
+        "owner888/phpspider": "^2.1",
+        "curl/curl": "^2.2"
+    }
+}
