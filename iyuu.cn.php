@@ -20,7 +20,7 @@ class iyuuAutoReseed
      * 版本号
      * @var string
      */
-	const VER = '2019年12月21日20:26:48';
+	const VER = '0.1.0';
 	// RPC连接池
 	public static $links = array();
 	/**
@@ -35,6 +35,7 @@ class iyuuAutoReseed
      * 缓存路径
      */
 	public static $cacheDir = TORRENT_PATH.'cache'.DS;
+	public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
 	/**
      * API接口配置
      */
@@ -43,6 +44,7 @@ class iyuuAutoReseed
 		'add' => '/api/add',
 		'update' => '/api/update',
 		'reseed' => '/api/reseed',
+		'login'  => '/login',
 	);
 	/**
      * 退出状态码
@@ -59,11 +61,16 @@ class iyuuAutoReseed
 		global $configALL;
 
 		self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
+		echo "程序正在初始化运行参数... \n";
 		// 递归删除上次历史记录
 		IFile::rmdir(self::$cacheDir, true);
 		// 建立目录
 		IFile::mkdir(self::$cacheDir);
+		IFile::mkdir(self::$cacheHash);
 		self::links();
+		// 合作站点自动注册鉴权
+		Oauth::login(self::$apiUrl . self::$endpoints['login']);
+		#exit;
 	}
 	/**
      * 连接远端RPC服务器
@@ -195,11 +202,6 @@ class iyuuAutoReseed
 				exit(1);
 			}
 		}
-		// 写日志：文件句柄
-		$resource = fopen(self::$cacheDir.'hashString.txt', "wb");
-		// 成功：返回写入字节数，失败返回false
-		$worldsnum = fwrite($resource, p($hashArray, false));
-		fclose($resource);
 		return $hashArray;
 	}
 	/**
@@ -262,13 +264,22 @@ class iyuuAutoReseed
 	public static function call($hashArray = array())
 	{
 		global $configALL;
-
 		$resArray = $sites = array();
 		$curl = new Curl();
 		$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
 		// 签名
 		$hashArray['timestamp'] = time();
-		$hashArray['sign'] = sign($hashArray['timestamp']);
+		// 爱语飞飞token
+		$hashArray['sign'] = Oauth::getSign();
+		$hashArray['version'] = self::VER;
+		// 写日志
+		if (true) {
+			// 文件句柄
+			$resource = fopen(self::$cacheDir.'hashString.txt', "wb");
+			// 成功：返回写入字节数，失败返回false
+			$worldsnum = fwrite($resource, p($hashArray, false));
+			fclose($resource);
+		}
 		// 发起请求
 		echo "正在提交辅种信息…… \n";
 		$res = $curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
@@ -337,8 +348,23 @@ class iyuuAutoReseed
 							// 与客户端现有种子重复
 							echo '-------与客户端现有种子重复：'.$_url."\n\n";
 						}else{
+							// 判断上次是否成功添加？
+							if ( is_file(self::$cacheHash . $value['info_hash'].'.txt') ) {
+								echo '-------当前种子上次辅种已成功添加，已跳过！'.$_url."\n\n";
+								continue;
+							}
+
 							// 把拼接的种子URL，推送给下载器
-							self::add($k, $url, $downloadDir);
+							$ret = false;							
+							$ret = self::add($k, $url, $downloadDir);
+							// 写日志
+							if ($ret) {
+								// 文件句柄
+								$resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
+								// 成功：返回写入字节数，失败返回false
+								$worldsnum = fwrite($resource, $url);
+								fclose($resource);
+							}
 						}
 					}else{
 						// 不辅种

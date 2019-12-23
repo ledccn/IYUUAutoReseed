@@ -20,6 +20,9 @@ IYUU自动辅种工具（英文名：iyuuAutoReseed），是一款PHP语言编�
 所有具备PHP运行环境的所有平台！
 例如：Linux、Windows、MacOS
 
+## 下载源码
+ - 码云仓库：https://gitee.com/ledc/IYUUAutoReseed
+
 ## 使用方法
 详见Wiki
 
@@ -29,6 +32,8 @@ IYUU自动辅种工具（英文名：iyuuAutoReseed），是一款PHP语言编�
 ## 捐助开发者
 如果觉得我的付出，节约了您的宝贵时间，请随意打赏一杯咖啡！或者一杯水！
 您所有的打赏将用于服务器续期，增加服务的延续性。
+
+
 ![微信打赏.png][2]
 
 
