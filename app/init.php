@@ -42,6 +42,7 @@ if( file_exists( APP_PATH."/config/config.php" ) )
 require_once ROOT_PATH . '/vendor/autoload.php';
 require_once APP_PATH . '/Class/File.php';		// 文件操作类
 require_once APP_PATH . '/Class/Function.php';	// 函数
+require_once APP_PATH . '/Class/Oauth.php';		// 用户鉴权
 require_once APP_PATH . '/Class/Rpc.php';		// RPC操作类
 require_once APP_PATH . '/Class/TransmissionRPC.class.php';	// transmission
 require_once APP_PATH . '/Class/qBittorrent.php';			// qBittorrent

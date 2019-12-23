@@ -136,6 +136,7 @@ return array(
 		'cookie'        => '',
 		// 如果需要自动辅种，必须配置
 		'passkey'       => '',
+		'id' => 0,					// 用户ID
 		'is_vip'		=> 0,		// 是否具有VIP或特殊权限？0 普通，1 VIP
     ),
     // HDSky 序号：4
