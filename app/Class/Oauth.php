@@ -27,7 +27,7 @@ class Oauth{
             }
         }
         echo "-----缺少用户登录参数：token, user_id, passkey, site \n";
-        echo "-----当前正在使用测试接口，功能会受到限制！ \n\n";
+        echo "-----当前正在使用测试接口，功能可能会受到限制！ \n\n";
         return false;
     }
     /**
@@ -37,7 +37,12 @@ class Oauth{
         global $configALL;
         // 爱语飞飞
         $token = isset($configALL['iyuu.cn']) && $configALL['iyuu.cn'] ? $configALL['iyuu.cn'] : '';
-        // 鉴权
+        if (empty($token) || strlen($token)<46) {
+            echo "缺少辅种接口请求参数：爱语飞飞token \n";
+            echo "请访问https://iyuu.cn 用微信扫码申请，并填入配置文件config.php内。\n\n";
+            exit(1);
+        }
+        // 发布员鉴权
         #$token = isset($configALL['secret']) && $configALL['secret'] ? $configALL['secret'] : $token;
         return $token;
     }

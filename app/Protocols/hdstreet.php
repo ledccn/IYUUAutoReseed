@@ -1,23 +1,22 @@
 <?php
 /**
- * moecat.best解码类
- *
+ * hdstreet解码类
  */
 use phpspider\core\requests;
 use phpspider\core\selector;
 
-class Moecat implements decodeBase
+class hdstreet implements decodeBase
 {
 	/**
      * 站点标志
      * @var string
      */
-    const SITE = 'moecat';
+    const SITE = 'hdstreet';
 	/**
      * 域名
      * @var string
      */
-    const domain = 'moecat.best';
+    const domain = 'hdstreet.club';
 	const HOST = 'https://'.self::domain.'/';
 	// 下载种子的请求类型
 	const METHOD = 'GET';
@@ -92,10 +91,12 @@ class Moecat implements decodeBase
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
 		$html = self::get();
+		#p($html);exit;
 		if ( $html === null ) {
 			exit(1);
 		}
 		$data = self::decode($html);
+		#p($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
@@ -110,8 +111,11 @@ class Moecat implements decodeBase
     {
         // 发起请求
 		$html = requests::get(self::HOST.$url);
+		#p($html);exit;
+		$offset = strpos($html,'<img class="size" src="pic/trans.gif" alt="size" title="大小" /></a></td>');
+		$offsetEnd = strpos($html,'target="_self" title="查看两倍上传量种子"><font class=');
+		$html = substr($html,$offset,$offsetEnd);
 		// 获取列表页数据
-		$html = selector::select($html, "//*[@class='torrents']");
 		$data = selector::select($html, "//table");
 		if(!$data){
 			echo "登录信息过期，请重新设置！ \n";
@@ -146,58 +150,30 @@ class Moecat implements decodeBase
 			// 获取主标题
 			// 偏移量
 			$h1_offset = strpos($v, '<a title="') + strlen('<a title="');
-			$h1_len = strpos($v, '" href="details.php?id=') - $h1_offset;
+			$h1_temp = substr($v, $h1_offset);
+			$h1_len = strpos($h1_temp, '"');
 			$arr['h1'] = substr($v, $h1_offset, $h1_len);
 			if (strpos($arr['h1'],'&#x') != false) {
 				$arr['h1'] = mb_convert_encoding($arr['h1'], 'UTF-8', 'HTML-ENTITIES');
 			}
+
 			// 获取副标题(倒序算法)
 			// 偏移量
 			$h2StrStart = '<br/>';
-			$h2StrEnd = '</td><td rowspan="2" width="20"';
-			$h2_offset = strpos($v,$h2StrEnd);
-			$temp = substr($v, 0, $h2_offset);
+			$h2StrEnd = '</td><td';
+			$h2_endOffset = strpos($v,$h2StrEnd);
+			$temp = substr($v, 0, $h2_endOffset);
 			$h2_offset = strrpos($temp,$h2StrStart);
-			#p($temp);
 			if ($h2_offset === false ) {
 				$arr['title'] = '';
 			} else {
 				$h2_len = strlen($temp) - $h2_offset - strlen($h2StrStart);
 				//存在副标题
-				$titleTemp = substr($temp, $h2_offset + strlen($h2StrStart), $h2_len);
-				#p($titleTemp);
-				//二次过滤
-				$titleTemp = selector::remove($titleTemp, "//a");	//编码标签
-				$titleTemp = selector::remove($titleTemp, "//div");	//做种标签
-				$douban = '';
-				if ( strpos($titleTemp,"<font ") != false ) {
-					$douban = selector::select($titleTemp, '//font');
-					#p($douban);
-					$titleTemp = selector::remove($titleTemp, "//b"); // 移除豆瓣
-					#$titleTemp = substr($titleTemp, 0, strpos($titleTemp,'<div '));
-				}
-				// 精确适配标签 begin
-				$titleSpan = '';
-
-				$title = selector::remove($titleTemp, "//span");
-				$span = selector::select($titleTemp, '//span');
-				if(!empty($span)){
-					if(is_array($span)){
-						foreach ( $span as $vv ){
-							if( empty($vv) ){
-								continue;
-							}
-							$titleSpan.='['.$vv.'] ';
-						}
-					}else{
-						$titleSpan.='['.$span.'] ';
-					}
-				}
-				// 精确适配标签 end
-				$arr['title'] = $titleSpan . $title;
-				if ($douban != ''){
-					// 豆瓣放前面
-					$arr['title'] = $douban . $arr['title'];
+				$arr['title'] = substr($temp, $h2_offset + strlen($h2StrStart), $h2_len);
+				$arr['title'] = selector::remove($arr['title'], "//div");
+				// 第二次过滤
+				if ( strpos($arr['title'],'</td>') != false ) {
+					$arr['title'] = str_replace('</td><td',"",$arr['title']);
 				}
 			}
 

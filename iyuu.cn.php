@@ -304,21 +304,25 @@ class iyuuAutoReseed
 		// 可辅种站点信息列表
 		$sites = $resArray['sites'];
 		#p($sites);
+		// 按客户端循环辅种
 		foreach (self::$links as $k => $v) {
 			$reseed = $infohash_Dir = array();
 			if (empty($resArray['clients_'.$k])) {
 				echo "clients_".$k."没有查询到可辅种数据 \n\n";
 				continue;
 			}
+			// 当前客户端辅种数据
 			$reseed = $resArray['clients_'.$k];
 			// info_hash 对应的下载目录
 			$infohash_Dir = self::$links[$k]['hash'];
 			foreach ($reseed as $info_hash => $vv) {
+				// 当前种子哈希对应的目录
 				$downloadDir = $infohash_Dir[$info_hash];
 				foreach ($vv['torrent'] as $id => $value) {
 					$sitesID = $value['sid'];
 					$url = $_url = '';
 					$download_page = '';
+					// 页面规则
 					$download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
 					$_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
 					if (empty($configALL[$sites[$sitesID]['site']]['passkey'])) {
@@ -340,24 +344,25 @@ class iyuuAutoReseed
 							break;
 					}
 					// 检查不辅种的站点
-					// 判断是否VIP/特殊权限？
+					// 判断是否VIP或特殊权限？
 					$is_vip = isset($configALL[$sites[$sitesID]['site']]['is_vip']) && $configALL[$sites[$sitesID]['site']]['is_vip'] ? 1 : 0;
 					if ( (in_array($sites[$sitesID]['site'], self::$noReseed)==false) || $is_vip ) {
 						// 可以辅种
 						if ( isset($infohash_Dir[$value['info_hash']]) ) {
 							// 与客户端现有种子重复
 							echo '-------与客户端现有种子重复：'.$_url."\n\n";
+							continue;
 						}else{
 							// 判断上次是否成功添加？
 							if ( is_file(self::$cacheHash . $value['info_hash'].'.txt') ) {
 								echo '-------当前种子上次辅种已成功添加，已跳过！'.$_url."\n\n";
 								continue;
 							}
-
 							// 把拼接的种子URL，推送给下载器
-							$ret = false;							
+							$ret = false;
+							// 成功返回：true
 							$ret = self::add($k, $url, $downloadDir);
-							// 写日志
+							// 添加成功的种子，以infohash为文件名，写入缓存
 							if ($ret) {
 								// 文件句柄
 								$resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
@@ -382,6 +387,9 @@ class iyuuAutoReseed
 			}
 		}
 	}
+	/**
+	 * 正常做种的种子在各下载器的互相转移
+	 */
 	public static function move($torrent=array(), $type = 'qBittorrent'){
 		switch($type){
 			case 'transmission':
