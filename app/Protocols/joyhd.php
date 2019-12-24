@@ -1,23 +1,22 @@
 <?php
 /**
- * pt.m-team.cc解码类
- * 府尹/Extreme User、【14 TB】必须注册至少24周，并且下载至少2TB，分享率大于7
+ * hdarea解码类
  */
 use phpspider\core\requests;
 use phpspider\core\selector;
 
-class Mteam implements decodeBase
+class joyhd implements decodeBase
 {
 	/**
      * 站点标志
      * @var string
      */
-    const SITE = 'm-team';
+    const SITE = 'joyhd';
 	/**
      * 域名
      * @var string
      */
-    const domain = 'pt.m-team.cc';
+    const domain = 'www.joyhd.net';
 	const HOST = 'https://'.self::domain.'/';
 	// 下载种子的请求类型
 	const METHOD = 'GET';
@@ -87,15 +86,17 @@ class Mteam implements decodeBase
      * @param string
      * @return array
      */
-    public static function run($url = 'torrents.php')
+    public static function run()
     {
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
-		$html = self::get($url);
+		$html = self::get();
+		#p($html);exit;
 		if ( $html === null ) {
 			exit(1);
 		}
 		$data = self::decode($html);
+		#p($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
@@ -128,7 +129,7 @@ class Mteam implements decodeBase
     public static function decode($data = array())
     {
 		$downloadStrLen = strlen(self::downloadPrefix);	// 前缀长度
-		$downloadStrEnd = '&';	//种子地址结束标志
+		$downloadStrEnd = '"';	//种子地址结束标志
 		$len = $downloadStrLen + 10;		// 截取长度
         foreach ( $data as $k => $v ){
 			$arr = array();
@@ -151,7 +152,7 @@ class Mteam implements decodeBase
 			// 获取副标题(倒序算法)
 			// 偏移量
 			$h2StrStart = '<br />';
-			$h2StrEnd = '</td><td width="80"';
+			$h2StrEnd = '</td><td width="20" class="embedded"';
 			$h2_endOffset = strpos($v,$h2StrEnd);
 			$temp = substr($v, 0, $h2_endOffset);
 			$h2_offset = strrpos($temp,$h2StrStart);
@@ -161,8 +162,11 @@ class Mteam implements decodeBase
 				$h2_len = strlen($temp) - $h2_offset - strlen($h2StrStart);
 				//存在副标题
 				$arr['title'] = substr($temp, $h2_offset + strlen($h2StrStart), $h2_len);
+				$arr['title'] = str_replace("</b>","",$arr['title']);
 				// 第二次过滤
-				#code...
+				if ( strpos($arr['title'],'</td>') != false ) {
+					#$arr['title'] = str_replace('</td>',"",$arr['title']);
+				}
 			}
 
 			// 组合返回数组
@@ -170,7 +174,7 @@ class Mteam implements decodeBase
 			self::$TorrentList[$k]['h1'] = $arr['h1'];
 			self::$TorrentList[$k]['title'] = isset( $arr['title'] ) && $arr['title'] ? $arr['title'] : '';
 			self::$TorrentList[$k]['details'] = self::HOST.self::detailsPrefix.$arr['id'];
-			self::$TorrentList[$k]['download'] = self::HOST.$arr['url'].'&https=1';
+			self::$TorrentList[$k]['download'] = self::HOST.$arr['url'];
 			self::$TorrentList[$k]['filename'] = $arr['id'].'.torrent';
 
 			// 种子促销类型解码
