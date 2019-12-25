@@ -26,6 +26,7 @@ IYUU自动辅种工具（英文名：iyuuAutoReseed），是一款PHP语言编�
     官方下载的记得开启crul、fileinfo、mbstring，这3个扩展。
 
 ## 下载源码
+ - github仓库：https://github.com/ledccn/IYUUAutoReseed
  - 码云仓库：https://gitee.com/ledc/IYUUAutoReseed
 
 ## 使用方法
@@ -38,6 +39,8 @@ IYUU自动辅种工具（英文名：iyuuAutoReseed），是一款PHP语言编�
 
 ## 捐助开发者
 如果觉得我的付出，节约了您的宝贵时间，请随意打赏一杯咖啡！或者一杯水！
+
+如果喜欢，请帮忙在[Github](https://github.com/ledccn/IYUUAutoReseed)或[码云](https://gitee.com/ledc/IYUUAutoReseed)给个Star，也可以对IYUUAutoReseed进行[捐赠](https://gitee.com/ledc/IYUUAutoReseed#%E6%8D%90%E5%8A%A9%E5%BC%80%E5%8F%91%E8%80%85)哦 ^_^。
 
 **您所有的打赏将用于服务器续期，增加服务的延续性。**
 
@@ -54,6 +57,14 @@ IYUU自动辅种工具（英文名：iyuuAutoReseed），是一款PHP语言编�
 | loveB杉 | ¥20元 | 2019年12月24日20:59 |
 | 风少 | ¥20元 | 2019年12月24日23:30 |
 | 小夏 | ¥1元 | 2019年12月25日11:38 |
+| 优つ伤 | ¥50元 | 2019年12月25日19:21 |
+
+补充说明：
+
+1.  此明细不是为了竞价排名，而是以公开、透明的制度说明所捐赠资源的使用情况和去处； 
+2.  所捐赠的资源不属于任何个人，而应作为项目或者开发团队的所需开销； 
+3.  如果捐赠了却不希望您的名字出现在这里，可以联系我们进行相应处理；
+4.  更新有延时，如未能及时更新，可联系我。
 
 
 
