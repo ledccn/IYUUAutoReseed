@@ -95,11 +95,11 @@ class Hdsky implements decodeBase
      * @param string
      * @return array
      */
-    public static function run()
+    public static function run($url = 'torrents.php')
     {
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
-		$html = self::get();
+		$html = self::get($url);
 		if ( $html === null ) {
 			exit(1);
 		}

@@ -87,11 +87,11 @@ class Soulvoice implements decodeBase
      * @param string
      * @return array
      */
-    public static function run()
+    public static function run($url = 'torrents.php')
     {
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
-		$html = self::get();
+		$html = self::get($url);
 		if ( $html === null ) {
 			exit(1);
 		}
@@ -179,7 +179,7 @@ class Soulvoice implements decodeBase
 			// 种子促销类型解码
 			if(strpos($v,self::$getTorrent[0]) === false){
 				// 不免费
-				self::$TorrentList[$k]['type'] = 1;
+				self::$TorrentList[$k]['type'] = 0;
 			}else{
 				// 免费种子
 				self::$TorrentList[$k]['type'] = 0;

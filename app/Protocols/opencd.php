@@ -86,17 +86,17 @@ class opencd implements decodeBase
      * @param string
      * @return array
      */
-    public static function run()
+    public static function run($url = 'torrents.php')
     {
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
-		$html = self::get();
+		$html = self::get($url);
 		#p($html);exit;
 		if ( $html === null ) {
 			exit(1);
 		}
 		$data = self::decode($html);
-		p($data);exit;
+		#p($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
