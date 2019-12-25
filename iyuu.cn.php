@@ -82,6 +82,12 @@ class iyuuAutoReseed
     {
         if(empty(self::$links)){
 			foreach ( self::$clients as $k => $v ){
+				// 跳过未配置的客户端
+				if (empty($v['username']) || empty( $v['password'])) {
+					unset(self::$clients[$k]);
+					echo "clients_".$k." 用户名或密码未配置，已跳过 \n\n";
+					continue;
+				}
 				try
 				{
 					switch($v['type']){
@@ -335,7 +341,11 @@ class iyuuAutoReseed
 							$url = $_url."/". $configALL[$sites[$sitesID]['site']]['passkey'];
 							break;
 						case 'm-team':
-							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] ."&https=1";
+							$ip_type = '';
+							if (isset($configALL[$sites[$sitesID]['site']]['ip_type'])) {
+								$ip_type = $configALL[$sites[$sitesID]['site']]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
+							}
+							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
 							break;
 						// case 'hdchina':
 						// 	break;

@@ -72,8 +72,16 @@ class Mteam implements decodeBase
 		$config = $configALL[self::SITE];
 		self::$cookies = $config['cookie'];
 		self::$userAgent = isset($config['userAgent']) && $config['userAgent'] ? $config['userAgent'] : $configALL['default']['userAgent'];
-		self::$passkey = isset($config['passkey']) ? '&passkey='.$config['passkey'].'&https=1' : '';
-
+		// ipv4、ipv6自定义
+		$ip_type = '';
+		if (isset($config['ip_type'])) {
+			$ip_type = $config['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
+		}
+		self::$passkey = isset($config['passkey']) && $config['passkey'] ? '&passkey='.$config['passkey']. $ip_type .'&https=1' : '';
+		if (empty(self::$passkey)) {
+			echo '程序退出，原因：请配置馒头秘钥！！';
+			exit(1);
+		}
 		requests::$input_encoding = self::encoding;	//输入的网页编码
 		requests::$output_encoding = self::encoding;	//输出的网页编码
 		requests::set_cookies(self::$cookies, self::domain);
@@ -96,6 +104,7 @@ class Mteam implements decodeBase
 			exit(1);
 		}
 		$data = self::decode($html);
+		#P($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
@@ -170,7 +179,7 @@ class Mteam implements decodeBase
 			self::$TorrentList[$k]['h1'] = $arr['h1'];
 			self::$TorrentList[$k]['title'] = isset( $arr['title'] ) && $arr['title'] ? $arr['title'] : '';
 			self::$TorrentList[$k]['details'] = self::HOST.self::detailsPrefix.$arr['id'];
-			self::$TorrentList[$k]['download'] = self::HOST.$arr['url'].'&https=1';
+			self::$TorrentList[$k]['download'] = self::HOST.$arr['url'] . self::$passkey;
 			self::$TorrentList[$k]['filename'] = $arr['id'].'.torrent';
 
 			// 种子促销类型解码

@@ -86,6 +86,12 @@ class Rpc
     {
         if(self::$workingMode === 1 && empty(self::$links)){
 			foreach ( self::$clients as $k => $v ){
+				// 跳过未配置的客户端
+				if (empty($v['username']) || empty( $v['password'])) {
+					unset(self::$clients[$k]);
+					echo "clients_".$k." 用户名或密码未配置，已跳过 \n\n";
+					continue;
+				}
 				try
 				{
 					switch($v['type']){
