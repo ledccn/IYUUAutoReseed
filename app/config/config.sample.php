@@ -96,6 +96,8 @@ return array(
 		'cookie'        => 'tp=',
 		// 15.m-team的passkey	【必须配置】
 		'passkey'       => '',
+		// 种子Tracker的IP地址选择 可选：ipv4，ipv6
+		'ip_type'		=> 'ipv4',
 		// 16.站点单独使用的下载客户端配置（每个站点可以独立配置，不冲突）（条目不够可以复制，用不到的请删除）
         'clients'   => array(
 			array(
