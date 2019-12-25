@@ -179,7 +179,7 @@ class Soulvoice implements decodeBase
 			// 种子促销类型解码
 			if(strpos($v,self::$getTorrent[0]) === false){
 				// 不免费
-				self::$TorrentList[$k]['type'] = 0;
+				self::$TorrentList[$k]['type'] = 1;
 			}else{
 				// 免费种子
 				self::$TorrentList[$k]['type'] = 0;
