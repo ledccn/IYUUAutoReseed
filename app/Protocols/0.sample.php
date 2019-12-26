@@ -1,22 +1,22 @@
 <?php
 /**
- * hdarea解码类
+ * XXXX解码类
  */
 use phpspider\core\requests;
 use phpspider\core\selector;
 
-class Hdarea implements decodeBase
+class XXXX implements decodeBase
 {
 	/**
      * 站点标志
      * @var string
      */
-    const SITE = 'hdarea';
+    const SITE = '';
 	/**
      * 域名
      * @var string
      */
-    const domain = 'www.hdarea.co';
+    const domain = '';
 	const HOST = 'https://'.self::domain.'/';
 	// 下载种子的请求类型
 	const METHOD = 'GET';
@@ -73,8 +73,8 @@ class Hdarea implements decodeBase
 		self::$userAgent = isset($config['userAgent']) && $config['userAgent'] ? $config['userAgent'] : $configALL['default']['userAgent'];
 		self::$passkey = isset($config['passkey']) ? '&passkey='.$config['passkey'].'&https=1' : '';
 
-		requests::$input_encoding = self::encoding;	//输入的网页编码
-		requests::$output_encoding = self::encoding;	//输出的网页编码
+		requests::$input_encoding = self::encoding;
+		requests::$output_encoding = self::encoding;
 		requests::set_cookies(self::$cookies, self::domain);
 		requests::set_useragent([self::$userAgent]);
 		requests::set_timeout([self::CONNECTTIMEOUT,self::TIMEOUT]);
@@ -98,7 +98,6 @@ class Hdarea implements decodeBase
 		$data = self::decode($html);
 		#p($data);exit;
 		Rpc::call($data);
-		exit(0);
     }
 
     /**

@@ -14,7 +14,9 @@ class Oauth{
     public static $passkey = '';
     // 合作站名字
     public static $site = '';
-
+    /**
+     * 初始化配置
+     */
     public static function init(){
         global $configALL;
         foreach (self::$sites as $name) {
@@ -42,11 +44,8 @@ class Oauth{
             echo "请访问https://iyuu.cn 用微信扫码申请，并填入配置文件config.php内。\n\n";
             exit(1);
         }
-        // 发布员鉴权
-        #$token = isset($configALL['secret']) && $configALL['secret'] ? $configALL['secret'] : $token;
         return $token;
     }
-
     /**
      * 用户注册与登录
      * 作用：在服务器端实现微信用户与合作站点用户id的关联

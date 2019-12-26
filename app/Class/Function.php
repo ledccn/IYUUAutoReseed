@@ -20,6 +20,7 @@ function p($data, $echo=true){
 	}
 	return $str;
 }
+
 /**
  * 微信推送Server酱
  */
@@ -41,6 +42,7 @@ function sc($text='', $desp='')
 	$result = file_get_contents('http://sc.ftqq.com/'.$token.'.send', false, $context);
 	return  $result;
 }
+
 /**
  * 微信推送 爱语飞飞
  */
@@ -144,6 +146,7 @@ function download($url, $cookies, $useragent, $method = 'GET')
 	curl_close($ch);
 	return $data;
 }
+
 /**
  * @brief 文件大小格式化为MB
  * @param string $from 文件大小
@@ -259,6 +262,9 @@ function filter($site = '', $torrent = array()){
 	return false;
 }
 
+/**
+ * 奇数
+ */
 function oddFilter($var)
 {
     // 返回$var最后一个二进制位，
@@ -266,6 +272,9 @@ function oddFilter($var)
     return($var & 1);
 }
 
+/**
+ * 偶数
+ */
 function evenFilter($var)
 {
 	// 返回$var最后一个二进制位，
@@ -273,7 +282,10 @@ function evenFilter($var)
 	return(!($var & 1));
 }
 
-// 签名函数
+/**
+ * 发布员签名
+ * 注意：同时配置iyuu.cn与secret时，优先使用secret。
+ */
 function sign( $timestamp ){
 	global $configALL;
 	// 爱语飞飞
