@@ -34,7 +34,7 @@ class iyuuAutoReseed
 	/**
      * 缓存路径
      */
-	public static $cacheDir = TORRENT_PATH.'cache'.DS;
+	public static $cacheDir  = TORRENT_PATH.'cache'.DS;
 	public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
 	/**
      * API接口配置
