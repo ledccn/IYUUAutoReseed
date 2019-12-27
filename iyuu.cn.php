@@ -238,7 +238,11 @@ class iyuuAutoReseed
     {
 		try
 		{
-			$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
+			if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) ){
+				$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
+			} else{
+				$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, $save_path, $extra_options );	// 种子元数据添加下载任务
+			}
 			// 调试
 			#p($result);
 			// 下载服务器类型 判断
@@ -254,7 +258,9 @@ class iyuuAutoReseed
 							$name = $result->arguments->torrent_added->name;
 						}
 						print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n";
-						print "种子：".$torrent. "\n";
+						if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) ){
+							print "种子：".$torrent. "\n";
+						}
 						print "名字：".$name."\n\n";
 						return true;
 					}else{
@@ -393,7 +399,12 @@ class iyuuAutoReseed
 						// case 'hdchina':
 						// 	break;
 						case 'hdcity':
+							print "种子：".$_url. "\n";
 							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
+							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
+							$userAgent = $configALL['default']['userAgent'];
+							// 城市下载种子时会302转向
+							$url = download($url, $cookie, $userAgent);
 							break;
 						default:
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
