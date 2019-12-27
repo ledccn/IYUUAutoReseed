@@ -11,6 +11,7 @@ if ( iyuuAutoReseed::$move != null ) {
 	exit;
 }
 iyuuAutoReseed::call($hashArray);
+iyuuAutoReseed::wechatMessage();
 /**
  * iyuu自动辅种类
  */
@@ -55,6 +56,19 @@ class iyuuAutoReseed
 	 */
 	public static $move = null;
 	/**
+	 * 微信消息体
+	 */
+	public static $wechatMsg = array(
+		'hashCount'			=>	0,		// 提交给服务器的hash总数
+		'sitesCount'		=>	0,		// 可辅种站点总数
+		'reseedCount'		=>	0,		// 返回的总数据
+		'reseedSuccess'		=>	0,		// 成功：辅种成功（会加入缓存，哪怕种子在校验中，下次也会过滤）
+		'reseedError'		=>	0,		// 错误：辅种失败（可以重试）		
+		'reseedRepeat'		=>	0,		// 重复：客户端已做种
+		'reseedSkip'		=>	0,		// 跳过：因未设置passkey，而跳过
+		'reseedPass'		=>	0,		// 忽略：因上次成功添加、存在缓存，而跳过
+	);
+	/**
      * 初始化
      */
 	public static function init(){
@@ -67,10 +81,10 @@ class iyuuAutoReseed
 		// 建立目录
 		IFile::mkdir(self::$cacheDir);
 		IFile::mkdir(self::$cacheHash);
+		// 连接全局客户端
 		self::links();
 		// 合作站点自动注册鉴权
 		Oauth::login(self::$apiUrl . self::$endpoints['login']);
-		#exit;
 	}
 	/**
      * 连接远端RPC服务器
@@ -154,6 +168,8 @@ class iyuuAutoReseed
 						$info_hash = array_column($res, 'hashString');
 						// 升序排序
 						sort($info_hash);
+						// 微信模板消息 统计
+						self::$wechatMsg['hashCount'] += count($info_hash);
 						$json = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
 						// 去重 应该从文件读入，防止重复提交
 						$sha1 = sha1( $json );
@@ -181,6 +197,8 @@ class iyuuAutoReseed
 						$info_hash = array_column($res, 'hash');
 						// 升序排序
 						sort($info_hash);
+						// 微信模板消息 统计
+						self::$wechatMsg['hashCount'] += count($info_hash);
 						$json = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
 						// 去重 应该从文件读入，防止重复提交
 						$sha1 = sha1( $json );
@@ -261,7 +279,27 @@ class iyuuAutoReseed
 			echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
 		}
 		return false;
-    }
+	}
+	
+	/**
+	 * 正常做种的种子在各下载器的互相转移
+	 */
+	public static function move($torrent=array(), $type = 'qBittorrent'){
+		switch($type){
+			case 'transmission':
+				break;
+			case 'qBittorrent':
+				foreach ($torrent as $k => $v) {
+					// 路径转换
+					#$v['save_path'] = '/volume3' . $v['save_path'];	// docker路径转换
+					self::add(self::$move[0], $v['magnet_uri'], $v['save_path'] );
+				}
+				break;
+			default:
+				echo '[ERROR] '.$type;
+				break;
+		}
+	}
 	/**
 	 * @brief 提交种子hash给远端API，用来获取辅种数据
 	 * @param array $hashArray 种子hash数组
@@ -309,30 +347,35 @@ class iyuuAutoReseed
 		}
 		// 可辅种站点信息列表
 		$sites = $resArray['sites'];
+		self::$wechatMsg['sitesCount'] = count($sites);
 		#p($sites);
-		// 按客户端循环辅种
+		// 按客户端循环辅种 开始
 		foreach (self::$links as $k => $v) {
 			$reseed = $infohash_Dir = array();
+			// info_hash 对应的下载目录
+			$infohash_Dir = self::$links[$k]['hash'];
 			if (empty($resArray['clients_'.$k])) {
 				echo "clients_".$k."没有查询到可辅种数据 \n\n";
 				continue;
 			}
 			// 当前客户端辅种数据
-			$reseed = $resArray['clients_'.$k];
-			// info_hash 对应的下载目录
-			$infohash_Dir = self::$links[$k]['hash'];
+			$reseed = $resArray['clients_'.$k];			
 			foreach ($reseed as $info_hash => $vv) {
 				// 当前种子哈希对应的目录
 				$downloadDir = $infohash_Dir[$info_hash];
 				foreach ($vv['torrent'] as $id => $value) {
+					// 匹配的辅种数据累加
+					self::$wechatMsg['reseedCount']++;
+
 					$sitesID = $value['sid'];
 					$url = $_url = '';
 					$download_page = '';
 					// 页面规则
 					$download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
 					$_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
-					if (empty($configALL[$sites[$sitesID]['site']]['passkey'])) {
+					if ( empty($configALL[$sites[$sitesID]['site']]['passkey']) ) {
 						echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置passkey，已跳过！！' . "\n\n";
+						self::$wechatMsg['reseedSkip']++;
 						continue;
 					}
 					// 种子URL组合方式区分
@@ -353,19 +396,25 @@ class iyuuAutoReseed
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							break;
 					}
-					// 检查不辅种的站点
-					// 判断是否VIP或特殊权限？
+					/**
+					 * 检查站点是否可以辅种
+					 */
+					// 判断是否具有VIP或特殊权限？
 					$is_vip = isset($configALL[$sites[$sitesID]['site']]['is_vip']) && $configALL[$sites[$sitesID]['site']]['is_vip'] ? 1 : 0;
 					if ( (in_array($sites[$sitesID]['site'], self::$noReseed)==false) || $is_vip ) {
-						// 可以辅种
+						/**
+						 *  可以辅种
+						 */
 						if ( isset($infohash_Dir[$value['info_hash']]) ) {
 							// 与客户端现有种子重复
 							echo '-------与客户端现有种子重复：'.$_url."\n\n";
+							self::$wechatMsg['reseedRepeat']++;
 							continue;
 						}else{
 							// 判断上次是否成功添加？
 							if ( is_file(self::$cacheHash . $value['info_hash'].'.txt') ) {
 								echo '-------当前种子上次辅种已成功添加，已跳过！'.$_url."\n\n";
+								self::$wechatMsg['reseedPass']++;
 								continue;
 							}
 							// 把拼接的种子URL，推送给下载器
@@ -374,15 +423,24 @@ class iyuuAutoReseed
 							$ret = self::add($k, $url, $downloadDir);
 							// 添加成功的种子，以infohash为文件名，写入缓存
 							if ($ret) {
+								// 成功的种子
 								// 文件句柄
 								$resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
 								// 成功：返回写入字节数，失败返回false
 								$worldsnum = fwrite($resource, $url);
 								fclose($resource);
+								self::$wechatMsg['reseedSuccess']++;
+								continue;
+							}else{
+								// 失败的种子
+								self::$wechatMsg['reseedError']++;
+								continue;
 							}
 						}
 					}else{
-						// 不辅种
+						/**
+						 *  不辅种
+						 */
 						echo '-------已跳过不辅种的站点：'.$_url."\n\n";
 						// 写入日志文件，供用户手动辅种
 						if ( !isset($infohash_Dir[$value['info_hash']]) ) {
@@ -396,31 +454,36 @@ class iyuuAutoReseed
 				}
 			}
 		}
+		// 按客户端循环辅种 结束
 	}
 	/**
-	 * 正常做种的种子在各下载器的互相转移
+	 * 
 	 */
-	public static function move($torrent=array(), $type = 'qBittorrent'){
-		switch($type){
-			case 'transmission':
-				break;
-			case 'qBittorrent':
-				foreach ($torrent as $k => $v) {
-					#$v['save_path'] = '/volume3' . $v['save_path'];	// docker路径转换
-					self::add(self::$move[0], $v['magnet_uri'], $v['save_path'] );
-				}
-				break;
-			default:
-				echo '[ERROR] '.$type;
-				break;
-		}
+	public static function wechatMessage(){
+		$br = "\r\n";
+		$text = 'IYUU自动辅种-统计报表';
+		$desp = '总做种：'.self::$wechatMsg['hashCount'] . '  [客户端正在做种的hash总数]' .$br;
+		$desp .= '返回数据：'.self::$wechatMsg['reseedCount']. '  [服务器返回的可辅种数据]' .$br;
+		$desp .= '支持站点：'.self::$wechatMsg['sitesCount']. '  [当前支持自动辅种的站点数量]' .$br;		
+		$desp .= '成功：'.self::$wechatMsg['reseedSuccess']. '  [辅种成功，会把hash加入缓存]' .$br;
+		$desp .= '失败：'.self::$wechatMsg['reseedError']. '  [下载器下载种子失败或网络超时引起，可以重试]' .$br;
+		$desp .= '重复：'.self::$wechatMsg['reseedRepeat']. '  [客户端已做种]' .$br;
+		$desp .= '跳过：'.self::$wechatMsg['reseedSkip']. '  [未设置passkey]' .$br;
+		$desp .= '忽略：'.self::$wechatMsg['reseedPass']. '  [成功添加存在缓存]' .$br;
+		return ff($text, $desp);
 	}
 }
-// transmission过滤函数，只保留正常做种
+
+/**
+ * transmission过滤函数，只保留正常做种
+ */
 function filterStatus( $v ){
 	return isset($v['status']) && $v['status']===6;
 }
-// qBittorrent过滤函数，只保留正常做种
+
+/**
+ * qBittorrent过滤函数，只保留正常做种
+ */
 function qbfilterStatus( $v ){
 	if( ($v['state']=='uploading') || ($v['state'] == 'stalledUP') ){
 		return true;
