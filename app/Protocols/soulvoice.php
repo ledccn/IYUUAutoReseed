@@ -87,7 +87,7 @@ class Soulvoice implements decodeBase
      * @param string
      * @return array
      */
-    public static function run($url = 'torrents.php')
+    public static function run($url = 'torrents.php', $type = true)
     {
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
@@ -95,10 +95,9 @@ class Soulvoice implements decodeBase
 		if ( $html === null ) {
 			exit(1);
 		}
-		$data = self::decode($html);
+		$data = self::decode($html, $type);
 		#p($data);exit;
 		Rpc::call($data);
-		exit(0);
     }
 
     /**
@@ -126,7 +125,7 @@ class Soulvoice implements decodeBase
      * @param array $data
      * @return array
      */
-    public static function decode($data = array())
+    public static function decode($data = array(), $type = true)
     {
 		$downloadStrLen = strlen(self::downloadPrefix);	// 前缀长度
 		$downloadStrEnd = '"';	//种子地址结束标志
@@ -179,7 +178,7 @@ class Soulvoice implements decodeBase
 			// 种子促销类型解码
 			if(strpos($v,self::$getTorrent[0]) === false){
 				// 不免费
-				self::$TorrentList[$k]['type'] = 1;
+				self::$TorrentList[$k]['type'] = $type ? 1 : 0;
 			}else{
 				// 免费种子
 				self::$TorrentList[$k]['type'] = 0;

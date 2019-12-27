@@ -342,5 +342,6 @@ class Rpc
 				}
 			}
 		}
+		return true;
 	}
 }
