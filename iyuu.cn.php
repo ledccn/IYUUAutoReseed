@@ -392,6 +392,9 @@ class iyuuAutoReseed
 							break;
 						// case 'hdchina':
 						// 	break;
+						case 'hdcity':
+							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
+							break;
 						default:
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							break;

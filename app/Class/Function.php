@@ -143,8 +143,14 @@ function download($url, $cookies, $useragent, $method = 'GET')
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,60);
 	curl_setopt($ch, CURLOPT_TIMEOUT,600);
 	$data = curl_exec($ch);
+	$status = curl_getinfo($ch);
 	curl_close($ch);
-	return $data;
+	if (isset($status['http_code']) && $status['http_code'] == 200) {
+		return $data;
+	}
+	if (isset($status['http_code']) && $status['http_code'] == 302) {
+		return download($status['redirect_url'], $cookies, $useragent);
+	}
 }
 
 /**

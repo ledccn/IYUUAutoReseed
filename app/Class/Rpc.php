@@ -64,7 +64,6 @@ class Rpc
 		$config = $configALL[$site];
 		self::$cookies = $config['cookie'];
 		self::$userAgent = isset($config['userAgent']) && $config['userAgent'] ? $config['userAgent'] : $configALL['default']['userAgent'];
-		self::$passkey = isset($config['passkey']) ? '&passkey='.$config['passkey'].'&https=1' : '';
 		self::$clients = isset($config['clients']) && $config['clients'] ? $config['clients'] : $configALL['default']['clients'];
 		self::$workingMode = isset($config['workingMode']) && $config['workingMode'] ? $config['workingMode'] : 0;
 		$watch = isset($config['watch']) && $config['watch'] ? $config['watch'] : $configALL['default']['watch'];
@@ -290,6 +289,7 @@ class Rpc
 			// 创建文件、下载种子以二进制写入
 			$content = '';
 			$content = download($value['download'], self::$cookies, self::$userAgent, self::$method);
+			#p($content);
 			// 文件句柄
 			$resource = fopen($torrentFile, "wb");
 			// 成功：返回写入字节数，失败返回false
