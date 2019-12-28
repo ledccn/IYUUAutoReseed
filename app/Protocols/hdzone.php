@@ -1,22 +1,22 @@
 <?php
 /**
- * XXXX解码类
+ * hdzone解码类
  */
 use phpspider\core\requests;
 use phpspider\core\selector;
 
-class XXXX implements decodeBase
+class hdzone implements decodeBase
 {
 	/**
      * 站点标志
      * @var string
      */
-    const SITE = '';
+    const SITE = 'hdzone';
 	/**
      * 域名
      * @var string
      */
-    const domain = '';
+    const domain = 'hdzone.me';
 	const HOST = 'https://'.self::domain.'/';
 	// 下载种子的请求类型
 	const METHOD = 'GET';
@@ -161,7 +161,7 @@ class XXXX implements decodeBase
 				$h2_len = strlen($temp) - $h2_offset - strlen($h2StrStart);
 				//存在副标题
 				$arr['title'] = substr($temp, $h2_offset + strlen($h2StrStart), $h2_len);
-				#$arr['title'] = str_replace("\n","",$arr['title']);
+				$arr['title'] = str_replace(" ","",$arr['title']);
 				// 第二次过滤
 				if ( strpos($arr['title'],'</td>') != false ) {
 					#$arr['title'] = str_replace('</td>',"",$arr['title']);
