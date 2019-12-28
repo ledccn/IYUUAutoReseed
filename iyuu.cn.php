@@ -238,15 +238,20 @@ class iyuuAutoReseed
     {
 		try
 		{
+			$type = self::$links[$rpcKey]['type'];
 			if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) ){
 				$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
 			} else{
+				if ( $type == 'qBittorrent' ) {
+					$extra_options['name'] = 'torrents';
+					$extra_options['filename'] = rand(1,4294967200).'.torrent';
+				}
 				$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, $save_path, $extra_options );	// 种子元数据添加下载任务
 			}
 			// 调试
 			#p($result);
 			// 下载服务器类型 判断
-			switch(self::$links[$rpcKey]['type']){
+			switch( $type ){
 				case 'transmission':
 					if(isset($result->result) && $result->result == 'success'){
 						$id = $name = '';
@@ -399,6 +404,11 @@ class iyuuAutoReseed
 						// case 'hdchina':
 						// 	break;
 						case 'hdcity':
+							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
+								echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
+								self::$wechatMsg['reseedSkip']++;
+								break;
+							}
 							print "种子：".$_url. "\n";
 							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
