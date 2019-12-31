@@ -35,7 +35,6 @@ IYUU自动辅种：需要您配置各站的passkey（没有配置passkey的站�
 配置好后如图：
 ![编辑配置3.png][5]
 
-
 ----------
 
 
@@ -62,7 +61,7 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 ----------
 
 ## Windows安装PHP运行环境
-也可以去官方下载【https://www.php.net/downloads】，官方下载的记得开启`crul、fileinfo、mbstring`，这3个扩展。
+也可以去官方下载【https://www.php.net/downloads】，官方下载的记得开启`curl、fileinfo、mbstring`，这3个扩展。
 另外我打包了一份，下载地址：
 微云链接：https://share.weiyun.com/5EiXLfn 密码：ezsvnb
 下载回来是一个ZIP压缩包，解压到`D:\IYUUAutoReseed\`目录内，文件结构如图：
@@ -72,16 +71,16 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 ![编辑配置8.png][13]
 
 
-  [1]: https://gitee.com/ledc/IYUUAutoReseed
-  [2]: https://www.iyuu.cn/usr/uploads/2019/12/2720183833.png
-  [3]: https://www.iyuu.cn/usr/uploads/2019/12/405587689.png
-  [4]: https://www.iyuu.cn/usr/uploads/2019/12/441257656.png
-  [5]: https://www.iyuu.cn/usr/uploads/2019/12/890327305.png
-  [6]: https://www.iyuu.cn/usr/uploads/2019/12/2331433923.png
-  [7]: https://www.iyuu.cn/usr/uploads/2019/12/3324442680.png
-  [8]: https://www.iyuu.cn/usr/uploads/2019/12/3181272964.png
-  [9]: https://www.iyuu.cn/usr/uploads/2019/12/3669828008.png
-  [10]: https://www.iyuu.cn/usr/uploads/2019/12/3696916642.png
-  [11]: https://www.iyuu.cn/usr/uploads/2019/12/1230288911.png
-  [12]: https://www.iyuu.cn/usr/uploads/2019/12/3189986236.png
-  [13]: https://www.iyuu.cn/usr/uploads/2019/12/2523845772.png
+[1]: https://gitee.com/ledc/IYUUAutoReseed
+[2]: https://www.iyuu.cn/usr/uploads/2019/12/2720183833.png
+[3]: https://www.iyuu.cn/usr/uploads/2019/12/405587689.png
+[4]: https://www.iyuu.cn/usr/uploads/2019/12/441257656.png
+[5]: https://www.iyuu.cn/usr/uploads/2019/12/890327305.png
+[6]: https://www.iyuu.cn/usr/uploads/2019/12/2331433923.png
+[7]: https://www.iyuu.cn/usr/uploads/2019/12/3324442680.png
+[8]: https://www.iyuu.cn/usr/uploads/2019/12/3181272964.png
+[9]: https://www.iyuu.cn/usr/uploads/2019/12/3669828008.png
+[10]: https://www.iyuu.cn/usr/uploads/2019/12/3696916642.png
+[11]: https://www.iyuu.cn/usr/uploads/2019/12/1230288911.png
+[12]: https://www.iyuu.cn/usr/uploads/2019/12/3189986236.png
+[13]: https://www.iyuu.cn/usr/uploads/2019/12/2523845772.png
