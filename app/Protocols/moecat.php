@@ -136,6 +136,10 @@ class Moecat implements decodeBase
 			// 种子基本信息处理
 			// 偏移量
 			$offset = strpos($v,self::downloadPrefix);
+			if ($offset == false) {
+				// 无人做种
+				continue;
+			}
 			// 截取
 			$urlTemp = substr($v,$offset,$len);
 			// 种子地址
