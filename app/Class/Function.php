@@ -151,6 +151,7 @@ function download($url, $cookies, $useragent, $method = 'GET')
 	if (isset($status['http_code']) && $status['http_code'] == 302) {
 		return download($status['redirect_url'], $cookies, $useragent);
 	}
+	return $data;
 }
 
 /**
