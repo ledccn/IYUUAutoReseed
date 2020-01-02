@@ -239,7 +239,7 @@ class iyuuAutoReseed
 		try
 		{
 			$type = self::$links[$rpcKey]['type'];
-			if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) ){
+			if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0)){
 				$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
 			} else{
 				if ( $type == 'qBittorrent' ) {
