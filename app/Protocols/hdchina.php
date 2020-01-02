@@ -92,12 +92,12 @@ class Hdchina implements decodeBase
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
 		$html = self::get($url);
-		p($html);
+		#p($html);
 		if ( $html === null ) {
 			exit(1);
 		}
 		$data = self::decode($html);
-		p($data);exit;
+		#p($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
@@ -112,6 +112,10 @@ class Hdchina implements decodeBase
     {
         // 发起请求
 		$html = requests::get(self::HOST.$url);
+		if(strpos($html,'系统检测到过多的种子下载请求') != false){
+			echo "触发人机验证 \n";
+			exit(1);
+		}
 		// 获取列表页数据
 		$data = selector::select($html, "//*[@class='tbname']");
 		if(!$data){
@@ -146,7 +150,7 @@ class Hdchina implements decodeBase
 			// 种子地址
 			$arr['url'] = substr($urlTemp,0,strpos($urlTemp,$downloadStrEnd));
 
-			// 种子id[单独计算]			
+			// 种子id[单独计算]
 			$idOffset = strpos($v,self::detailsPrefix);
 			$idTemp = substr($v, $idOffset, $idlen);
 			$id = substr($idTemp,0,strpos($idTemp,$idStrEnd));
@@ -173,7 +177,7 @@ class Hdchina implements decodeBase
 
 				// 方法二 [直取副标题]
 				#$arr['title'] = selector::select($v, '//h4');
-			}				
+			}
 
 			// 组合返回数组
 			self::$TorrentList[$k]['id'] = $arr['id'];
