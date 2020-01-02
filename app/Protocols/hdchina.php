@@ -92,11 +92,12 @@ class Hdchina implements decodeBase
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
 		$html = self::get($url);
+		p($html);
 		if ( $html === null ) {
 			exit(1);
 		}
 		$data = self::decode($html);
-		#p($data);exit;
+		p($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
@@ -152,10 +153,8 @@ class Hdchina implements decodeBase
 			$arr['id'] = substr($id,$idStrLen);
 
 			// 获取主标题
-			// 偏移量
-			$h1_offset = strpos($v, '<a title="') + strlen('<a title="');
-			$h1_len = strpos($v, '" href="details.php?id=') - $h1_offset;
-			$arr['h1'] = substr($v, $h1_offset, $h1_len);
+			$arr['h1'] = selector::select($v, '//h3');
+			$arr['h1'] = selector::select($arr['h1'], '//a');
 
 			// 获取副标题(倒序算法)
 			// 偏移量

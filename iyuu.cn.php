@@ -369,6 +369,7 @@ class iyuuAutoReseed
 				echo "clients_".$k."没有查询到可辅种数据 \n\n";
 				continue;
 			}
+			#p($infohash_Dir);
 			// 当前客户端辅种数据
 			$reseed = $resArray['clients_'.$k];			
 			foreach ($reseed as $info_hash => $vv) {
