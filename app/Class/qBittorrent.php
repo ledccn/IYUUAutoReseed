@@ -132,7 +132,7 @@ class qBittorrent
     {
 		if(!empty($save_path)) $extra_options['savepath'] = $save_path;
         $extra_options['urls'] = $torrent_url;
-        #$extra_options['skip_checking'] = true;    //跳校验
+        #$extra_options['skip_checking'] = 'true';    //跳校验
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildUrls($extra_options);
         #p($post_data);
@@ -146,6 +146,7 @@ class qBittorrent
     {
 		if(!empty($save_path)) $extra_options['savepath'] = $save_path;
         $extra_options['torrents'] = $torrent_metainfo;
+        #$extra_options['skip_checking'] = 'true';    //跳校验
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildData($extra_options);
         #p($post_data);
