@@ -472,7 +472,7 @@ class iyuuAutoReseed
 							// 文件句柄
 							$resource = fopen(self::$cacheDir . $sites[$sitesID]['site'].'.txt', 'a');
 							// 成功：返回写入字节数，失败返回false
-							$worldsnum = fwrite($resource, $downloadDir."\n".$url."\n\n");
+							$worldsnum = fwrite($resource, 'clients_'.$k."\n".$downloadDir."\n".$url."\n\n");
 							fclose($resource);
 						}
 					}
