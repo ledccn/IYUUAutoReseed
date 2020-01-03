@@ -29,9 +29,9 @@ class iyuuAutoReseed
      */
 	public static $clients = array();
 	/**
-	 * 不辅种的站点
+	 * 不辅种的站点 'ourbits','hdchina'
 	 */
-	public static $noReseed = ['ourbits','hdchina'];
+	public static $noReseed = [];
 	/**
      * 缓存路径
      */
@@ -121,7 +121,6 @@ class iyuuAutoReseed
 							break;
 					}
 					self::$links[$k]['type'] = $v['type'];
-					#self::$links[$k]['downloadDir'] = $v['downloadDir'];
 					// 检查是否转移种子的做种客户端？
 					if ( isset($v['move']) && $v['move'] ) {
 						self::$move = array($k,$v['type']);
@@ -378,10 +377,10 @@ class iyuuAutoReseed
 				foreach ($vv['torrent'] as $id => $value) {
 					// 匹配的辅种数据累加
 					self::$wechatMsg['reseedCount']++;
-
+					// 站点id
 					$sitesID = $value['sid'];
 					$url = $_url = '';
-					$download_page = '';
+					$download_page = $details_url = '';
 					// 页面规则
 					$download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
 					$_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
@@ -402,8 +401,30 @@ class iyuuAutoReseed
 							}
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
 							break;
-						// case 'hdchina':
-						// 	break;
+						case 'hdchina':
+							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
+								echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
+								self::$wechatMsg['reseedSkip']++;
+								break;
+							}
+							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
+							$userAgent = $configALL['default']['userAgent'];
+							// 拼接URL
+							$details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
+							$details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+							$details_html = download($details_url, $cookie, $userAgent);
+							print "种子详情页：".$details_url. "\n";
+							// 提取种子下载地址
+							$download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
+							$offset = strpos($details_html, $download_page);
+							$urlTemp = substr($details_html, $offset, 50);
+							// 种子地址
+							$_url = substr($urlTemp,0,strpos($urlTemp,'">'));
+							$_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
+							print "种子下载页：".$_url. "\n";
+							$url = download($_url, $cookie, $userAgent);
+							#$torrentArray = Bencode::decode($url);
+							break;
 						case 'hdcity':
 							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
 								echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
@@ -411,6 +432,7 @@ class iyuuAutoReseed
 								break;
 							}
 							print "种子：".$_url. "\n";
+							echo '当前' .$sites[$sitesID]['site']. '站点需配置cuhash，而不是passkey！！如果添加任务失败，请查阅常见问题！！' . "\n";
 							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
 							$userAgent = $configALL['default']['userAgent'];
@@ -469,10 +491,18 @@ class iyuuAutoReseed
 						echo '-------已跳过不辅种的站点：'.$_url."\n\n";
 						// 写入日志文件，供用户手动辅种
 						if ( !isset($infohash_Dir[$value['info_hash']]) ) {
+							// 站点类型判断
+							switch ($sites[$sitesID]['site']) {
+								case 'hdchina':
+									$url = $_url;
+									break;
+								default:
+									break;
+							}
 							// 文件句柄
 							$resource = fopen(self::$cacheDir . $sites[$sitesID]['site'].'.txt', 'a');
 							// 成功：返回写入字节数，失败返回false
-							$worldsnum = fwrite($resource, 'clients_'.$k."\n".$downloadDir."\n".$url."\n\n");
+							$worldsnum = fwrite($resource, 'clients_'.$k."\n".$downloadDir."\n".$url."\n".$details_url."\n\n");
 							fclose($resource);
 						}
 					}
