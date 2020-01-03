@@ -28,7 +28,7 @@ class Oauth{
                 return true;
             }
         }
-        echo "-----缺少用户登录参数：token, user_id, passkey, site \n";
+        echo "-----缺少合作站点登录参数：token, user_id, passkey, site \n";
         echo "-----当前正在使用测试接口，功能可能会受到限制！ \n\n";
         return false;
     }
