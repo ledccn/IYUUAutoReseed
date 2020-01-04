@@ -262,7 +262,7 @@ class iyuuAutoReseed
 							$name = $result->arguments->torrent_added->name;
 						}
 						print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n";
-						if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) ){
+						if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0) ){
 							print "种子：".$torrent. "\n";
 						}
 						print "名字：".$name."\n\n";
@@ -270,7 +270,9 @@ class iyuuAutoReseed
 					}else{
 						$errmsg = isset($result->result) ? $result->result : '未知错误，请稍后重试！';
 						print "-----RPC添加种子任务，失败 [{$errmsg}] \n";
-						print "种子：".$torrent. "\n";
+						if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0) ){
+							print "种子：".$torrent. "\n";
+						}
 					}
 					break;
 				case 'qBittorrent':
@@ -432,7 +434,7 @@ class iyuuAutoReseed
 								break;
 							}
 							print "种子：".$_url. "\n";
-							echo '当前' .$sites[$sitesID]['site']. '站点需配置cuhash，而不是passkey！！如果添加任务失败，请查阅常见问题！！' . "\n";
+							echo '当前' .$sites[$sitesID]['site']. '站点需配置cuhash，而不是passkey！如果添加任务失败，请查阅常见问题！！' . "\n";
 							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
 							$userAgent = $configALL['default']['userAgent'];
