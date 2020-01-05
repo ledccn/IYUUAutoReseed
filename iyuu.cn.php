@@ -434,7 +434,6 @@ class iyuuAutoReseed
 								break;
 							}
 							print "种子：".$_url. "\n";
-							echo '当前' .$sites[$sitesID]['site']. '站点需配置cuhash，而不是passkey！如果添加任务失败，请查阅常见问题！！' . "\n";
 							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
 							$userAgent = $configALL['default']['userAgent'];
@@ -482,6 +481,15 @@ class iyuuAutoReseed
 								continue;
 							}else{
 								// 失败的种子
+								// 站点类型判断
+								switch ($sites[$sitesID]['site']) {
+									case 'hdcity':
+										echo '当前' .$sites[$sitesID]['site']. '站点是配置cuhash(不是passkey)，添加成功说明配置正确！如果添加任务失败，请查阅常见问题！！' . "\n";
+										break;
+									default:
+										break;
+								}
+								// 失败累加
 								self::$wechatMsg['reseedError']++;
 								continue;
 							}
