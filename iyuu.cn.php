@@ -433,10 +433,21 @@ class iyuuAutoReseed
 								self::$wechatMsg['reseedSkip']++;
 								break;
 							}
-							print "种子：".$_url. "\n";
-							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
 							$userAgent = $configALL['default']['userAgent'];
+							print "种子：".$_url. "\n";
+							if ( isset($configALL[$sites[$sitesID]['site']]['cuhash']) ) {
+								# code...
+							}else {
+								// 获取cuhash
+								$html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
+								// 提取种子下载地址
+								$offset = strpos($html,'cuhash=');
+								$len = strlen('cuhash=');
+								$cuhashTemp = substr($html,$offset+$len,40);
+								$configALL[$sites[$sitesID]['site']]['cuhash'] = substr($cuhashTemp,0,strpos($cuhashTemp,'"'));
+							}
+							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['cuhash'];
 							// 城市下载种子时会302转向
 							$url = download($url, $cookie, $userAgent);
 							break;
