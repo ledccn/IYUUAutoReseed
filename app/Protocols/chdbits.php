@@ -91,10 +91,12 @@ class Chdbits implements decodeBase
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
 		$html = self::get($url);
+		#p($html);exit;
 		if ( $html === null ) {
 			exit(1);
 		}
 		$data = self::decode($html);
+		#p($data);exit;
 		Rpc::call($data);
 		exit(0);
     }
@@ -150,7 +152,7 @@ class Chdbits implements decodeBase
 			// 获取副标题(倒序算法)
 			// 偏移量
 			$h2StrStart = '<br />';
-			$h2StrEnd = '</td><td width="50" class="embedded"';
+			$h2StrEnd = '</td><td width="';
 			$h2_endOffset = strpos($v,$h2StrEnd);
 			$temp = substr($v, 0, $h2_endOffset);
 			$h2_offset = strrpos($temp,$h2StrStart);
@@ -160,31 +162,29 @@ class Chdbits implements decodeBase
 				$h2_len = strlen($temp) - $h2_offset - strlen($h2StrStart);
 				//存在副标题
 				$titleTemp = substr($temp, $h2_offset + strlen($h2StrStart), $h2_len);
-				// 第二次过滤				
-				// 精确适配标签 begin
-				$titleSpan = '';
+				// 精确适配标签 begin								
+				if ( strpos($titleTemp,'</font>') != false ) {
+					$titleTemp = selector::select($titleTemp, '//font');
+				}
 				$title = selector::remove($titleTemp, "//div");
-				$span = selector::select($titleTemp, '//div');
+				$title = substr($title, 4);
+				$title = str_replace(" ",'',$title);
+				$span = array();
+				$titleSpan = '';
+				$span = selector::select($titleTemp, '//div');				
 				if(!empty($span)){
 					if(is_array($span)){
 						foreach ( $span as $vv ){
-							if( empty($vv) || (strpos($titleTemp,'<div') != false) ){
+							if( empty($vv) || (strpos($vv,'</div>') != false) ){
 								continue;
 							}
 							$titleSpan.='['.$vv.'] ';
 						}
-					}else{		
+					}else{
 						$titleSpan.='['.$span.'] ';
 					}
 				}
 				// 精确适配标签 end
-				// 最后过滤
-				if ( strpos($title,'<font') != false ) {
-					$offset = 0;
-					$offset = strpos($title,'>')+1;
-					$title = substr($title, $offset);
-				}
-				$title = str_replace('</font>',"",$title);
 				$arr['title'] = $titleSpan . $title;
 			}
 
