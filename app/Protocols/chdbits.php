@@ -167,11 +167,17 @@ class Chdbits implements decodeBase
 					$titleTemp = selector::select($titleTemp, '//font');
 				}
 				$title = selector::remove($titleTemp, "//div");
+				// 过滤 码率
+				if ( strpos($title,'</a>') != false ) {					
+					$title = selector::remove($title, "//a");
+				}
+				// 过滤特殊的空格
 				$title = substr($title, 4);
+				// 移除普通空格
 				$title = str_replace(" ",'',$title);
 				$span = array();
 				$titleSpan = '';
-				$span = selector::select($titleTemp, '//div');				
+				$span = selector::select($titleTemp, '//div');
 				if(!empty($span)){
 					if(is_array($span)){
 						foreach ( $span as $vv ){
@@ -187,7 +193,6 @@ class Chdbits implements decodeBase
 				// 精确适配标签 end
 				$arr['title'] = $titleSpan . $title;
 			}
-
 			// 组合返回数组
 			self::$TorrentList[$k]['id'] = $arr['id'];
 			self::$TorrentList[$k]['h1'] = $arr['h1'];
