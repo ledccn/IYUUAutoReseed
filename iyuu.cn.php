@@ -237,21 +237,21 @@ class iyuuAutoReseed
     {
 		try
 		{
-			$type = self::$links[$rpcKey]['type'];
-			if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0)){
-				$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
-			} else{
-				if ( $type == 'qBittorrent' ) {
-					$extra_options['name'] = 'torrents';
-					$extra_options['filename'] = rand(1,4294967200).'.torrent';
-				}
-				$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, $save_path, $extra_options );	// 种子元数据添加下载任务
+			$is_url = false;
+			if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0) ){
+				$is_url = true;
 			}
-			// 调试
-			#p($result);
-			// 下载服务器类型 判断
+			// 下载服务器类型
+			$type = self::$links[$rpcKey]['type'];
+			// 判断
 			switch( $type ){
 				case 'transmission':
+					$extra_options['paused'] = true;
+					if( $is_url ){
+						$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
+					} else{
+						$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, $save_path, $extra_options );	// 种子元数据添加下载任务
+					}
 					if(isset($result->result) && $result->result == 'success'){
 						$id = $name = '';
 						if( isset($result->arguments->torrent_duplicate) ){
@@ -262,7 +262,7 @@ class iyuuAutoReseed
 							$name = $result->arguments->torrent_added->name;
 						}
 						print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n";
-						if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0) ){
+						if( $is_url ){
 							print "种子：".$torrent. "\n";
 						}
 						print "名字：".$name."\n\n";
@@ -270,12 +270,20 @@ class iyuuAutoReseed
 					}else{
 						$errmsg = isset($result->result) ? $result->result : '未知错误，请稍后重试！';
 						print "-----RPC添加种子任务，失败 [{$errmsg}] \n";
-						if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0) ){
+						if( $is_url ){
 							print "种子：".$torrent. "\n";
 						}
 					}
 					break;
 				case 'qBittorrent':
+					$extra_options['paused'] = 'true';
+					if( $is_url ){
+						$result = self::$links[$rpcKey]['rpc']->add( $torrent, $save_path, $extra_options );			// 种子URL添加下载任务
+					} else{
+						$extra_options['name'] = 'torrents';
+						$extra_options['filename'] = rand(1,4294967200).'.torrent';
+						$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, $save_path, $extra_options );	// 种子元数据添加下载任务
+					}
 					if ($result === 'Ok.') {
 						print "********RPC添加下载任务成功 [{$result}] \n\n";
 						return true;
