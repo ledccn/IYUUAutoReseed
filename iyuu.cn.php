@@ -411,6 +411,13 @@ class iyuuAutoReseed
 							}
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
 							break;
+						case 'moecat':
+							$ip_type = '';
+							if (isset($configALL[$sites[$sitesID]['site']]['ip_type'])) {
+								$ip_type = $configALL[$sites[$sitesID]['site']]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
+							}
+							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
+							break;
 						case 'hdchina':
 							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
 								echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";

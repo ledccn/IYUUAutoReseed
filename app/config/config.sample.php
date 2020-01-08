@@ -209,7 +209,9 @@ return array(
 		// 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
 		'cookie'        => '',
 		// 如果需要自动辅种，必须配置
-        'passkey'       => '',
+		'passkey'       => '',
+		// 种子Tracker的IP地址选择 可选：ipv4，ipv6
+		'ip_type'		=> 'ipv4',
     ),
     // totheglory 序号：14
     'ttg'      => array(
