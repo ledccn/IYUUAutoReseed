@@ -3,3 +3,4 @@
 /app/config/config.php
 /php-7.2.12-nts
 /*.bat
+/*.sh
