@@ -320,6 +320,7 @@ class Rpc
 							case 'qBittorrent':
 								$extra_options['name'] = 'torrents';
 								$extra_options['filename'] = $filename;
+								$extra_options['autoTMM'] = 'false';	//关闭自动种子管理
 								break;
 							default:
 								# code...
