@@ -68,6 +68,12 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 
 经过上面步骤，其实已经完成了配置，只需要把脚本复制到设备内，用php命令运行脚本即可。
 
+群晖php命令：`php`
+
+威联通php命令：`/mnt/ext/opt/apache/bin/php`
+
+铁威马php命令：`php`
+
 ----------
 
 ## Windows安装PHP运行环境
