@@ -87,7 +87,7 @@ class Soulvoice implements decodeBase
      * @param string
      * @return array
      */
-    public static function run($url = 'torrents.php', $type = true)
+    public static function run($url = 'torrents.php', $autoStart = '0', $type = true)
     {
 		self::init();
 		Rpc::init(self::SITE, self::METHOD);
@@ -97,7 +97,7 @@ class Soulvoice implements decodeBase
 		}
 		$data = self::decode($html, $type);
 		#p($data);exit;
-		Rpc::call($data);
+		Rpc::call($data, $autoStart);
     }
 
     /**

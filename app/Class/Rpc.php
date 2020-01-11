@@ -131,7 +131,7 @@ class Rpc
 	 * @param string $save_path 保存路径
 	 * @return bool
 	 */
-    public static function add($torrent, $save_path = '', $extra_options = array())
+    public static function add($torrent, $save_path = '', $extra_options = array(), $autoStart = '0')
     {
 		switch( (int)self::$workingMode ){
 			case 0:		// watch默认工作模式
@@ -169,6 +169,9 @@ class Rpc
 								print "-----RPC添加种子任务，失败 [{$result->result}] \n\n";
 							}else{
 								print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n\n";
+                                if ($autoStart != '0'){
+                                self::$links[$rpcKey]['rpc']->start( $id );
+                                }
 								return true;
 							}
 							break;
@@ -244,7 +247,7 @@ class Rpc
 		)
 	 * @return
 	 */
-	public static function call($data = array())
+	public static function call($data = array() , $autoStart = '0')
 	{
 		foreach ($data as $key => $value) {
 			// 控制台打印
@@ -326,7 +329,7 @@ class Rpc
 								break;
 						}
 						// 种子文件添加下载任务
-						$ret = self::add($content, $to, $extra_options);
+						$ret = self::add($content, $to, $extra_options, $autoStart);
 						break;
 					case 2:
 						echo "\n\n";
