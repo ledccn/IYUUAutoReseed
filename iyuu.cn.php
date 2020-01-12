@@ -348,7 +348,6 @@ class iyuuAutoReseed
 		// 发起请求
 		echo "正在提交辅种信息…… \n";
 		$res = $curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
-
 		$resArray = json_decode($res->response, true);
 		// 写日志
 		if(true){
@@ -441,7 +440,6 @@ class iyuuAutoReseed
 							$_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
 							print "种子下载页：".$_url. "\n";
 							$url = download($_url, $cookie, $userAgent);
-							#$torrentArray = Bencode::decode($url);
 							break;
 						case 'hdcity':
 							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
@@ -453,6 +451,7 @@ class iyuuAutoReseed
 							$userAgent = $configALL['default']['userAgent'];
 							print "种子：".$_url. "\n";
 							if ( isset($configALL[$sites[$sitesID]['site']]['cuhash']) ) {
+								// 已获取cuhash
 								# code...
 							}else {
 								// 获取cuhash

@@ -147,32 +147,52 @@ class Rpc
 			case 1:		//负载均衡模式
 				try
 				{
-					$rpcKey = self::$RPC_Key;
-					$type = self::$links[$rpcKey]['type'];
-					echo '选中：负载均衡'.$rpcKey."\n";
-					if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) ){
-						echo 'add';
-						$result = self::$links[$rpcKey]['rpc']->add( $torrent, self::$links[$rpcKey]['downloadDir'], $extra_options );			// 种子URL添加下载任务
-					}else{
-						echo 'add_metainfo';
-						$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, self::$links[$rpcKey]['downloadDir'], $extra_options );	// 种子文件添加下载任务
+					$is_url = false;
+					if( (strpos($torrent,'http://')===0) || (strpos($torrent,'https://')===0) || (strpos($torrent,'magnet:?xt=urn:btih:')===0) ){
+						$is_url = true;
 					}
 					// 负载均衡
-					self::rpcSelect();
+					$rpcKey = self::$RPC_Key;
+					echo '选中：负载均衡'.$rpcKey."\n";
+					self::rpcSelect();					
 					// 调试
 					#p($result);
 					// 下载服务器类型 判断
+					$type = self::$links[$rpcKey]['type'];
 					switch($type){
 						case 'transmission':
-							$id = $result->arguments->torrent_added->id;
+							if( $is_url ){
+								echo 'add';
+								$result = self::$links[$rpcKey]['rpc']->add( $torrent, self::$links[$rpcKey]['downloadDir'], $extra_options );			// 种子URL添加下载任务
+							}else{
+								echo 'add_metainfo';
+								$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, self::$links[$rpcKey]['downloadDir'], $extra_options );	// 种子文件添加下载任务
+							}
+							$id = $name = '';
+							if( isset($result->arguments->torrent_duplicate) ){
+								$id = $result->arguments->torrent_duplicate->id;
+								$name = $result->arguments->torrent_duplicate->name;
+							}elseif( isset($result->arguments->torrent_added) ){
+								$id = $result->arguments->torrent_added->id;
+								$name = $result->arguments->torrent_added->name;
+							}
 							if(!$id){
 								print "-----RPC添加种子任务，失败 [{$result->result}] \n\n";
 							}else{
 								print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n\n";
+								// 新添加的任务，开始
+								self::$links[$rpcKey]['rpc']->start( $id );
 								return true;
 							}
 							break;
 						case 'qBittorrent':
+							if( $is_url ){
+								echo 'add';
+								$result = self::$links[$rpcKey]['rpc']->add( $torrent, self::$links[$rpcKey]['downloadDir'], $extra_options );			// 种子URL添加下载任务
+							}else{
+								echo 'add_metainfo';
+								$result = self::$links[$rpcKey]['rpc']->add_metainfo( $torrent, self::$links[$rpcKey]['downloadDir'], $extra_options );	// 种子文件添加下载任务
+							}
 							if ($result === 'Ok.') {
 								print "********RPC添加下载任务成功 [{$result}] \n\n";
 								return true;
