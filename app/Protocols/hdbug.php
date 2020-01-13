@@ -16,7 +16,7 @@ class hdbug implements decodeBase
      * 域名
      * @var string
      */
-    const domain = 'hdbug.best';
+    const domain = 'hddisk.life';
 	const HOST = 'https://'.self::domain.'/';
 	// 下载种子的请求类型
 	const METHOD = 'GET';
