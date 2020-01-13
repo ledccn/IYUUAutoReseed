@@ -576,7 +576,8 @@ function filterStatus( $v ){
  * qBittorrent过滤函数，只保留正常做种
  */
 function qbfilterStatus( $v ){
-	if( isset($v['status']) && in_array($v['state'], array('uploading','stalledUP','pausedUP','queuedUP','checkingUP','forcedUP')) ){
+	if( isset($v['state']) && in_array($v['state'], array('uploading','stalledUP','pausedUP','queuedUP','checkingUP','forcedUP')) ){
+		
 		return true;
 	}
 	return false;
