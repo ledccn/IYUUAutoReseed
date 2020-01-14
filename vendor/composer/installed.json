@@ -1,0 +1,119 @@
+[
+    {
+        "name": "curl/curl",
+        "version": "2.2.0",
+        "version_normalized": "2.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-mod/curl.git",
+            "reference": "d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-mod/curl/zipball/d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff",
+            "reference": "d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
+        },
+        "require": {
+            "ext-curl": "*",
+            "php": "^5.6 | ^7.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^5.7",
+            "squizlabs/php_codesniffer": "~2.1"
+        },
+        "time": "2018-12-04T19:47:03+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Curl": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Hassan Amouhzi",
+                "email": "hassan@anezi.net",
+                "homepage": "http://hassan.amouhzi.com"
+            },
+            {
+                "name": "php-curl-class",
+                "homepage": "https://github.com/php-curl-class"
+            },
+            {
+                "name": "user52",
+                "homepage": "https://github.com/user52"
+            }
+        ],
+        "description": "cURL class for PHP",
+        "homepage": "https://github.com/php-mod/curl",
+        "keywords": [
+            "curl",
+            "dot"
+        ]
+    },
+    {
+        "name": "owner888/phpspider",
+        "version": "v2.1.6",
+        "version_normalized": "2.1.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/owner888/phpspider.git",
+            "reference": "e6021148adec201418c16ba26f39bc013ba5b4d9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/owner888/phpspider/zipball/e6021148adec201418c16ba26f39bc013ba5b4d9",
+            "reference": "e6021148adec201418c16ba26f39bc013ba5b4d9",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
+        },
+        "require": {
+            "php": ">=5.5.0"
+        },
+        "suggest": {
+            "ext-pcntl、ext-redis": "For better performance. "
+        },
+        "time": "2018-08-15T08:04:29+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "phpspider\\": "./"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Seatle Yang",
+                "email": "seatle@foxmail.com",
+                "homepage": "http://www.phpspider.org",
+                "role": "Developer"
+            }
+        ],
+        "description": "The PHPSpider Framework.",
+        "homepage": "http://www.phpspider.org",
+        "keywords": [
+            "framework",
+            "phpspider"
+        ]
+    }
+]
