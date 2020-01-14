@@ -1,6 +1,6 @@
 <?php
 /**
- * IYUU自动辅种脚本
+ * IYUUAutoReseed自动辅种
  */
 use Curl\Curl;
 require_once __DIR__ . '/app/init.php';
@@ -13,7 +13,7 @@ if ( iyuuAutoReseed::$move != null ) {
 iyuuAutoReseed::call($hashArray);
 iyuuAutoReseed::wechatMessage();
 /**
- * iyuu自动辅种类
+ * IYUUAutoReseed自动辅种类
  */
 class iyuuAutoReseed
 {
@@ -22,23 +22,31 @@ class iyuuAutoReseed
      * @var string
      */
 	const VER = '0.1.0';
-	// RPC连接池
+	/**
+	 * RPC连接池
+	 * @var array
+	 */
 	public static $links = array();
 	/**
      * 客户端配置
+	 * @var array
      */
 	public static $clients = array();
 	/**
 	 * 不辅种的站点 'ourbits','hdchina'
+	 * @var array
 	 */
 	public static $noReseed = [];
 	/**
      * 缓存路径
+	 * @var string
      */
 	public static $cacheDir  = TORRENT_PATH.'cache'.DS;
 	public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
 	/**
      * API接口配置
+	 * @var string
+	 * @var array
      */
 	public static $apiUrl = 'http://iyuu.cn:2122';
 	public static $endpoints = array(
@@ -49,14 +57,17 @@ class iyuuAutoReseed
 	);
 	/**
      * 退出状态码
+	 * @var int
      */
 	public static $ExitCode = 0;
 	/**
 	 * 客户端转移做种 状态码[请把transmission配置为第一个客户端]
+	 * @var array
 	 */
 	public static $move = null;
 	/**
 	 * 微信消息体
+	 * @var array
 	 */
 	public static $wechatMsg = array(
 		'hashCount'			=>	0,		// 提交给服务器的hash总数
@@ -70,10 +81,10 @@ class iyuuAutoReseed
 	);
 	/**
      * 初始化
+	 * @return void
      */
 	public static function init(){
 		global $configALL;
-
 		self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
 		echo "程序正在初始化运行参数... \n";
 		// 递归删除上次历史记录
@@ -90,7 +101,7 @@ class iyuuAutoReseed
      * 连接远端RPC服务器
      *
      * @param string
-     * @return array
+     * @return bool
      */
     public static function links()
     {
@@ -135,6 +146,7 @@ class iyuuAutoReseed
 	}
 	/**
      * 从客户端获取种子的哈希列表
+	 * @var array
      */
 	public static function get(){
 		$hashArray = array();
