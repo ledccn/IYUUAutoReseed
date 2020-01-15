@@ -1,5 +1,6 @@
 <?php
 use Curl\Curl;
+
 /**
  * https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation
  */
@@ -35,7 +36,7 @@ class qBittorrent
             '1' => null,
             '2' => '/api/v2/app/setPreferences'
         ],
-		'defaultSavePath' => [
+        'defaultSavePath' => [
             '1' => null,
             '2' => '/api/v2/app/defaultSavePath'
         ],
@@ -72,7 +73,7 @@ class qBittorrent
     public function __construct($url='', $username='', $password='', $api_version = 2, $debug = false)
     {
         $this->debug = $debug;
-        $this->url = rtrim($url,'/');
+        $this->url = rtrim($url, '/');
         $this->username = $username;
         $this->password = $password;
         $this->api_version = $api_version;
@@ -130,29 +131,33 @@ class qBittorrent
      */
     public function add($torrent_url, $save_path = '', $extra_options = array())
     {
-		if(!empty($save_path)) $extra_options['savepath'] = $save_path;
+        if (!empty($save_path)) {
+            $extra_options['savepath'] = $save_path;
+        }
         $extra_options['urls'] = $torrent_url;
         #$extra_options['skip_checking'] = 'true';    //跳校验
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildUrls($extra_options);
         #p($post_data);
         // 设置请求头
-        $this->curl->setHeader('Content-Type','multipart/form-data; boundary='.$this->delimiter);
-        $this->curl->setHeader('Content-Length',strlen($post_data));
+        $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary='.$this->delimiter);
+        $this->curl->setHeader('Content-Length', strlen($post_data));
         return $this->postData('torrent_add', $post_data);
     }
 
-	public function add_metainfo($torrent_metainfo, $save_path = '', $extra_options = array())
+    public function add_metainfo($torrent_metainfo, $save_path = '', $extra_options = array())
     {
-		if(!empty($save_path)) $extra_options['savepath'] = $save_path;
+        if (!empty($save_path)) {
+            $extra_options['savepath'] = $save_path;
+        }
         $extra_options['torrents'] = $torrent_metainfo;
         #$extra_options['skip_checking'] = 'true';    //跳校验
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildData($extra_options);
         #p($post_data);
         // 设置请求头
-        $this->curl->setHeader('Content-Type','multipart/form-data; boundary='.$this->delimiter);
-        $this->curl->setHeader('Content-Length',strlen($post_data));
+        $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary='.$this->delimiter);
+        $this->curl->setHeader('Content-Length', strlen($post_data));
         return $this->postData('torrent_add', $post_data);
     }
 
@@ -250,7 +255,8 @@ class qBittorrent
      * 拼接种子urls multipart/form-data
      * https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#add-new-torrent
      */
-    private function buildUrls($param){
+    private function buildUrls($param)
+    {
         $this->delimiter = uniqid();
         $eol = "\r\n";
         $data = '';
@@ -267,7 +273,8 @@ class qBittorrent
      * 拼接种子上传文件流 multipart/form-data
      * https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#add-new-torrent
      */
-    private function buildData($param){
+    private function buildData($param)
+    {
         $this->delimiter = uniqid();
         $eol = "\r\n";
         $data = '';

@@ -29,7 +29,8 @@ define("UTORRENT_STATUS_STARTED", 1);
 define("UTORRENT_STATUS_CHECKED", 2);
 define("UTORRENT_STATUS_START_AFTER_CHECK", 4);
 
-class uTorrent {
+class uTorrent
+{
     // class static variables
     private static $base = "%s/gui/%s";
 
@@ -42,8 +43,9 @@ class uTorrent {
     protected $guid;
 
     // constructor
-    function __construct($host = "", $user = "", $pass = "") {
-        $this->host = rtrim($host,'/');
+    public function __construct($host = "", $user = "", $pass = "")
+    {
+        $this->host = rtrim($host, '/');
         $this->user = $user;
         $this->pass = $pass;
 
@@ -54,7 +56,8 @@ class uTorrent {
     }
 
     // performs request
-    private function makeRequest($request, $decode = true, $options = array()) {
+    private function makeRequest($request, $decode = true, $options = array())
+    {
         $request = preg_replace('/^\?/', '?token='.$this->token . '&', $request);
 
         $ch = curl_init();
@@ -71,12 +74,14 @@ class uTorrent {
     }
 
     // implodes given parameter with glue, whether it is an array or not
-    private function paramImplode($glue, $param) {
+    private function paramImplode($glue, $param)
+    {
         return $glue.implode($glue, is_array($param) ? $param : array($param));
     }
 
     // gets token, returns true on success
-    private function getToken() {
+    private function getToken()
+    {
         $url = sprintf(self::$base, $this->host, 'token.html');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -101,7 +106,8 @@ class uTorrent {
     }
 
     // returns the uTorrent build number
-    public function getBuild(){
+    public function getBuild()
+    {
         $json = $this->makeRequest("?");
         return $json['build'];
     }
@@ -109,13 +115,15 @@ class uTorrent {
     // returns an array of files for the specified torrent hash
     // TODO:
     //  - (when implemented in API) allow multiple hashes to be specified
-    public function getFiles($hash) {
+    public function getFiles($hash)
+    {
         $json = $this->makeRequest("?action=getfiles&hash=".$hash);
         return $json['files'];
     }
 
     // returns an array of all labels
-    public function getLabels(){
+    public function getLabels()
+    {
         $json = $this->makeRequest("?list=1");
         return $json['label'];
     }
@@ -123,19 +131,22 @@ class uTorrent {
     // returns an array of the properties for the specified torrent hash
     // TODO:
     //  - (when implemented in API) allow multiple hashes to be specified
-    public function getProperties($hash) {
+    public function getProperties($hash)
+    {
         $json = $this->makeRequest("?action=getprops&hash=".$hash);
         return $json['props'];
     }
 
     // returns an array of all settings
-    public function getSettings() {
+    public function getSettings()
+    {
         $json = $this->makeRequest("?action=getsettings");
         return $json['settings'];
     }
 
     // returns an array of all torrent jobs and related information
-    public function getTorrents() {
+    public function getTorrents()
+    {
         $json = $this->makeRequest("?list=1");
         return $json['torrents'];
     }
@@ -144,7 +155,8 @@ class uTorrent {
      * Get all the RSS favourites/filters
      * @return model\Filter[]
      */
-    public function getRSSFilters() {
+    public function getRSSFilters()
+    {
         $json = $this->makeRequest("?list=1");
         $filters = array();
         foreach ($json['rssfilters'] as $filter) {
@@ -157,7 +169,8 @@ class uTorrent {
      * Update an RSS filter as retrieved from getRSSFilters
      * @param \uTorrent\model\Filter $filter
      */
-    public function setRSSFilter(model\Filter $filter) {
+    public function setRSSFilter(model\Filter $filter)
+    {
         $request = array_merge(array('action' => 'filter-update'), $filter->toParams());
         return $this->makeRequest('?'.http_build_query($request));
     }
@@ -168,7 +181,8 @@ class uTorrent {
      * @param \uTorrent\model\Filter $filter
      * @return int ID of the new filter
      */
-    public function addRSSFilter(model\Filter $filter) {
+    public function addRSSFilter(model\Filter $filter)
+    {
         $filter->filterId = -1;
         $resp = $this->setRSSFilter($filter);
         if (!empty($resp['filter_ident'])) {
@@ -179,77 +193,90 @@ class uTorrent {
     }
 
     // returns true if WebUI server is online and enabled, false otherwise
-    public function is_online() {
+    public function is_online()
+    {
         return is_array($this->makeRequest("?"));
     }
 
     // sets the properties for the specified torrent hash
     // TODO:
     //  - allow multiple hashes, properties, and values to be set simultaneously
-    public function setProperties($hash, $property, $value) {
+    public function setProperties($hash, $property, $value)
+    {
         $this->makeRequest("?action=setprops&hash=".$hash."&s=".$property."&v=".$value, false);
     }
 
     // sets the priorities for the specified files in the specified torrent hash
-    public function setPriority($hash, $files, $priority) {
+    public function setPriority($hash, $files, $priority)
+    {
         $this->makeRequest("?action=setprio&hash=".$hash."&p=".$priority.$this->paramImplode("&f=", $files), false);
     }
 
     // sets the settings
     // TODO:
     //  - allow multiple settings and values to be set simultaneously
-    public function setSetting($setting, $value) {
+    public function setSetting($setting, $value)
+    {
         $this->makeRequest("?action=setsetting&s=".$setting."&v=".$value, false);
     }
 
     // add a file to the list
-    public function torrentAdd($filename, &$estring = false) {
+    public function torrentAdd($filename, &$estring = false)
+    {
         $split = explode(":", $filename, 2);
         if (count($split) > 1 && (stristr("|http|https|file|magnet|", "|".$split[0]."|") !== false)) {
             $this->makeRequest("?action=add-url&s=".urlencode($filename), false);
-        }
-        elseif (file_exists($filename)) {
+        } elseif (file_exists($filename)) {
             $json = $this->makeRequest("?action=add-file", true, array(CURLOPT_POSTFIELDS => array("torrent_file" => "@".realpath($filename))));
 
             if (isset($json['error'])) {
-                if ($estring !== false) $estring = $json['error'];
+                if ($estring !== false) {
+                    $estring = $json['error'];
+                }
                 return false;
             }
             return true;
-        }
-        else {
-            if ($estring !== false) $estring = "File doesn't exist!";
+        } else {
+            if ($estring !== false) {
+                $estring = "File doesn't exist!";
+            }
             return false;
         }
     }
 
     // force start the specified torrent hashes
-    public function torrentForceStart($hash) {
+    public function torrentForceStart($hash)
+    {
         $this->makeRequest("?action=forcestart".$this->paramImplode("&hash=", $hash), false);
     }
 
     // pause the specified torrent hashes
-    public function torrentPause($hash) {
+    public function torrentPause($hash)
+    {
         $this->makeRequest("?action=pause".$this->paramImplode("&hash=", $hash), false);
     }
 
     // recheck the specified torrent hashes
-    public function torrentRecheck($hash) {
+    public function torrentRecheck($hash)
+    {
         $this->makeRequest("?action=recheck".$this->paramImplode("&hash=", $hash), false);
     }
 
     // start the specified torrent hashes
-    public function torrentStart($hash) {
+    public function torrentStart($hash)
+    {
         $this->makeRequest("?action=start".$this->paramImplode("&hash=", $hash), false);
     }
 
     // stop the specified torrent hashes
-    public function torrentStop($hash) {
+    public function torrentStop($hash)
+    {
         $this->makeRequest("?action=stop".$this->paramImplode("&hash=", $hash), false);
     }
 
     // remove the specified torrent hashes (and data, if $data is set to true)
-    public function torrentRemove($hash, $data = false) {
+    public function torrentRemove($hash, $data = false)
+    {
         $this->makeRequest("?action=".($data ? "removedata" : "remove").$this->paramImplode("&hash=", $hash), false);
     }
 }
