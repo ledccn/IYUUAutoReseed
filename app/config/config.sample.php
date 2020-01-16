@@ -6,7 +6,7 @@
  * 手动配置方法，请查看：https://www.iyuu.cn/archives/324/
  */
 return array(
-	// 1.爱语飞飞 微信通知配置
+	// 1.【必须配置】爱语飞飞 微信通知，请访问https://iyuu.cn 用微信扫码申请
 	'iyuu.cn'		=> 'IYUU',
 	// 2.server酱 微信通知配置
 	'sc.ftqq.com'   => '',
@@ -16,29 +16,32 @@ return array(
     'default'      => array(
 		// 5.【必须配置】浏览器UA，打开http://demo.iyuu.cn 复制过来即可
 		'userAgent'     => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-		// 6.【自动辅种必须配置】全局客户端设置（条目不够可以复制，用不到的请删除）
+		// 6.【自动辅种必须配置】全局客户端设置（条目不够可以复制）
         'clients'   => array(
 			// 全局客户端设置 开始
+			# 开始
             array(
 				'type'	=>	'transmission',	// 支持：transmission、qBittorrent
 				'host'	=>	'http://127.0.0.1:9091/transmission/rpc',
 				'username'	=>	'',
 				'password'	=>	'',
-				//'move' =>array(
-				//	'type' => 2,		// 0保持不变，1减，2加， 3直接替换
-				//	'path' =>array(
-				//		'/sda1' => '/volume1',
-				//	),
-				//),
 			),
-			// （条目不够可以复制，用不到的请删除）
+			# 结束			
+			# 开始
 			array(
 				'type'	=>	'qBittorrent',	// 支持：transmission、qBittorrent
 				'host'	=>	'http://www.baidu.com:8083',
 				'username'	=>	'',
 				'password'	=>	'',
 			),
+			# 结束
 			// 全局客户端设置 结束
+		),
+		'move' =>array(
+			'type' => 2,		// 0保持不变，1减，2加， 3直接替换
+			'path' =>array(
+				'/sda1' => '/volume1',
+			),
 		),
 		'CONNECTTIMEOUT'=> 60,
         'TIMEOUT'       => 600,
@@ -174,9 +177,9 @@ return array(
 	),
 	// hdcity 序号：18
     'hdcity'      => array(
-		// 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+		// 必须配置
 		'cookie'        => '',
-		// 如果需要自动辅种，必须配置	cuhash
+		// 如果需要自动辅种，必须配置cuhash
         'passkey'       => '',
 	),
 	// 52pt.site 序号：19
@@ -237,7 +240,7 @@ return array(
 	),
 	// hdchina 序号：27
 	'hdchina'      => array(
-		// 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+		// 必须配置
 		'cookie'        => '',
 		// 如果需要自动辅种，必须配置
 		'passkey'       => '',
