@@ -22,7 +22,7 @@ return array(
 			# 开始
             array(
 				'type'	=>	'transmission',	// 支持：transmission、qBittorrent
-				'host'	=>	'http://127.0.0.1:9091/transmission/rpc',
+				'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
 				'username'	=>	'',
 				'password'	=>	'',
 			),
