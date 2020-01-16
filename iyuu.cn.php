@@ -436,6 +436,9 @@ class iyuuAutoReseed
 								self::$wechatMsg['reseedSkip']++;
 								break;
 							}
+							if ( isset($configALL[$sites[$sitesID]['site']]['limit']) ) {
+								echo "当前站点触发人机验证，已加入排除列表 \n";
+							}
 							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
 							$userAgent = $configALL['default']['userAgent'];
 							// 拼接URL
@@ -452,6 +455,12 @@ class iyuuAutoReseed
 							$_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
 							print "种子下载页：".$_url. "\n";
 							$url = download($_url, $cookie, $userAgent);
+							if(strpos($url,'系统检测到过多的种子下载请求') != false){
+								echo "触发人机验证 \n";
+								ff($sites[$sitesID]['site']. ' 触发人机验证，请重新设置！');
+								self::$noReseed[] = 'hdchina';
+								$configALL[$sites[$sitesID]['site']]['limit'] = 1;
+							}
 							break;
 						case 'hdcity':
 							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
