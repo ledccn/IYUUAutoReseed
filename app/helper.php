@@ -1,6 +1,9 @@
 <?php
 /**
  * 调试函数
+ * @param $data
+ * @param bool $echo
+ * @return string|null
  */
 function p($data, $echo=true)
 {
@@ -24,6 +27,9 @@ function p($data, $echo=true)
 
 /**
  * 微信推送Server酱
+ * @param string $text
+ * @param string $desp
+ * @return false|string
  */
 function sc($text='', $desp='')
 {
@@ -46,6 +52,9 @@ function sc($text='', $desp='')
 
 /**
  * 微信推送 爱语飞飞
+ * @param string $text
+ * @param string $desp
+ * @return false|string
  */
 function ff($text='', $desp='')
 {
@@ -68,30 +77,32 @@ function ff($text='', $desp='')
 
 /**
  * 微信推送 爱语飞飞
- * @param array  $torrent 种子数组
-Array
-(
-[id] => 118632
-[h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
-[title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
-[details] => https://xxx.me/details.php?id=118632
-[download] => https://xxx.me/download.php?id=118632
-[filename] => 118632.torrent
-[type] => 0
-[sticky] => 1
-[time] => Array
-(
-[0] => "2019-11-16 20:41:53">4时13分
-[1] => "2019-11-16 14:41:53">1时<br />46分
-)
-[comments] => 0
-[size] => 5232.64MB
-[seeders] => 69
-[leechers] => 10
-[completed] => 93
-[percentage] => 100%
-[owner] => 匿名
-)
+ * @param string $site
+ * @param array $torrent 种子数组
+ * Array
+ * (
+ * [id] => 118632
+ * [h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
+ * [title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
+ * [details] => https://xxx.me/details.php?id=118632
+ * [download] => https://xxx.me/download.php?id=118632
+ * [filename] => 118632.torrent
+ * [type] => 0
+ * [sticky] => 1
+ * [time] => Array
+ * (
+ * [0] => "2019-11-16 20:41:53">4时13分
+ * [1] => "2019-11-16 14:41:53">1时<br />46分
+ * )
+ * [comments] => 0
+ * [size] => 5232.64MB
+ * [seeders] => 69
+ * [leechers] => 10
+ * [completed] => 93
+ * [percentage] => 100%
+ * [owner] => 匿名
+ * )
+ * @return false|string
  */
 function send($site = '', $torrent = array())
 {
@@ -120,7 +131,9 @@ function send($site = '', $torrent = array())
 /**
  * @brief 下载种子
  * @param string $url 种子URL
- * @param string  $cookies 模拟登陆的cookie
+ * @param string $cookies 模拟登陆的cookie
+ * @param $useragent
+ * @param string $method
  * @return mixed 返回的数据
  */
 function download($url, $cookies, $useragent, $method = 'GET')

@@ -758,4 +758,12 @@ class TransmissionRPC implements AbstractClientInterface
         }
         return $this->session_id;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function status()
+    {
+        return $this->sstats();
+    }
 }

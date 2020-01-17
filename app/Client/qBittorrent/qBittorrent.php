@@ -295,4 +295,12 @@ class qBittorrent implements AbstractClientInterface
         $data .= "--" . $this->delimiter . "--" . $eol;
         return $data;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function status()
+    {
+        return $this->appVersion();
+    }
 }

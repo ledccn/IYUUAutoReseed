@@ -11,4 +11,11 @@ namespace IYUU\Client;
 interface AbstractClientInterface
 {
 
+    /**
+     * 查询Bittorrent客户端状态
+     *
+     * @return string
+     */
+    public function status();
+
 }

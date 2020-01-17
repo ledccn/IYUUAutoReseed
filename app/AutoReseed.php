@@ -5,6 +5,7 @@
 namespace IYUU;
 
 use Curl\Curl;
+use IYUU\Client\AbstractClientInterface;
 use IYUU\Client\qBittorrent\qBittorrent;
 use IYUU\Client\Transmission\TransmissionRPC;
 use IYUU\Library\IFile;
@@ -116,21 +117,22 @@ class AutoReseed
                 try {
                     switch ($v['type']) {
                         case 'transmission':
-                            self::$links[$k]['rpc'] = new TransmissionRPC($v['host'], $v['username'], $v['password']);
-                            $result = self::$links[$k]['rpc']->sstats();
-                            print $v['type'].'：'.$v['host']." Rpc连接 [{$result->result}] \n";
+                            $client = new TransmissionRPC($v['host'], $v['username'], $v['password']);
                             break;
                         case 'qBittorrent':
-                            self::$links[$k]['rpc'] = new qBittorrent($v['host'], $v['username'], $v['password']);
-                            $result = self::$links[$k]['rpc']->appVersion();
-                            print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
+                            $client = new qBittorrent($v['host'], $v['username'], $v['password']);
                             break;
                         default:
                             echo '[ERROR] '.$v['type'];
                             exit(1);
                             break;
                     }
+                    /** @var AbstractClientInterface $client */
                     self::$links[$k]['type'] = $v['type'];
+                    self::$links[$k]['rpc'] = $client;
+                    $result = $client->status();
+
+                    print $v['type'].'：'.$v['host']." Rpc连接 [{$result->result}] \n";
                     // 检查是否转移种子的做种客户端？
                     if (isset($v['move']) && $v['move']) {
                         self::$move = array($k,$v['type']);
