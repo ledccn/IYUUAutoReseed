@@ -33,8 +33,8 @@ use IYUU\Client\AbstractClientInterface;
 /**
  * A friendly little version check...
  */
-if (version_compare(PHP_VERSION, TransmissionRPC::MIN_PHPVER, '<')) {
-    die("The TransmissionRPC class requires PHP version {TransmissionRPC::TRANSMISSIONRPC_MIN_PHPVER} or above." . PHP_EOL);
+if (version_compare(PHP_VERSION, '5.2.10', '<')) {
+    die("The TransmissionRPC class requires PHP version 5.2.10 or above." . PHP_EOL);
 }
 
 /**
@@ -764,6 +764,6 @@ class TransmissionRPC implements AbstractClientInterface
      */
     public function status()
     {
-        return $this->sstats();
+        return isset($this->sstats()->result) ? $this->sstats()->result : 'error';
     }
 }
