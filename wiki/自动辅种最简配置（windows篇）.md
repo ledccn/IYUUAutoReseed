@@ -1,4 +1,4 @@
-以下教程以windows为基础进行讲解，其他系统同理。
+以下教程以windows为基础进行讲解，通用威联通、群晖、铁威马等Linux系统。
 博客链接：https://www.iyuu.cn/archives/324/
 ## 第一步 下载压缩包
 从[码云仓库][1]，下载最新源码，解压缩到D盘的根目录下。
@@ -49,7 +49,7 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 ![微信通知1.png][6]
 ![微信通知2.png][7]
 ![微信通知3.png][8]
-2.复制您的token令牌到`/app/config/config.php`文件内的`iyuu.cn`对应的配置字段，保存。如图：
+2.复制您的token令牌到`/config/config.php`文件内的`iyuu.cn`对应的配置字段，保存。如图：
 ![微信通知4.png][9]
 
 ### 设置Ourbits：
