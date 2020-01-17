@@ -4,5 +4,6 @@
 /*.bat
 /*.sh
 /vendor
+/wiki
 .idea
 .php_cs.cache
