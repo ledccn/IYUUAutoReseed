@@ -266,7 +266,7 @@ class qBittorrent implements AbstractClientInterface
         // 拼接文件流
         foreach ($param as $name => $content) {
             $data .= "--" . $this->delimiter . $eol;
-            $data .= 'Content-Disposition: form-data; name' . '="' .$name. '"' . "\r\n\r\n";
+            $data .= 'Content-Disposition: form-data; name="' .$name. '"' . $eol . $eol;
             $data .= $content . $eol;
         }
         $data .= "--" . $this->delimiter . "--" . $eol;
@@ -281,17 +281,21 @@ class qBittorrent implements AbstractClientInterface
         $this->delimiter = uniqid();
         $eol = "\r\n";
         $data = '';
-        $torrents = $param['torrents'];
-        unset($param['torrents']);
         // 拼接文件流
-        $data .= "--" . $this->delimiter . $eol
-        . 'Content-Disposition: form-data; ';
-        foreach ($param as $name => $content) {
-            $data.= $name . '="' . $content.'"; ';
-        }
-        $data .= $eol;
-        $data .= 'Content-Type: application/x-bittorrent'."\r\n\r\n";
-        $data .= $torrents . $eol;
+        $data .= "--" . $this->delimiter . $eol;
+        $data .= 'Content-Disposition: form-data; name="' .$param['name']. '"; filename="'.$param['filename'].'"' . $eol;
+        $data .= 'Content-Type: application/x-bittorrent' . $eol . $eol;
+        $data .= $param['torrents'] . $eol;
+        unset($param['name']);
+        unset($param['filename']);
+        unset($param['torrents']);
+        if (!empty($param)) {
+            foreach ($param as $name => $content) {
+                $data .= "--" . $this->delimiter . $eol;
+                $data .= 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol;
+                $data .= $content . $eol;
+            }
+        }        
         $data .= "--" . $this->delimiter . "--" . $eol;
         return $data;
     }

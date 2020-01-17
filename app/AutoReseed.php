@@ -291,10 +291,10 @@ class AutoReseed
                         }
                     }
                     break;
-                case 'qBittorrent':                    
-                    if ($is_url) {
-                        $extra_options['paused'] = 'true';
-                        $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
+                case 'qBittorrent': 
+                    $extra_options['paused'] = 'true';
+                    $extra_options['autoTMM'] = 'false';	//关闭自动种子管理                   
+                    if ($is_url) {                        
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
                         $extra_options['name'] = 'torrents';
