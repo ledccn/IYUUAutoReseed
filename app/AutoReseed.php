@@ -20,17 +20,17 @@ class AutoReseed
      * 版本号
      * @var string
      */
-    const VER = '20191224.1010';
+    const VER = '0.2.0';
     /**
      * RPC连接池
      * @var array
      */
-    public static $links = array();
+    public static $links = [];
     /**
      * 客户端配置
      * @var array
      */
-    public static $clients = array();
+    public static $clients = [];
     /**
      * 不辅种的站点 'ourbits','hdchina'
      * @var array
@@ -206,7 +206,6 @@ class AutoReseed
                             echo "未获取到需要辅种的数据，请多多保种，然后重试！ \n";
                             break;
                         }
-                        #p($res);exit;
                         // 过滤，只保留正常做种
                         $res = array_filter($res, "qbfilterStatus");
                         // 提取数组：hashString
@@ -453,19 +452,13 @@ class AutoReseed
 						case 'ttg':
 							$url = $_url."/". $configALL[$sites[$sitesID]['site']]['passkey'];
 							break;
-						case 'm-team':
+                        case 'm-team':
+                        case 'moecat':
 							$ip_type = '';
 							if (isset($configALL[$sites[$sitesID]['site']]['ip_type'])) {
 								$ip_type = $configALL[$sites[$sitesID]['site']]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
 							}
-							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
-							break;
-						case 'moecat':
-							$ip_type = '';
-							if (isset($configALL[$sites[$sitesID]['site']]['ip_type'])) {
-								$ip_type = $configALL[$sites[$sitesID]['site']]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
-							}
-							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
+							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";
 							break;
 						default:
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
@@ -501,7 +494,7 @@ class AutoReseed
 								$url = download($_url, $cookie, $userAgent);
 								if(strpos($url,'系统检测到过多的种子下载请求') != false){
 									echo "当前站点触发人机验证，已加入排除列表 \n";
-									ff($sites[$sitesID]['site']. ' 触发人机验证，请重新设置！');
+									ff($sites[$sitesID]['site']. '站点，辅种时触发人机验证！');
 									$configALL[$sites[$sitesID]['site']]['limit'] = 1;
 									self::$noReseed[] = 'hdchina';
 								}
@@ -536,7 +529,17 @@ class AutoReseed
 						$ret = self::add($k, $url, $downloadDir);
 						// 添加成功的种子，以infohash为文件名，写入缓存
 						if ($ret) {
-							// 成功的种子
+                            // 成功的种子
+                            switch ($sites[$sitesID]['site']) {
+								case 'hdchina':
+									$url = $details_url;
+                                    break;
+                                case 'hdcity':
+                                    $url = $_url;
+                                    break;
+								default:
+									break;
+							}
 							// 文件句柄
 							$resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
 							// 成功：返回写入字节数，失败返回false

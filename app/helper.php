@@ -80,28 +80,28 @@ function ff($text='', $desp='')
  * @param string $site
  * @param array $torrent 种子数组
  * Array
- * (
- * [id] => 118632
- * [h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
- * [title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
- * [details] => https://xxx.me/details.php?id=118632
- * [download] => https://xxx.me/download.php?id=118632
- * [filename] => 118632.torrent
- * [type] => 0
- * [sticky] => 1
- * [time] => Array
- * (
- * [0] => "2019-11-16 20:41:53">4时13分
- * [1] => "2019-11-16 14:41:53">1时<br />46分
- * )
- * [comments] => 0
- * [size] => 5232.64MB
- * [seeders] => 69
- * [leechers] => 10
- * [completed] => 93
- * [percentage] => 100%
- * [owner] => 匿名
- * )
+    (
+        [id] => 118632
+        [h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
+        [title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
+        [details] => https://xxx.me/details.php?id=118632
+        [download] => https://xxx.me/download.php?id=118632
+        [filename] => 118632.torrent
+        [type] => 0
+        [sticky] => 1
+        [time] => Array
+            (
+                [0] => "2019-11-16 20:41:53">4时13分
+                [1] => "2019-11-16 14:41:53">1时<br />46分
+            )
+        [comments] => 0
+        [size] => 5232.64MB
+        [seeders] => 69
+        [leechers] => 10
+        [completed] => 93
+        [percentage] => 100%
+        [owner] => 匿名
+    )
  * @return false|string
  */
 function send($site = '', $torrent = array())
@@ -197,28 +197,28 @@ function convertToMB($from)
  * @param string $site 站点标识
  * @param array  $torrent 种子数组
  * 	Array
-(
-[id] => 118632
-[h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
-[title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
-[details] => https://xxx.me/details.php?id=118632
-[download] => https://xxx.me/download.php?id=118632
-[filename] => 118632.torrent
-[type] => 0
-[sticky] => 1
-[time] => Array
-(
-[0] => "2019-11-16 20:41:53">4时13分
-[1] => "2019-11-16 14:41:53">1时<br />46分
-)
-[comments] => 0
-[size] => 5232.64MB
-[seeders] => 69
-[leechers] => 10
-[completed] => 93
-[percentage] => 100%
-[owner] => 匿名
-)
+    (
+        [id] => 118632
+        [h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
+        [title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
+        [details] => https://xxx.me/details.php?id=118632
+        [download] => https://xxx.me/download.php?id=118632
+        [filename] => 118632.torrent
+        [type] => 0
+        [sticky] => 1
+        [time] => Array
+        (
+        [0] => "2019-11-16 20:41:53">4时13分
+        [1] => "2019-11-16 14:41:53">1时<br />46分
+        )
+        [comments] => 0
+        [size] => 5232.64MB
+        [seeders] => 69
+        [leechers] => 10
+        [completed] => 93
+        [percentage] => 100%
+        [owner] => 匿名
+    )
  * @return bool 或 string 	false不过滤
  */
 function filter($site = '', $torrent = array())
