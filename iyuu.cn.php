@@ -430,54 +430,6 @@ class iyuuAutoReseed
 							}
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";						
 							break;
-						case 'hdchina':
-							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
-								echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
-								self::$wechatMsg['reseedSkip']++;
-								break;
-							}
-							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
-							$userAgent = $configALL['default']['userAgent'];
-							// 拼接URL
-							$details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
-							$details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
-							$details_html = download($details_url, $cookie, $userAgent);
-							print "种子详情页：".$details_url. "\n";
-							// 提取种子下载地址
-							$download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
-							$offset = strpos($details_html, $download_page);
-							$urlTemp = substr($details_html, $offset, 50);
-							// 种子地址
-							$_url = substr($urlTemp,0,strpos($urlTemp,'">'));
-							$_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
-							print "种子下载页：".$_url. "\n";
-							$url = download($_url, $cookie, $userAgent);
-							break;
-						case 'hdcity':
-							if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
-								echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
-								self::$wechatMsg['reseedSkip']++;
-								break;
-							}
-							$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
-							$userAgent = $configALL['default']['userAgent'];
-							print "种子：".$_url. "\n";
-							if ( isset($configALL[$sites[$sitesID]['site']]['cuhash']) ) {
-								// 已获取cuhash
-								# code...
-							}else {
-								// 获取cuhash
-								$html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
-								// 提取种子下载地址
-								$offset = strpos($html,'cuhash=');
-								$len = strlen('cuhash=');
-								$cuhashTemp = substr($html,$offset+$len,40);
-								$configALL[$sites[$sitesID]['site']]['cuhash'] = substr($cuhashTemp,0,strpos($cuhashTemp,'"'));
-							}
-							$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['cuhash'];
-							// 城市下载种子时会302转向
-							$url = download($url, $cookie, $userAgent);
-							break;
 						default:
 							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
 							break;
@@ -502,6 +454,68 @@ class iyuuAutoReseed
 								echo '-------当前种子上次辅种已成功添加，已跳过！'.$_url."\n\n";
 								self::$wechatMsg['reseedPass']++;
 								continue;
+							}
+							// 种子元数据获取
+							switch ($sites[$sitesID]['site']) {
+								case 'hdchina':
+									if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
+										echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
+										self::$wechatMsg['reseedSkip']++;
+										break;
+									}
+									if ( isset($configALL[$sites[$sitesID]['site']]['limit']) ) {
+										echo "当前站点触发人机验证，已加入排除列表 \n";
+									}
+									$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
+									$userAgent = $configALL['default']['userAgent'];
+									// 拼接URL
+									$details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
+									$details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+									$details_html = download($details_url, $cookie, $userAgent);
+									print "种子详情页：".$details_url. "\n";
+									// 提取种子下载地址
+									$download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
+									$offset = strpos($details_html, $download_page);
+									$urlTemp = substr($details_html, $offset, 50);
+									// 种子地址
+									$_url = substr($urlTemp,0,strpos($urlTemp,'">'));
+									$_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
+									print "种子下载页：".$_url. "\n";
+									$url = download($_url, $cookie, $userAgent);
+									if(strpos($url,'系统检测到过多的种子下载请求') != false){
+										echo "触发人机验证 \n";
+										ff($sites[$sitesID]['site']. ' 触发人机验证，请重新设置！');
+										self::$noReseed[] = 'hdchina';
+										$configALL[$sites[$sitesID]['site']]['limit'] = 1;
+									}
+									break;
+								case 'hdcity':
+									if ( empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
+										echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
+										self::$wechatMsg['reseedSkip']++;
+										break;
+									}
+									$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
+									$userAgent = $configALL['default']['userAgent'];
+									print "种子：".$_url. "\n";
+									if ( isset($configALL[$sites[$sitesID]['site']]['cuhash']) ) {
+										// 已获取cuhash
+										# code...
+									}else {
+										// 获取cuhash
+										$html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
+										// 提取种子下载地址
+										$offset = strpos($html,'cuhash=');
+										$len = strlen('cuhash=');
+										$cuhashTemp = substr($html,$offset+$len,40);
+										$configALL[$sites[$sitesID]['site']]['cuhash'] = substr($cuhashTemp,0,strpos($cuhashTemp,'"'));
+									}
+									$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['cuhash'];
+									// 城市下载种子时会302转向
+									$url = download($url, $cookie, $userAgent);
+									break;
+								default:
+									break;
 							}
 							// 把拼接的种子URL，推送给下载器
 							$ret = false;
