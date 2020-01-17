@@ -1,5 +1,8 @@
-/app/torrent
-/app/config/config.php
+/torrent
+/config/config.php
 /php-7.2.12-nts
 /*.bat
 /*.sh
+/vendor
+.idea
+.php_cs.cache

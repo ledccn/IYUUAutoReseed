@@ -1,10 +1,15 @@
 {
-    "require": {
-        "owner888/phpspider": "^2.1",
-        "curl/curl": "^2.2"
+  "require": {
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "owner888/phpspider": "^2.1",
+    "curl/curl": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "IYUU\\": "app/"
     },
-    "autoload": {
-        "classmap":["app/Class"],
-        "files": ["app/Class/Function.php"]
-    }
+    "files": ["app/helper.php"]
+  }
 }
