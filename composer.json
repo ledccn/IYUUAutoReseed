@@ -5,6 +5,6 @@
     },
     "autoload": {
         "classmap":["app/Class"],
-        "files": ["app/Class/Function.php"]
+        "files": ["app/helper.php"]
     }
 }

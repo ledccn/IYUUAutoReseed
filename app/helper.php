@@ -31,14 +31,14 @@ function sc($text='', $desp='')
     $token = $configALL['sc.ftqq.com'];
     $desp = ($desp=='')?date("Y-m-d H:i:s") :$desp;
     $postdata = http_build_query(array(
-            'text' => $text,
-            'desp' => $desp
-        ));
+        'text' => $text,
+        'desp' => $desp
+    ));
     $opts = array('http' =>	array(
-            'method'  => 'POST',
-            'header'  => 'Content-type: application/x-www-form-urlencoded',
-            'content' => $postdata
-        ));
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+    ));
     $context  = stream_context_create($opts);
     $result = file_get_contents('http://sc.ftqq.com/'.$token.'.send', false, $context);
     return  $result;
@@ -53,14 +53,14 @@ function ff($text='', $desp='')
     $token = $configALL['iyuu.cn'];
     $desp = ($desp=='')?date("Y-m-d H:i:s") :$desp;
     $postdata = http_build_query(array(
-            'text' => $text,
-            'desp' => $desp
-        ));
+        'text' => $text,
+        'desp' => $desp
+    ));
     $opts = array('http' =>	array(
-            'method'  => 'POST',
-            'header'  => 'Content-type: application/x-www-form-urlencoded',
-            'content' => $postdata
-        ));
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+    ));
     $context  = stream_context_create($opts);
     $result = file_get_contents('http://iyuu.cn/'.$token.'.send', false, $context);
     return  $result;
@@ -69,29 +69,29 @@ function ff($text='', $desp='')
 /**
  * 微信推送 爱语飞飞
  * @param array  $torrent 种子数组
-        Array
-        (
-            [id] => 118632
-            [h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
-            [title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
-            [details] => https://xxx.me/details.php?id=118632
-            [download] => https://xxx.me/download.php?id=118632
-            [filename] => 118632.torrent
-            [type] => 0
-            [sticky] => 1
-            [time] => Array
-                (
-                    [0] => "2019-11-16 20:41:53">4时13分
-                    [1] => "2019-11-16 14:41:53">1时<br />46分
-                )
-            [comments] => 0
-            [size] => 5232.64MB
-            [seeders] => 69
-            [leechers] => 10
-            [completed] => 93
-            [percentage] => 100%
-            [owner] => 匿名
-        )
+Array
+(
+[id] => 118632
+[h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
+[title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
+[details] => https://xxx.me/details.php?id=118632
+[download] => https://xxx.me/download.php?id=118632
+[filename] => 118632.torrent
+[type] => 0
+[sticky] => 1
+[time] => Array
+(
+[0] => "2019-11-16 20:41:53">4时13分
+[1] => "2019-11-16 14:41:53">1时<br />46分
+)
+[comments] => 0
+[size] => 5232.64MB
+[seeders] => 69
+[leechers] => 10
+[completed] => 93
+[percentage] => 100%
+[owner] => 匿名
+)
  */
 function send($site = '', $torrent = array())
 {
@@ -184,28 +184,28 @@ function convertToMB($from)
  * @param string $site 站点标识
  * @param array  $torrent 种子数组
  * 	Array
-    (
-        [id] => 118632
-        [h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
-        [title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
-        [details] => https://xxx.me/details.php?id=118632
-        [download] => https://xxx.me/download.php?id=118632
-        [filename] => 118632.torrent
-        [type] => 0
-        [sticky] => 1
-        [time] => Array
-            (
-                [0] => "2019-11-16 20:41:53">4时13分
-                [1] => "2019-11-16 14:41:53">1时<br />46分
-            )
-        [comments] => 0
-        [size] => 5232.64MB
-        [seeders] => 69
-        [leechers] => 10
-        [completed] => 93
-        [percentage] => 100%
-        [owner] => 匿名
-    )
+(
+[id] => 118632
+[h1] => CCTV5+ 2019 ATP Men's Tennis Final 20191115B HDTV 1080i H264-HDSTV
+[title] => 央视体育赛事频道 2019年ATP男子网球年终总决赛 单打小组赛 纳达尔VS西西帕斯 20191115[优惠剩余时间：4时13分]
+[details] => https://xxx.me/details.php?id=118632
+[download] => https://xxx.me/download.php?id=118632
+[filename] => 118632.torrent
+[type] => 0
+[sticky] => 1
+[time] => Array
+(
+[0] => "2019-11-16 20:41:53">4时13分
+[1] => "2019-11-16 14:41:53">1时<br />46分
+)
+[comments] => 0
+[size] => 5232.64MB
+[seeders] => 69
+[leechers] => 10
+[completed] => 93
+[percentage] => 100%
+[owner] => 匿名
+)
  * @return bool 或 string 	false不过滤
  */
 function filter($site = '', $torrent = array())
@@ -315,4 +315,42 @@ function getUid($token)
 {
     //验证是否IYUU开头，strpos($token,'T')<15,token总长度小于60(40+10+5)
     return (strlen($token)<60)&&(strpos($token, 'IYUU')===0)&&(strpos($token, 'T')<15) ? substr($token, 4, strpos($token, 'T')-4): false;
+}
+
+/**
+ * transmission过滤函数，只保留正常做种
+ */
+function filterStatus($v)
+{
+    return isset($v['status']) && $v['status']===6;
+}
+
+/**
+ * qBittorrent过滤函数，只保留正常做种
+ */
+function qbfilterStatus($v)
+{
+    if (isset($v['state']) && in_array($v['state'], array('uploading','stalledUP','pausedUP','queuedUP','checkingUP','forcedUP'))) {
+        return true;
+    }
+    return false;
+}
+
+//PHP stdClass Object转array
+function object_array($array)
+{
+    if (is_object($array)) {
+        $array = (array)$array;
+    }
+    if (is_array($array)) {
+        foreach ($array as $key=>$value) {
+            $array[$key] = object_array($value);
+        }
+    }
+    return $array;
+}
+// 对象转数组
+function object2array(&$object)
+{
+    return json_decode(json_encode($object), true);
 }
