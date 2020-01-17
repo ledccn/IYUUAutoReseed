@@ -26,6 +26,10 @@
  * PHP Class support (PHP 5) (PHP 4 might work, untested)
  */
 
+namespace IYUU\Client\Transmission;
+
+use IYUU\Client\AbstractClientInterface;
+
 /**
  * A friendly little version check...
  */
@@ -43,7 +47,7 @@ if (version_compare(PHP_VERSION, TransmissionRPC::MIN_PHPVER, '<')) {
  * </code>
  *
  */
-class TransmissionRPC
+class TransmissionRPC implements AbstractClientInterface
 {
     /**
      * User agent used in all http communication
@@ -580,7 +584,7 @@ class TransmissionRPC
     /**
      * 执行 rpc 请求
      *
-     * @param $method 请求类型/方法, 详见 $this->allowMethods
+     * @param string $method 请求类型/方法, 详见 $this->allowMethods
      * @param array $arguments 附加参数, 可选
      * @return mixed
      */
@@ -725,44 +729,5 @@ class TransmissionRPC
     
         // Reset X-Transmission-Session-Id so we (re)fetch one
         $this->session_id = null;
-    }
-}
-
-/**
- * This is the type of exception the TransmissionRPC class will throw
- */
-class TransmissionRPCException extends Exception
-{
-    /**
-     * Exception: Invalid arguments
-     */
-    const E_INVALIDARG = -1;
-
-    /**
-     * Exception: Invalid Session-Id
-     */
-    const E_SESSIONID = -2;
-
-    /**
-     * Exception: Error while connecting
-     */
-    const E_CONNECTION = -3;
-
-    /**
-     * Exception: Error 401 returned, unauthorized
-     */
-    const E_AUTHENTICATION = -4;
-
-    /**
-     * Exception constructor
-     */
-    public function __construct($message = null, $code = 0, Exception $previous = null)
-    {
-        // PHP version 5.3.0 and above support Exception linking
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            parent::__construct($message, $code, $previous);
-        } else {
-            parent::__construct($message, $code);
-        }
     }
 }

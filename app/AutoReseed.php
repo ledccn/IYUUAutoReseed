@@ -2,27 +2,22 @@
 /**
  * IYUUAutoReseed自动辅种
  */
-use Curl\Curl;
+namespace IYUU;
 
-require_once __DIR__ . '/app/init.php';
-iyuuAutoReseed::init();
-$hashArray = iyuuAutoReseed::get();
-if (iyuuAutoReseed::$move != null) {
-    echo "种子移动完毕，请重新编辑配置，再尝试辅种！ \n\n";
-    exit;
-}
-iyuuAutoReseed::call($hashArray);
-iyuuAutoReseed::wechatMessage();
+use Curl\Curl;
+use IYUU\Library\IFile;
+use IYUU\Library\Oauth;
+
 /**
  * IYUUAutoReseed自动辅种类
  */
-class iyuuAutoReseed
+class AutoReseed
 {
     /**
      * 版本号
      * @var string
      */
-    const VER = '0.1.0';
+    const VER = '20191224.1010';
     /**
      * RPC连接池
      * @var array
@@ -591,41 +586,4 @@ class iyuuAutoReseed
         $desp .= '忽略：'.self::$wechatMsg['reseedPass']. '  [成功添加存在缓存]' .$br;
         return ff($text, $desp);
     }
-}
-
-/**
- * transmission过滤函数，只保留正常做种
- */
-function filterStatus($v)
-{
-    return isset($v['status']) && $v['status']===6;
-}
-
-/**
- * qBittorrent过滤函数，只保留正常做种
- */
-function qbfilterStatus($v)
-{
-    if (isset($v['state']) && in_array($v['state'], array('uploading','stalledUP','pausedUP','queuedUP','checkingUP','forcedUP'))) {
-        return true;
-    }
-    return false;
-}
-//PHP stdClass Object转array
-function object_array($array)
-{
-    if (is_object($array)) {
-        $array = (array)$array;
-    }
-    if (is_array($array)) {
-        foreach ($array as $key=>$value) {
-            $array[$key] = object_array($value);
-        }
-    }
-    return $array;
-}
-// 对象转数组
-function object2array(&$object)
-{
-    return json_decode(json_encode($object), true);
 }

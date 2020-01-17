@@ -4,7 +4,9 @@
         "curl/curl": "^2.2"
     },
     "autoload": {
-        "classmap":["app/Class"],
+        "psr-4": {
+            "IYUU\\": "app/"
+        },
         "files": ["app/helper.php"]
     }
 }

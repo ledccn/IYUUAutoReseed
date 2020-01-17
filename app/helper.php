@@ -273,51 +273,6 @@ function filter($site = '', $torrent = array())
 }
 
 /**
- * 奇数
- */
-function oddFilter($var)
-{
-    // 返回$var最后一个二进制位，
-    // 为1则保留（奇数的二进制的最后一位肯定是1）
-    return($var & 1);
-}
-
-/**
- * 偶数
- */
-function evenFilter($var)
-{
-    // 返回$var最后一个二进制位，
-    // 为0则保留（偶数的二进制的最后一位肯定是0）
-    return(!($var & 1));
-}
-
-/**
- * 发布员签名
- * 注意：同时配置iyuu.cn与secret时，优先使用secret。
- */
-function sign($timestamp)
-{
-    global $configALL;
-    // 爱语飞飞
-    $token = isset($configALL['iyuu.cn']) && $configALL['iyuu.cn'] ? $configALL['iyuu.cn'] : '';
-    // 鉴权
-    $token = isset($configALL['secret']) && $configALL['secret'] ? $configALL['secret'] : $token;
-    return sha1($timestamp . $token);
-}
-
-/**
- * @brief 分离token中的用户uid
- * token算法：IYUU + uid + T + sha1(openid+time+盐)
- * @param string $token		用户请求token
- */
-function getUid($token)
-{
-    //验证是否IYUU开头，strpos($token,'T')<15,token总长度小于60(40+10+5)
-    return (strlen($token)<60)&&(strpos($token, 'IYUU')===0)&&(strpos($token, 'T')<15) ? substr($token, 4, strpos($token, 'T')-4): false;
-}
-
-/**
  * transmission过滤函数，只保留正常做种
  */
 function filterStatus($v)
@@ -348,9 +303,4 @@ function object_array($array)
         }
     }
     return $array;
-}
-// 对象转数组
-function object2array(&$object)
-{
-    return json_decode(json_encode($object), true);
 }

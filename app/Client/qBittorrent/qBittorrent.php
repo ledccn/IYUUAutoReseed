@@ -1,10 +1,13 @@
 <?php
+namespace IYUU\Client\qBittorrent;
+
 use Curl\Curl;
+use IYUU\Client\AbstractClientInterface;
 
 /**
  * https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation
  */
-class qBittorrent
+class qBittorrent implements AbstractClientInterface
 {
     private $debug;
     private $url;

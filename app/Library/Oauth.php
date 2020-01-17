@@ -2,6 +2,8 @@
 /**
  * IYUU用户注册、认证
  */
+namespace IYUU\Library;
+
 use Curl\Curl;
 
 class Oauth

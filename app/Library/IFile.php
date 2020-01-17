@@ -4,6 +4,8 @@
  * @version 0.6
  */
 
+namespace IYUU\Library;
+
 /**
  * @class IFile
  * @brief IFile 文件处理类
