@@ -10,4 +10,5 @@ namespace IYUU\Client;
 
 interface AbstractClientInterface
 {
+
 }

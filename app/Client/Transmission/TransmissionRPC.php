@@ -132,9 +132,39 @@ class TransmissionRPC implements AbstractClientInterface
     const RPC_LT_14_TR_STATUS_STOPPED = 16;
 
     /**
+     * Takes the connection parameters
+     *
+     * TODO: Sanitize username, password, and URL
+     *
+     * @param string $url
+     * @param string $username
+     * @param string $password
+     */
+    public function __construct($url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null, $return_as_array = false)
+    {
+        // server URL
+        $this->url = $url;
+
+        // Username & password
+        $this->username = $username;
+        $this->password = $password;
+
+        // Get the Transmission RPC_version
+        $this->rpc_version = self::sget()->arguments->rpc_version;
+
+        // Return As Array
+        $this->return_as_array = $return_as_array;
+
+        // Reset X-Transmission-Session-Id so we (re)fetch one
+        $this->session_id = null;
+    }
+
+    /**
      * Start one or more torrents
      *
      * @param int|array ids A list of transmission torrent ids
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function start($ids)
     {
@@ -149,6 +179,8 @@ class TransmissionRPC implements AbstractClientInterface
      * Stop one or more torrents
      *
      * @param int|array ids A list of transmission torrent ids
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function stop($ids)
     {
@@ -163,6 +195,8 @@ class TransmissionRPC implements AbstractClientInterface
      * Reannounce one or more torrents
      *
      * @param int|array ids A list of transmission torrent ids
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function reannounce($ids)
     {
@@ -177,6 +211,8 @@ class TransmissionRPC implements AbstractClientInterface
      * Verify one or more torrents
      *
      * @param int|array ids A list of transmission torrent ids
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function verify($ids)
     {
@@ -225,6 +261,8 @@ class TransmissionRPC implements AbstractClientInterface
      * "result": "success",
      * "tag": 39693
      * }
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function get($ids = array(), $fields = array())
     {
@@ -263,6 +301,8 @@ class TransmissionRPC implements AbstractClientInterface
      *
      * @param array arguments An associative array of arguments to set
      * @param int|array ids A list of transmission torrent ids
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function set($ids = array(), $arguments = array())
     {
@@ -345,6 +385,8 @@ class TransmissionRPC implements AbstractClientInterface
      *
      * @param bool delete_local_data Also remove local data?
      * @param int|array ids A list of transmission torrent ids
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function remove($ids, $delete_local_data = false)
     {
@@ -364,6 +406,8 @@ class TransmissionRPC implements AbstractClientInterface
      * @param int|array ids A list of transmission torrent ids
      * @param string target_location The new storage location
      * @param string move_existing_data Move existing data or scan new location for available data
+     * @return mixed
+     * @throws TransmissionRPCException
      */
     public function move($ids, $target_location, $move_existing_data = true)
     {
@@ -653,6 +697,7 @@ class TransmissionRPC implements AbstractClientInterface
      * and store it in $this->session_id
      *
      * @return string
+     * @throws TransmissionRPCException
      */
     public function GetSessionID()
     {
@@ -712,33 +757,5 @@ class TransmissionRPC implements AbstractClientInterface
             throw new TransmissionRPCException("Unexpected response from Transmission RPC: " . $stream_meta['wrapper_data'][0]);
         }
         return $this->session_id;
-    }
-
-    /**
-     * Takes the connection parameters
-     *
-     * TODO: Sanitize username, password, and URL
-     *
-     * @param string $url
-     * @param string $username
-     * @param string $password
-     */
-    public function __construct($url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null, $return_as_array = false)
-    {
-        // server URL
-        $this->url = $url;
-
-        // Username & password
-        $this->username = $username;
-        $this->password = $password;
-
-        // Get the Transmission RPC_version
-        $this->rpc_version = self::sget()->arguments->rpc_version;
-
-        // Return As Array
-        $this->return_as_array = $return_as_array;
-
-        // Reset X-Transmission-Session-Id so we (re)fetch one
-        $this->session_id = null;
     }
 }

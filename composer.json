@@ -1,14 +1,15 @@
 {
-    "require": {
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "owner888/phpspider": "^2.1",
-        "curl/curl": "^2.2"
+  "require": {
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "owner888/phpspider": "^2.1",
+    "curl/curl": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "IYUU\\": "app/"
     },
-    "autoload": {
-        "psr-4": {
-            "IYUU\\": "app/"
-        },
-        "files": ["app/helper.php"]
-    }
+    "files": ["app/helper.php"]
+  }
 }
