@@ -5,6 +5,8 @@
 namespace IYUU;
 
 use Curl\Curl;
+use IYUU\Client\qBittorrent\qBittorrent;
+use IYUU\Client\Transmission\TransmissionRPC;
 use IYUU\Library\IFile;
 use IYUU\Library\Oauth;
 
@@ -94,6 +96,7 @@ class AutoReseed
         // 合作站点自动注册鉴权
         Oauth::login(self::$apiUrl . self::$endpoints['login']);
     }
+
     /**
      * 连接远端RPC服务器
      *
@@ -132,7 +135,7 @@ class AutoReseed
                     if (isset($v['move']) && $v['move']) {
                         self::$move = array($k,$v['type']);
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
                     exit(1);
                 }
@@ -228,7 +231,7 @@ class AutoReseed
                 if (self::$move != null && (empty($v['move']))) {
                     self::move($res, $v['type']);
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
                 exit(1);
             }
@@ -303,7 +306,7 @@ class AutoReseed
                     echo '[ERROR] '.$type;
                     break;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
         }
         return false;
@@ -329,6 +332,7 @@ class AutoReseed
                 break;
         }
     }
+
     /**
      * @brief 提交种子hash给远端API，用来获取辅种数据
      * @param array $hashArray 种子hash数组
@@ -569,6 +573,7 @@ class AutoReseed
         }
         // 按客户端循环辅种 结束
     }
+
     /**
      *
      */

@@ -1,5 +1,7 @@
 {
     "require": {
+        "ext-json": "*",
+        "ext-mbstring": "*",
         "owner888/phpspider": "^2.1",
         "curl/curl": "^2.2"
     },
