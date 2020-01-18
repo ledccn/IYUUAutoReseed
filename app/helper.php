@@ -1,4 +1,7 @@
 <?php
+
+use IYUU\Library\IFile;
+
 /**
  * 调试函数
  * @param $data
@@ -285,6 +288,27 @@ function filter($site = '', $torrent = array())
     return false;
 }
 
+/**
+ * 日志记录函数
+ */
+function wlog($data='',$name = '',$path = ''){
+    // 数据转换
+    if (is_bool($data)) {
+        $show_data=$data ? 'true' : 'false';
+    } elseif (is_null($data)) {
+        $show_data='null';
+    } else {
+        $show_data=print_r($data, true);
+    }
+    // 写入日志
+    $dir = $path===''? TORRENT_PATH . 'cache' . DS : $path;
+    IFile::mkdir($dir);
+    $myfile = $dir.$name.'.txt';
+    $file_pointer = @fopen($myfile,"a");
+	$worldsnum = @fwrite($file_pointer,$show_data);
+    @fclose($file_pointer);
+    return $worldsnum;
+}
 /**
  * transmission过滤函数，只保留正常做种
  */
