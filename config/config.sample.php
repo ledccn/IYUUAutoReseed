@@ -273,7 +273,7 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdbug 序号：32
+    // hddisk.life 序号：32
     'hdbug'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
