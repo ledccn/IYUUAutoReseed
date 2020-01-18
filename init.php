@@ -3,8 +3,6 @@
 // 公共入口文件
 //----------------------------------
 // 定义目录
-use IYUU\AutoReseed;
-
 defined('ROOT_PATH') or define("ROOT_PATH", __DIR__);
 define('DS', DIRECTORY_SEPARATOR);
 define('TORRENT_PATH', ROOT_PATH.DS.'torrent'.DS);
@@ -37,14 +35,10 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
     // 示例配置
     $configALL = require_once ROOT_PATH . '/config/config.sample.php';
 }
-
 require_once ROOT_PATH . '/vendor/autoload.php';
 
-AutoReseed::init();
-$hashArray = AutoReseed::get();
-if (AutoReseed::$move != null) {
-    echo "种子移动完毕，请重新编辑配置，再尝试辅种！ \n\n";
-    exit;
+global $argv;
+$start_file = str_replace("\\","/",trim($argv[0]));
+if( substr($start_file,-8)==="init.php" ){
+    require_once __DIR__ . '/iyuu.php';
 }
-AutoReseed::call($hashArray);
-AutoReseed::wechatMessage();
