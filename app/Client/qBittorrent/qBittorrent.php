@@ -87,7 +87,7 @@ class qBittorrent implements AbstractClientInterface
         $this->curl->setOpt(CURLOPT_TIMEOUT, 600);          // 超时
         // Authenticate and get cookie, else throw exception
         if (!$this->authenticate()) {
-            throw new \Exception("Unable to authenticate with Web Api.");
+            throw new \Exception("qBittorrent Unable to authenticate with Web Api.");
         }
     }
 

@@ -355,25 +355,15 @@ class AutoReseed
         $hashArray['sign'] = Oauth::getSign();
         $hashArray['version'] = self::VER;
         // 写请求日志
-        if (true) {
-            // 文件句柄
-            $resource = fopen(self::$cacheDir.'hashString.txt', "wb");
-            // 成功：返回写入字节数，失败返回false
-            $worldsnum = fwrite($resource, p($hashArray, false));
-            fclose($resource);
-        }
+        wlog($hashArray,'hashString');
+
         // 发起请求
         echo "正在提交辅种信息…… \n";
         $res = $curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
         $resArray = json_decode($res->response, true);
         // 写返回日志
-        if (true) {
-            // 文件句柄
-            $resource = fopen(self::$cacheDir.'reseed.txt', "wb");
-            // 成功：返回写入字节数，失败返回false
-            $worldsnum = fwrite($resource, p($resArray, false));
-            fclose($resource);
-        }
+        wlog($resArray,'reseed');
+
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
             echo "辅种信息提交成功！！！ \n\n";
@@ -430,6 +420,12 @@ class AutoReseed
                     // 流控检测
                     if (isset($configALL[$sites[$sitesID]['site']]['limit'])) {
                         echo "-------因当前" .$sites[$sitesID]['site']. "站点触发流控，已跳过！！ {$_url} \n\n";
+                        // 流控日志
+                        if ($sites[$sitesID]['site'] == 'hdchina') {
+                            $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
+                            $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+                        }
+                        wlog('clients_'.$k."\n".$downloadDir."\n"."-------因当前" .$sites[$sitesID]['site']. "站点触发流控，已跳过！！ {$_url} \n\n",'reseedLimit');
                         self::$wechatMsg['reseedSkip']++;
                         continue;
                     }
@@ -527,35 +523,28 @@ class AutoReseed
                         $ret = false;
                         // 成功返回：true
                         $ret = self::add($k, $url, $downloadDir);
+                        // 按站点规范日志内容
+                        switch ($sites[$sitesID]['site']) {
+                            case 'hdchina':
+                                $url = $details_url;
+                                break;
+                            case 'hdcity':
+                                $url = $_url;
+                                break;
+                            default:
+                                break;
+                        }
                         // 添加成功的种子，以infohash为文件名，写入缓存
                         if ($ret) {
                             // 成功的种子
-                            switch ($sites[$sitesID]['site']) {
-                                case 'hdchina':
-                                    $url = $details_url;
-                                    break;
-                                case 'hdcity':
-                                    $url = $_url;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            // 文件句柄
-                            $resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
-                            // 成功：返回写入字节数，失败返回false
-                            $worldsnum = fwrite($resource, $url);
-                            fclose($resource);
+                            wlog($url."\n", $value['info_hash'], self::$cacheHash);
+                            wlog($url."\n",'reseedSuccess');
+                            // 成功累加
                             self::$wechatMsg['reseedSuccess']++;
                             continue;
                         } else {
                             // 失败的种子
-                            // 不同站点的错误提示
-                            switch ($sites[$sitesID]['site']) {
-                                case 'hdcity':
-                                    break;
-                                default:
-                                    break;
-                            }
+                            wlog($url."\n",'reseedError');
                             // 失败累加
                             self::$wechatMsg['reseedError']++;
                             continue;
@@ -565,22 +554,19 @@ class AutoReseed
                          *  不辅种
                          */
                         echo '-------已跳过不辅种的站点：'.$_url."\n\n";
-                        // 写入日志文件，供用户手动辅种
-                        if (!isset($infohash_Dir[$value['info_hash']])) {
-                            // 站点类型判断
-                            switch ($sites[$sitesID]['site']) {
-                                case 'hdchina':
-                                    $url = $_url;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            // 文件句柄
-                            $resource = fopen(self::$cacheDir . $sites[$sitesID]['site'].'.txt', 'a');
-                            // 成功：返回写入字节数，失败返回false
-                            $worldsnum = fwrite($resource, 'clients_'.$k."\n".$downloadDir."\n".$url."\n".$details_url."\n\n");
-                            fclose($resource);
+                        // 按站点规范日志内容
+                        switch ($sites[$sitesID]['site']) {
+                            case 'hdchina':
+                                $url = $details_url;
+                                break;
+                            case 'hdcity':
+                                $url = $_url;
+                                break;
+                            default:
+                                break;
                         }
+                        // 写入日志文件，供用户手动辅种
+                        wlog('clients_'.$k."\n".$downloadDir."\n".$url."\n".$details_url."\n\n", $sites[$sitesID]['site']);
                     }
                 }
             }
