@@ -17,5 +17,4 @@ interface AbstractClientInterface
      * @return string
      */
     public function status();
-
 }

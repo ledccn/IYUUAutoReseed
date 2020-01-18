@@ -295,7 +295,7 @@ class qBittorrent implements AbstractClientInterface
                 $data .= 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol;
                 $data .= $content . $eol;
             }
-        }        
+        }
         $data .= "--" . $this->delimiter . "--" . $eol;
         return $data;
     }

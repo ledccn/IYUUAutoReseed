@@ -37,10 +37,10 @@ class AutoReseed
      */
     public static $noReseed = [];
     /**
-	 * cookie检查
-	 * @var array
-	 */
-	public static $cookieCheck = ['hdchina','hdcity'];
+     * cookie检查
+     * @var array
+     */
+    public static $cookieCheck = ['hdchina','hdcity'];
     /**
      * 缓存路径
      * @var string
@@ -290,10 +290,10 @@ class AutoReseed
                         }
                     }
                     break;
-                case 'qBittorrent': 
+                case 'qBittorrent':
                     $extra_options['paused'] = 'true';
-                    $extra_options['autoTMM'] = 'false';	//关闭自动种子管理                   
-                    if ($is_url) {                        
+                    $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
+                    if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
                         $extra_options['name'] = 'torrents';
@@ -346,247 +346,247 @@ class AutoReseed
     public static function call($hashArray = array())
     {
         global $configALL;
-		$resArray = $sites = array();
-		$curl = new Curl();
-		$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-		// 签名
-		$hashArray['timestamp'] = time();
-		// 爱语飞飞token
-		$hashArray['sign'] = Oauth::getSign();
-		$hashArray['version'] = self::VER;
-		// 写请求日志
-		if (true) {
-			// 文件句柄
-			$resource = fopen(self::$cacheDir.'hashString.txt', "wb");
-			// 成功：返回写入字节数，失败返回false
-			$worldsnum = fwrite($resource, p($hashArray, false));
-			fclose($resource);
-		}
-		// 发起请求
-		echo "正在提交辅种信息…… \n";
-		$res = $curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
-		$resArray = json_decode($res->response, true);
-		// 写返回日志
-		if(true){
-			// 文件句柄
-			$resource = fopen(self::$cacheDir.'reseed.txt', "wb");
-			// 成功：返回写入字节数，失败返回false
-			$worldsnum = fwrite($resource, p($resArray, false));
-			fclose($resource);
-		}
-		// 判断返回值
-		if ( isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok') ) {
-			echo "辅种信息提交成功！！！ \n\n";
-		}else{
-			$errmsg = isset($resArray['errmsg']) ? $resArray['errmsg'] : '远端服务器无响应，请稍后重试！';
-			echo '-----辅种失败，原因：' .$errmsg. " \n\n";
-			exit(1);
-		}
-		// 可辅种站点信息
-		$sites = $resArray['sites'];
-		#p($sites);
-		// 支持站点数量
-		self::$wechatMsg['sitesCount'] = count($sites);
-		// 按客户端循环辅种 开始
-		foreach (self::$links as $k => $v) {
-			$reseed = $infohash_Dir = array();
-			// info_hash与下载目录对应表
-			$infohash_Dir = self::$links[$k]['hash'];
-			#p($infohash_Dir);
-			if (empty($resArray['clients_'.$k])) {
-				echo "clients_".$k."没有查询到可辅种数据 \n\n";
-				continue;
-			}			
-			// 当前客户端可辅种数据
-			$reseed = $resArray['clients_'.$k];
-			foreach ($reseed as $info_hash => $vv) {
-				// 当前种子哈希对应的目录
-				$downloadDir = $infohash_Dir[$info_hash];
-				foreach ($vv['torrent'] as $id => $value) {
-					$_url = $url = '';
-					$download_page = $details_url = '';
-					// 匹配的辅种数据累加
-					self::$wechatMsg['reseedCount']++;
-					// 站点id
-					$sitesID = $value['sid'];					
-					// 页面规则
-					$download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
-					$_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
-					/**
-					 * 前置检测
-					 */
-					// passkey检测
-					if ( empty($configALL[$sites[$sitesID]['site']]['passkey']) ) {
-						echo '-------因当前' .$sites[$sitesID]['site']. "站点未设置passkey，已跳过！！ \n\n";
-						self::$wechatMsg['reseedSkip']++;
-						continue;
-					}
-					// cookie检测
-					if ( in_array($sites[$sitesID]['site'], self::$cookieCheck) && empty($configALL[$sites[$sitesID]['site']]['cookie']) ) {
-						echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
-						self::$wechatMsg['reseedSkip']++;
-						continue;
-					}
-					// 流控检测
-					if ( isset($configALL[$sites[$sitesID]['site']]['limit']) ) {
-						echo "-------因当前" .$sites[$sitesID]['site']. "站点触发流控，已跳过！！ {$_url} \n\n";
-						self::$wechatMsg['reseedSkip']++;
-						continue;
-					}
-					// 重复做种检测
-					if ( isset($infohash_Dir[$value['info_hash']]) ) {
-						echo '-------与客户端现有种子重复：'.$_url."\n\n";
-						self::$wechatMsg['reseedRepeat']++;
-						continue;
-					}
-					// 历史添加检测
-					if ( is_file(self::$cacheHash . $value['info_hash'].'.txt') ) {
-						echo '-------当前种子上次辅种已成功添加，已跳过！ '.$_url."\n\n";
-						self::$wechatMsg['reseedPass']++;
-						continue;
-					}
-					/**
-					 * 种子URL组合方式区分
-					 */
-					switch ($sites[$sitesID]['site']) {
-						case 'ttg':
-							$url = $_url."/". $configALL[$sites[$sitesID]['site']]['passkey'];
-							break;
+        $resArray = $sites = array();
+        $curl = new Curl();
+        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+        // 签名
+        $hashArray['timestamp'] = time();
+        // 爱语飞飞token
+        $hashArray['sign'] = Oauth::getSign();
+        $hashArray['version'] = self::VER;
+        // 写请求日志
+        if (true) {
+            // 文件句柄
+            $resource = fopen(self::$cacheDir.'hashString.txt', "wb");
+            // 成功：返回写入字节数，失败返回false
+            $worldsnum = fwrite($resource, p($hashArray, false));
+            fclose($resource);
+        }
+        // 发起请求
+        echo "正在提交辅种信息…… \n";
+        $res = $curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
+        $resArray = json_decode($res->response, true);
+        // 写返回日志
+        if (true) {
+            // 文件句柄
+            $resource = fopen(self::$cacheDir.'reseed.txt', "wb");
+            // 成功：返回写入字节数，失败返回false
+            $worldsnum = fwrite($resource, p($resArray, false));
+            fclose($resource);
+        }
+        // 判断返回值
+        if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
+            echo "辅种信息提交成功！！！ \n\n";
+        } else {
+            $errmsg = isset($resArray['errmsg']) ? $resArray['errmsg'] : '远端服务器无响应，请稍后重试！';
+            echo '-----辅种失败，原因：' .$errmsg. " \n\n";
+            exit(1);
+        }
+        // 可辅种站点信息
+        $sites = $resArray['sites'];
+        #p($sites);
+        // 支持站点数量
+        self::$wechatMsg['sitesCount'] = count($sites);
+        // 按客户端循环辅种 开始
+        foreach (self::$links as $k => $v) {
+            $reseed = $infohash_Dir = array();
+            // info_hash与下载目录对应表
+            $infohash_Dir = self::$links[$k]['hash'];
+            #p($infohash_Dir);
+            if (empty($resArray['clients_'.$k])) {
+                echo "clients_".$k."没有查询到可辅种数据 \n\n";
+                continue;
+            }
+            // 当前客户端可辅种数据
+            $reseed = $resArray['clients_'.$k];
+            foreach ($reseed as $info_hash => $vv) {
+                // 当前种子哈希对应的目录
+                $downloadDir = $infohash_Dir[$info_hash];
+                foreach ($vv['torrent'] as $id => $value) {
+                    $_url = $url = '';
+                    $download_page = $details_url = '';
+                    // 匹配的辅种数据累加
+                    self::$wechatMsg['reseedCount']++;
+                    // 站点id
+                    $sitesID = $value['sid'];
+                    // 页面规则
+                    $download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
+                    $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
+                    /**
+                     * 前置检测
+                     */
+                    // passkey检测
+                    if (empty($configALL[$sites[$sitesID]['site']]['passkey'])) {
+                        echo '-------因当前' .$sites[$sitesID]['site']. "站点未设置passkey，已跳过！！ \n\n";
+                        self::$wechatMsg['reseedSkip']++;
+                        continue;
+                    }
+                    // cookie检测
+                    if (in_array($sites[$sitesID]['site'], self::$cookieCheck) && empty($configALL[$sites[$sitesID]['site']]['cookie'])) {
+                        echo '-------因当前' .$sites[$sitesID]['site']. '站点未设置cookie，已跳过！！' . "\n\n";
+                        self::$wechatMsg['reseedSkip']++;
+                        continue;
+                    }
+                    // 流控检测
+                    if (isset($configALL[$sites[$sitesID]['site']]['limit'])) {
+                        echo "-------因当前" .$sites[$sitesID]['site']. "站点触发流控，已跳过！！ {$_url} \n\n";
+                        self::$wechatMsg['reseedSkip']++;
+                        continue;
+                    }
+                    // 重复做种检测
+                    if (isset($infohash_Dir[$value['info_hash']])) {
+                        echo '-------与客户端现有种子重复：'.$_url."\n\n";
+                        self::$wechatMsg['reseedRepeat']++;
+                        continue;
+                    }
+                    // 历史添加检测
+                    if (is_file(self::$cacheHash . $value['info_hash'].'.txt')) {
+                        echo '-------当前种子上次辅种已成功添加，已跳过！ '.$_url."\n\n";
+                        self::$wechatMsg['reseedPass']++;
+                        continue;
+                    }
+                    /**
+                     * 种子URL组合方式区分
+                     */
+                    switch ($sites[$sitesID]['site']) {
+                        case 'ttg':
+                            $url = $_url."/". $configALL[$sites[$sitesID]['site']]['passkey'];
+                            break;
                         case 'm-team':
                         case 'moecat':
-							$ip_type = '';
-							if (isset($configALL[$sites[$sitesID]['site']]['ip_type'])) {
-								$ip_type = $configALL[$sites[$sitesID]['site']]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
-							}
-							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";
-							break;
-						default:
-							$url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
-							break;
-					}
-					/**
-					 * 检查站点是否可以辅种
-					 */
-					// 判断是否具有VIP或特殊权限？
-					$is_vip = isset($configALL[$sites[$sitesID]['site']]['is_vip']) && $configALL[$sites[$sitesID]['site']]['is_vip'] ? 1 : 0;
-					if ( (in_array($sites[$sitesID]['site'], self::$noReseed)==false) || $is_vip ) {
-						/**
-						 *  可以辅种
-						 */
-						// 特殊站点：推送给下载器种子元数据
-						switch ($sites[$sitesID]['site']) {
-							case 'hdchina':
-								$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
-								$userAgent = $configALL['default']['userAgent'];
-								// 拼接URL
-								$details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
-								$details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
-								$details_html = download($details_url, $cookie, $userAgent);
-								print "种子详情页：".$details_url. "\n";
-								// 提取种子下载地址
-								$download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
-								$offset = strpos($details_html, $download_page);
-								$urlTemp = substr($details_html, $offset, 50);
-								// 种子地址
-								$_url = substr($urlTemp,0,strpos($urlTemp,'">'));
-								$_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
-								print "种子下载页：".$_url. "\n";
-								$url = download($_url, $cookie, $userAgent);
-								if(strpos($url,'系统检测到过多的种子下载请求') != false){
-									echo "当前站点触发人机验证，已加入排除列表 \n";
-									ff($sites[$sitesID]['site']. '站点，辅种时触发人机验证！');
-									$configALL[$sites[$sitesID]['site']]['limit'] = 1;
-									self::$noReseed[] = 'hdchina';
-								}
-								break;
-							case 'hdcity':
-								$cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
-								$userAgent = $configALL['default']['userAgent'];
-								print "种子：".$_url. "\n";
-								if ( isset($configALL[$sites[$sitesID]['site']]['cuhash']) ) {
-									// 已获取cuhash
-									# code...
-								}else {
-									// 获取cuhash
-									$html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
-									// 提取种子下载地址
-									$offset = strpos($html,'cuhash=');
-									$len = strlen('cuhash=');
-									$cuhashTemp = substr($html,$offset+$len,40);
-									$configALL[$sites[$sitesID]['site']]['cuhash'] = substr($cuhashTemp,0,strpos($cuhashTemp,'"'));
-								}
-								$url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['cuhash'];
-								// 城市下载种子时会302转向
-								$url = download($url, $cookie, $userAgent);
-								break;
-							default:
-								// 默认站点：推送给下载器种子URL链接
-								break;
-						}
-						// 把拼接的种子URL，推送给下载器
-						$ret = false;
-						// 成功返回：true
-						$ret = self::add($k, $url, $downloadDir);
-						// 添加成功的种子，以infohash为文件名，写入缓存
-						if ($ret) {
+                            $ip_type = '';
+                            if (isset($configALL[$sites[$sitesID]['site']]['ip_type'])) {
+                                $ip_type = $configALL[$sites[$sitesID]['site']]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
+                            }
+                            $url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'] . $ip_type. "&https=1";
+                            break;
+                        default:
+                            $url = $_url."&passkey=". $configALL[$sites[$sitesID]['site']]['passkey'];
+                            break;
+                    }
+                    /**
+                     * 检查站点是否可以辅种
+                     */
+                    // 判断是否具有VIP或特殊权限？
+                    $is_vip = isset($configALL[$sites[$sitesID]['site']]['is_vip']) && $configALL[$sites[$sitesID]['site']]['is_vip'] ? 1 : 0;
+                    if ((in_array($sites[$sitesID]['site'], self::$noReseed)==false) || $is_vip) {
+                        /**
+                         *  可以辅种
+                         */
+                        // 特殊站点：推送给下载器种子元数据
+                        switch ($sites[$sitesID]['site']) {
+                            case 'hdchina':
+                                $cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
+                                $userAgent = $configALL['default']['userAgent'];
+                                // 拼接URL
+                                $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
+                                $details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+                                $details_html = download($details_url, $cookie, $userAgent);
+                                print "种子详情页：".$details_url. "\n";
+                                // 提取种子下载地址
+                                $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
+                                $offset = strpos($details_html, $download_page);
+                                $urlTemp = substr($details_html, $offset, 50);
+                                // 种子地址
+                                $_url = substr($urlTemp, 0, strpos($urlTemp, '">'));
+                                $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
+                                print "种子下载页：".$_url. "\n";
+                                $url = download($_url, $cookie, $userAgent);
+                                if (strpos($url, '系统检测到过多的种子下载请求') != false) {
+                                    echo "当前站点触发人机验证，已加入排除列表 \n";
+                                    ff($sites[$sitesID]['site']. '站点，辅种时触发人机验证！');
+                                    $configALL[$sites[$sitesID]['site']]['limit'] = 1;
+                                    self::$noReseed[] = 'hdchina';
+                                }
+                                break;
+                            case 'hdcity':
+                                $cookie = isset($configALL[$sites[$sitesID]['site']]['cookie']) ? $configALL[$sites[$sitesID]['site']]['cookie'] : '';
+                                $userAgent = $configALL['default']['userAgent'];
+                                print "种子：".$_url. "\n";
+                                if (isset($configALL[$sites[$sitesID]['site']]['cuhash'])) {
+                                    // 已获取cuhash
+                                    # code...
+                                } else {
+                                    // 获取cuhash
+                                    $html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
+                                    // 提取种子下载地址
+                                    $offset = strpos($html, 'cuhash=');
+                                    $len = strlen('cuhash=');
+                                    $cuhashTemp = substr($html, $offset+$len, 40);
+                                    $configALL[$sites[$sitesID]['site']]['cuhash'] = substr($cuhashTemp, 0, strpos($cuhashTemp, '"'));
+                                }
+                                $url = $_url."&cuhash=". $configALL[$sites[$sitesID]['site']]['cuhash'];
+                                // 城市下载种子时会302转向
+                                $url = download($url, $cookie, $userAgent);
+                                break;
+                            default:
+                                // 默认站点：推送给下载器种子URL链接
+                                break;
+                        }
+                        // 把拼接的种子URL，推送给下载器
+                        $ret = false;
+                        // 成功返回：true
+                        $ret = self::add($k, $url, $downloadDir);
+                        // 添加成功的种子，以infohash为文件名，写入缓存
+                        if ($ret) {
                             // 成功的种子
                             switch ($sites[$sitesID]['site']) {
-								case 'hdchina':
-									$url = $details_url;
+                                case 'hdchina':
+                                    $url = $details_url;
                                     break;
                                 case 'hdcity':
                                     $url = $_url;
                                     break;
-								default:
-									break;
-							}
-							// 文件句柄
-							$resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
-							// 成功：返回写入字节数，失败返回false
-							$worldsnum = fwrite($resource, $url);
-							fclose($resource);
-							self::$wechatMsg['reseedSuccess']++;
-							continue;
-						}else{
-							// 失败的种子
-							// 不同站点的错误提示
-							switch ($sites[$sitesID]['site']) {
-								case 'hdcity':
-									break;
-								default:
-									break;
-							}
-							// 失败累加
-							self::$wechatMsg['reseedError']++;
-							continue;
-						}
-					}else{
-						/**
-						 *  不辅种
-						 */
-						echo '-------已跳过不辅种的站点：'.$_url."\n\n";
-						// 写入日志文件，供用户手动辅种
-						if ( !isset($infohash_Dir[$value['info_hash']]) ) {
-							// 站点类型判断
-							switch ($sites[$sitesID]['site']) {
-								case 'hdchina':
-									$url = $_url;
-									break;
-								default:
-									break;
-							}
-							// 文件句柄
-							$resource = fopen(self::$cacheDir . $sites[$sitesID]['site'].'.txt', 'a');
-							// 成功：返回写入字节数，失败返回false
-							$worldsnum = fwrite($resource, 'clients_'.$k."\n".$downloadDir."\n".$url."\n".$details_url."\n\n");
-							fclose($resource);
-						}
-					}
-				}
-			}
-		}
-		// 按客户端循环辅种 结束
-	}
+                                default:
+                                    break;
+                            }
+                            // 文件句柄
+                            $resource = fopen(self::$cacheHash . $value['info_hash'].'.txt', "wb");
+                            // 成功：返回写入字节数，失败返回false
+                            $worldsnum = fwrite($resource, $url);
+                            fclose($resource);
+                            self::$wechatMsg['reseedSuccess']++;
+                            continue;
+                        } else {
+                            // 失败的种子
+                            // 不同站点的错误提示
+                            switch ($sites[$sitesID]['site']) {
+                                case 'hdcity':
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // 失败累加
+                            self::$wechatMsg['reseedError']++;
+                            continue;
+                        }
+                    } else {
+                        /**
+                         *  不辅种
+                         */
+                        echo '-------已跳过不辅种的站点：'.$_url."\n\n";
+                        // 写入日志文件，供用户手动辅种
+                        if (!isset($infohash_Dir[$value['info_hash']])) {
+                            // 站点类型判断
+                            switch ($sites[$sitesID]['site']) {
+                                case 'hdchina':
+                                    $url = $_url;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // 文件句柄
+                            $resource = fopen(self::$cacheDir . $sites[$sitesID]['site'].'.txt', 'a');
+                            // 成功：返回写入字节数，失败返回false
+                            $worldsnum = fwrite($resource, 'clients_'.$k."\n".$downloadDir."\n".$url."\n".$details_url."\n\n");
+                            fclose($resource);
+                        }
+                    }
+                }
+            }
+        }
+        // 按客户端循环辅种 结束
+    }
 
     /**
      *
