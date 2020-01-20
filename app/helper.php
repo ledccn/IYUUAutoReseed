@@ -1,6 +1,7 @@
 <?php
 
 use IYUU\Library\IFile;
+use IYUU\Library\Table;
 
 /**
  * 调试函数
@@ -340,4 +341,38 @@ function object_array($array)
         }
     }
     return $array;
+}
+
+/**
+ * 显示支持的站点列表
+ */
+function ShowTableSites(){
+    $data = [];
+	$i = $j = $k = 0;
+	foreach(glob(APP_PATH.'Protocols'.DS.'*.php') as $key => $start_file)
+	{
+		$start_file = str_replace("\\","/",$start_file);
+		$offset = strripos($start_file,'/');
+		if ($offset===false) {
+			$start_file = substr($start_file,0,-4);
+		} else {
+			$start_file = substr($start_file,$offset+1,-4);
+        }
+        // 过滤示例、过滤解码接口
+		if (in_array($start_file,['axxxx','decodeBase'])) {
+			continue;
+        }
+        // 控制多少列
+		if ($i > 4) {
+			$k++;
+			$i = 0;
+        }
+        $i++;
+		$j++;
+		$data[$k][] = $j.". ".$start_file;
+	}
+	//输出表格
+	$table = new Table();
+	$table->setRows($data);
+	echo($table->render());
 }

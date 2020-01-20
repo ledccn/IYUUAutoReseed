@@ -5,6 +5,7 @@
 // 定义目录
 defined('ROOT_PATH') or define("ROOT_PATH", __DIR__);
 define('DS', DIRECTORY_SEPARATOR);
+defined('APP_PATH') or define('APP_PATH', ROOT_PATH.DS.'app'.DS);
 define('TORRENT_PATH', ROOT_PATH.DS.'torrent'.DS);
 
 // 严格开发模式

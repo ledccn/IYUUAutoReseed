@@ -714,6 +714,10 @@ class TransmissionRPC implements AbstractClientInterface
         // Setup authentication (if provided)
         if ($this->username && $this->password) {
             $contextopts['http']['header'] = sprintf("Authorization: Basic %s\r\n", base64_encode($this->username . ':' . $this->password));
+            $contextopts['http']['ssl'] = array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            );
         }
 
         if ($this->debug) {
