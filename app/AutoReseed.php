@@ -10,6 +10,7 @@ use IYUU\Client\qBittorrent\qBittorrent;
 use IYUU\Client\Transmission\TransmissionRPC;
 use IYUU\Library\IFile;
 use IYUU\Library\Oauth;
+use IYUU\Library\Table;
 
 /**
  * IYUUAutoReseed自动辅种类
@@ -89,6 +90,7 @@ class AutoReseed
      */
     public static function init()
     {
+        self::ShowTableSites();
         global $configALL;
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
         echo "程序正在初始化运行参数... \n";
@@ -103,6 +105,43 @@ class AutoReseed
         Oauth::login(self::$apiUrl . self::$endpoints['login']);
     }
 
+    /**
+     * 显示支持站点列表
+     */
+    private static function ShowTableSites(){
+        $list[] = 'gitee 源码仓库：https://gitee.com/ledc/IYUUAutoReseed';
+        $list[] = 'github源码仓库：https://github.com/ledccn/IYUUAutoReseed';
+        $list[] = '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki';
+        $list[] = "QQ群：859882209 【IYUU自动辅种交流】 \n";
+        foreach ($list as $key => $value) {
+            echo $value.PHP_EOL;
+        }
+        // 发起请求
+        echo "正在连接IYUUAutoReseed服务器，查询支持列表…… \n";
+        $curl = new Curl();
+        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
+        $curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
+        $res = $curl->post(self::$apiUrl);
+        $sites = json_decode($res->response, true);
+        $data = [];
+        $i = $j = $k = 0;
+        foreach($sites as $v)
+        {
+            // 控制多少列
+            if ($i > 4) {
+                $k++;
+                $i = 0;
+            }
+            $i++;
+            $j++;
+            $data[$k][] = $j.". ".$v['site'];
+        }
+        echo "IYUUAutoReseed自动辅种脚本，目前支持以下站点：".PHP_EOL;
+        //输出表格
+        $table = new Table();
+        $table->setRows($data);
+        echo($table->render());        
+    }
     /**
      * 连接远端RPC服务器
      *
