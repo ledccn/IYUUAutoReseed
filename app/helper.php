@@ -197,6 +197,37 @@ function convertToMB($from)
 }
 
 /**
+ * 字节数Byte转换为KB、MB、GB、TB
+ * 
+ */
+function getFilesize($num){
+    $p = 0;
+    $format='bytes';
+    if($num>0 && $num<1024){
+        $p = 0;
+        return number_format($num).' '.$format;
+    }
+    if($num>=1024 && $num<pow(1024, 2)){
+        $p = 1;
+        $format = 'KB';
+    }
+    if ($num>=pow(1024, 2) && $num<pow(1024, 3)) {
+        $p = 2;
+        $format = 'MB';
+    }
+    if ($num>=pow(1024, 3) && $num<pow(1024, 4)) {
+        $p = 3;
+        $format = 'GB';
+    }
+    if ($num>=pow(1024, 4) && $num<pow(1024, 5)) {
+        $p = 3;
+        $format = 'TB';
+    }
+    $num /= pow(1024, $p);
+    return number_format($num, 2).$format;
+}
+
+/**
  * @brief 种子过滤器
  * @param string $site 站点标识
  * @param array  $torrent 种子数组
@@ -341,4 +372,93 @@ function object_array($array)
         }
     }
     return $array;
+}
+
+/**
+ * 奇数
+ */
+function oddFilter($var)
+{
+    // 返回$var最后一个二进制位，
+    // 为1则保留（奇数的二进制的最后一位肯定是1）
+    return($var & 1);
+}
+
+/**
+ * 偶数
+ */
+function evenFilter($var)
+{
+	// 返回$var最后一个二进制位，
+    // 为0则保留（偶数的二进制的最后一位肯定是0）
+	return(!($var & 1));
+}
+
+/**
+ * 发布员签名
+ * 注意：同时配置iyuu.cn与secret时，优先使用secret。
+ */
+function sign( $timestamp ){
+	global $configALL;
+	// 爱语飞飞
+	$token = isset($configALL['iyuu.cn']) && $configALL['iyuu.cn'] ? $configALL['iyuu.cn'] : '';
+	// 鉴权
+	$token = isset($configALL['secret']) && $configALL['secret'] ? $configALL['secret'] : $token;
+	return sha1($timestamp . $token);
+}
+
+/**
+ * @brief 分离token中的用户uid
+ * token算法：IYUU + uid + T + sha1(openid+time+盐)
+ * @param string $token		用户请求token
+ */
+function getUid($token){
+	//验证是否IYUU开头，strpos($token,'T')<15,token总长度小于60(40+10+5)
+	return (strlen($token)<60)&&(strpos($token,'IYUU')===0)&&(strpos($token,'T')<15) ? substr($token,4,strpos($token,'T')-4): false;
+}
+
+/**
+ * 显示支持的站点列表
+ */
+function ShowTableSites($dir = 'Protocols',$filter = array()){
+    // 过滤的文件
+    switch ($dir) {
+        case 'Protocols':
+            $filter = ['axxxx','decodeBase'];
+            break;
+        case 'Rss':
+            $filter = ['AbstractRss'];
+            break;
+        default:
+            # code...
+            break;
+    }
+    $data = [];
+	$i = $j = $k = 0;
+	foreach(glob(APP_PATH.$dir.DS.'*.php') as $key => $start_file)
+	{
+		$start_file = str_replace("\\","/",$start_file);
+		$offset = strripos($start_file,'/');
+		if ($offset===false) {
+			$start_file = substr($start_file,0,-4);
+		} else {
+			$start_file = substr($start_file,$offset+1,-4);
+        }
+        // 过滤示例、过滤解码接口
+		if (in_array($start_file, $filter)) {
+			continue;
+        }
+        // 控制多少列
+		if ($i > 4) {
+			$k++;
+			$i = 0;
+        }
+        $i++;
+		$j++;
+		$data[$k][] = $j.". ".$start_file;		
+	}
+	//输出表格
+	$table = new Table();
+	$table->setRows($data);
+	echo($table->render());
 }

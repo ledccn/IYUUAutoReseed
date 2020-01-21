@@ -36,6 +36,12 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
     // 示例配置
     $configALL = require_once ROOT_PATH . '/config/config.sample.php';
 }
+// 读取支持列表
+if (is_file(ROOT_PATH . "/config/sites.json")) {
+    $sitesJson = file_get_contents(ROOT_PATH . "/config/sites.json");
+    $configALL['sitesALL'] = json_decode($sitesJson, true);
+}
+
 require_once ROOT_PATH . '/vendor/autoload.php';
 
 global $argv;

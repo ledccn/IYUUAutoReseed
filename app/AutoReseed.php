@@ -90,6 +90,7 @@ class AutoReseed
      */
     public static function init()
     {
+        // 显示支持站点列表
         self::ShowTableSites();
         global $configALL;
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
@@ -123,6 +124,16 @@ class AutoReseed
         $curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
         $res = $curl->post(self::$apiUrl);
         $sites = json_decode($res->response, true);
+        // 数据写入本地
+        if (true) {
+            $json = array_column($sites, null, 'site');
+            ksort($json);
+            $json = json_encode($json, JSON_UNESCAPED_UNICODE);
+            $myfile = ROOT_PATH.DS.'config'.DS.'sites.json';
+            $file_pointer = @fopen($myfile,"w");
+            $worldsnum = @fwrite($file_pointer,$json);
+            @fclose($file_pointer);
+        }
         $data = [];
         $i = $j = $k = 0;
         foreach($sites as $v)
