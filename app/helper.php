@@ -140,7 +140,7 @@ function send($site = '', $torrent = array())
  * @param string $method
  * @return mixed 返回的数据
  */
-function download($url, $cookies, $useragent, $method = 'GET')
+function download($url, $cookies='', $useragent='', $method = 'GET')
 {
     $header = array(
         "Content-Type:application/x-www-form-urlencoded",
