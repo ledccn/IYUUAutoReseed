@@ -126,7 +126,7 @@ class AutoReseed
         $res = $curl->post(self::$apiUrl);
         $sites = json_decode($res->response, true);
         // 数据写入本地
-        if (true) {
+        if ($sites) {
             $json = array_column($sites, null, 'site');
             ksort($json);
             $json = json_encode($json, JSON_UNESCAPED_UNICODE);
@@ -134,6 +134,8 @@ class AutoReseed
             $file_pointer = @fopen($myfile, "w");
             $worldsnum = @fwrite($file_pointer, $json);
             @fclose($file_pointer);
+        }else {
+            die('远端服务器无响应，请稍后再试！！！');
         }
         $data = [];
         $i = $j = $k = 0;
