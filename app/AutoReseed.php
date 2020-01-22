@@ -134,7 +134,7 @@ class AutoReseed
             $file_pointer = @fopen($myfile, "w");
             $worldsnum = @fwrite($file_pointer, $json);
             @fclose($file_pointer);
-        }else {
+        } else {
             die('远端服务器无响应，请稍后再试！！！');
         }
         $data = [];
