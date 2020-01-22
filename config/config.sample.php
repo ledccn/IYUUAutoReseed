@@ -3,7 +3,14 @@
  * 技术讨论及后续更新，请加入QQ群！！！！！！！
     群名称：IYUU自动辅种交流
     QQ群号：859882209
- * 手动配置方法，请查看：https://www.iyuu.cn/archives/324/
+ * IYUU自动辅种工具--最简配置（所有平台通用教程） https://www.iyuu.cn/archives/324/
+ * IYUU自动辅种工具--如何下载最新源码？ https://www.iyuu.cn/archives/338/
+ * IYUU自动辅种工具--合作站点鉴权配置说明 https://www.iyuu.cn/archives/337/
+ * IYUU自动下载种子之RSS订阅使用教程 https://www.iyuu.cn/archives/349/
+    脚本仓库下载法：
+    github：git clone https://github.com/ledccn/IYUUAutoReseed
+    cd IYUUAutoReseed
+    composer install
  */
 return array(
     // 1.【必须配置】爱语飞飞 微信通知，请访问https://iyuu.cn 用微信扫码申请
@@ -43,6 +50,8 @@ return array(
                 '/sda1' => '/volume1',
             ),
         ),
+        'workingMode'	=> 0,
+        'watch'         => '/volume1/downloads',
         'filter' => array(
             'size'=>array(
                 'min'	=>	'1GB',
@@ -76,6 +85,22 @@ return array(
         'passkey'       => '',
         // 种子Tracker的IP地址选择 可选：ipv4，ipv6
         'ip_type'		=> 'ipv4',
+        'clients'   => array(
+            array(
+                'type'	=>	'transmission',	// 支持：transmission、qBittorrent
+                'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
+                'username'	=>	'',
+                'password'	=>	'',
+            ),
+        ),
+        'workingMode'	=> 1,
+        'watch'         => '',
+        'filter' => array(
+            'size'=>array(
+                'min'	=>	'1GB',
+                'max'	=>	'280GB',
+            ),
+        ),
     ),
     // keepfrds 序号：2
     'keepfrds'      => array(
@@ -83,6 +108,14 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'workingMode'	=> 1,
+        'watch'         => '',
+        'filter' => array(
+            'size'=>array(
+                'min'	=>	'1GB',
+                'max'	=>	'280GB',
+            ),
+        ),
     ),
     // ourbits 序号：3
     'ourbits'      => array(
@@ -92,6 +125,14 @@ return array(
         'passkey'       => '',
         'id' => 0,					// 用户ID
         'is_vip'		=> 0,		// 是否具有VIP或特殊权限？0 普通，1 VIP
+        'workingMode'	=> 0,
+        'watch'         => '/root/downloads',
+        'filter' => array(
+            'size'=>array(
+                'min'	=>	'1GB',
+                'max'	=>	'280GB',
+            ),
+        ),
     ),
     // HDSky 序号：4
     'hdsky'      => array(
@@ -171,6 +212,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        // 如果需要rss订阅，必须配置
+        'rss'       => '',
     ),
     // nanyangpt 序号：15
     'nanyangpt'      => array(
