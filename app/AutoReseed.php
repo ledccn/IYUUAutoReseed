@@ -109,7 +109,8 @@ class AutoReseed
     /**
      * 显示支持站点列表
      */
-    private static function ShowTableSites(){
+    private static function ShowTableSites()
+    {
         $list[] = 'gitee 源码仓库：https://gitee.com/ledc/IYUUAutoReseed';
         $list[] = 'github源码仓库：https://github.com/ledccn/IYUUAutoReseed';
         $list[] = '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki';
@@ -130,14 +131,13 @@ class AutoReseed
             ksort($json);
             $json = json_encode($json, JSON_UNESCAPED_UNICODE);
             $myfile = ROOT_PATH.DS.'config'.DS.'sites.json';
-            $file_pointer = @fopen($myfile,"w");
-            $worldsnum = @fwrite($file_pointer,$json);
+            $file_pointer = @fopen($myfile, "w");
+            $worldsnum = @fwrite($file_pointer, $json);
             @fclose($file_pointer);
         }
         $data = [];
         $i = $j = $k = 0;
-        foreach($sites as $v)
-        {
+        foreach ($sites as $v) {
             // 控制多少列
             if ($i > 4) {
                 $k++;
@@ -151,7 +151,7 @@ class AutoReseed
         //输出表格
         $table = new Table();
         $table->setRows($data);
-        echo($table->render());        
+        echo($table->render());
     }
     /**
      * 连接远端RPC服务器
@@ -405,14 +405,14 @@ class AutoReseed
         $hashArray['sign'] = Oauth::getSign();
         $hashArray['version'] = self::VER;
         // 写请求日志
-        wlog($hashArray,'hashString');
+        wlog($hashArray, 'hashString');
 
         // 发起请求
         echo "正在提交辅种信息…… \n";
         $res = $curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
         $resArray = json_decode($res->response, true);
         // 写返回日志
-        wlog($resArray,'reseed');
+        wlog($resArray, 'reseed');
 
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
@@ -475,7 +475,7 @@ class AutoReseed
                             $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
                             $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
                         }
-                        wlog('clients_'.$k."\n".$downloadDir."\n"."-------因当前" .$sites[$sitesID]['site']. "站点触发流控，已跳过！！ {$_url} \n\n",'reseedLimit');
+                        wlog('clients_'.$k."\n".$downloadDir."\n"."-------因当前" .$sites[$sitesID]['site']. "站点触发流控，已跳过！！ {$_url} \n\n", 'reseedLimit');
                         self::$wechatMsg['reseedSkip']++;
                         continue;
                     }
@@ -588,13 +588,13 @@ class AutoReseed
                         if ($ret) {
                             // 成功的种子
                             wlog($url."\n", $value['info_hash'], self::$cacheHash);
-                            wlog($url."\n",'reseedSuccess');
+                            wlog($url."\n", 'reseedSuccess');
                             // 成功累加
                             self::$wechatMsg['reseedSuccess']++;
                             continue;
                         } else {
                             // 失败的种子
-                            wlog($url."\n",'reseedError');
+                            wlog($url."\n", 'reseedError');
                             // 失败累加
                             self::$wechatMsg['reseedError']++;
                             continue;

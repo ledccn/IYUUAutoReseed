@@ -124,8 +124,7 @@ class Table
         $this->rows = $rows;
         $this->cellAlign = $align;
 
-        foreach ($rows as $row)
-        {
+        foreach ($rows as $row) {
             $this->checkColWidth($row);
         }
     }
@@ -138,12 +137,9 @@ class Table
      */
     protected function checkColWidth($row)
     {
-        if (is_array($row))
-        {
-            foreach ($row as $key => $cell)
-            {
-                if (!isset($this->colWidth[$key]) || strlen($cell) > $this->colWidth[$key])
-                {
+        if (is_array($row)) {
+            foreach ($row as $key => $cell) {
+                if (!isset($this->colWidth[$key]) || strlen($cell) > $this->colWidth[$key]) {
                     $this->colWidth[$key] = strlen($cell);
                 }
             }
@@ -159,12 +155,9 @@ class Table
      */
     public function addRow($row, $first = false)
     {
-        if ($first)
-        {
+        if ($first) {
             array_unshift($this->rows, $row);
-        }
-        else
-        {
+        } else {
             $this->rows[] = $row;
         }
 
@@ -193,8 +186,7 @@ class Table
         $style = $this->getStyle($pos);
         $array = [];
 
-        foreach ($this->colWidth as $width)
-        {
+        foreach ($this->colWidth as $width) {
             $array[] = str_repeat($style[1], $width + 2);
         }
 
@@ -211,17 +203,14 @@ class Table
         $style = $this->getStyle('cell');
         $content = $this->renderSeparator('top');
 
-        foreach ($this->header as $key => $header)
-        {
+        foreach ($this->header as $key => $header) {
             $array[] = ' ' . str_pad($header, $this->colWidth[$key], $style[1], $this->headerAlign);
         }
 
-        if (!empty($array))
-        {
+        if (!empty($array)) {
             $content .= $style[0] . implode(' ' . $style[2], $array) . ' ' . $style[3] . PHP_EOL;
 
-            if ($this->rows)
-            {
+            if ($this->rows) {
                 $content .= $this->renderSeparator('middle');
             }
         }
@@ -231,12 +220,9 @@ class Table
 
     protected function getStyle($style)
     {
-        if ($this->format[$this->style])
-        {
+        if ($this->format[$this->style]) {
             $style = $this->format[$this->style][$style];
-        }
-        else
-        {
+        } else {
             $style = [' ', ' ', ' ', ' '];
         }
 
@@ -251,8 +237,7 @@ class Table
      */
     public function render($dataList = [])
     {
-        if ($dataList)
-        {
+        if ($dataList) {
             $this->setRows($dataList);
         }
 
@@ -260,35 +245,26 @@ class Table
         $content = $this->renderHeader();
         $style = $this->getStyle('cell');
 
-        if ($this->rows)
-        {
-            foreach ($this->rows as $row)
-            {
-                if (is_string($row) && '-' === $row)
-                {
+        if ($this->rows) {
+            foreach ($this->rows as $row) {
+                if (is_string($row) && '-' === $row) {
                     $content .= $this->renderSeparator('middle');
-                }
-                elseif (is_scalar($row))
-                {
+                } elseif (is_scalar($row)) {
                     $content .= $this->renderSeparator('cross-top');
                     $array = str_pad($row, 3 * (count($this->colWidth) - 1) + array_reduce($this->colWidth, function ($a, $b) {
-                            return $a + $b;
-                        }));
+                        return $a + $b;
+                    }));
 
                     $content .= $style[0] . ' ' . $array . ' ' . $style[3] . PHP_EOL;
                     $content .= $this->renderSeparator('cross-bottom');
-                }
-                else
-                {
+                } else {
                     $array = [];
 
-                    foreach ($row as $key => $val)
-                    {
+                    foreach ($row as $key => $val) {
                         $array[] = ' ' . str_pad($val, $this->colWidth[$key], ' ', $this->cellAlign);
                     }
 
                     $content .= $style[0] . implode(' ' . $style[2], $array) . ' ' . $style[3] . PHP_EOL;
-
                 }
             }
         }

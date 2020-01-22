@@ -45,7 +45,7 @@ if (is_file(ROOT_PATH . "/config/sites.json")) {
 require_once ROOT_PATH . '/vendor/autoload.php';
 
 global $argv;
-$start_file = str_replace("\\","/",trim($argv[0]));
-if( substr($start_file,-8)==="init.php" ){
+$start_file = str_replace("\\", "/", trim($argv[0]));
+if (substr($start_file, -8)==="init.php") {
     require_once __DIR__ . '/iyuu.php';
 }

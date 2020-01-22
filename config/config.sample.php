@@ -43,6 +43,24 @@ return array(
                 '/sda1' => '/volume1',
             ),
         ),
+        'filter' => array(
+            'size'=>array(
+                'min'	=>	'1GB',
+                'max'	=>	'280GB',
+            ),
+            'seeders'=>array(
+                'min'	=>	1,
+                'max'	=>	3,
+            ),
+            'leechers'=>array(
+                'min'	=>	0,
+                'max'	=>	10000,
+            ),
+            'completed'=>array(
+                'min'	=>	0,
+                'max'	=>	10000,
+            ),
+        ),
         'CONNECTTIMEOUT'=> 60,
         'TIMEOUT'       => 600,
     ),

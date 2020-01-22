@@ -198,16 +198,17 @@ function convertToMB($from)
 
 /**
  * 字节数Byte转换为KB、MB、GB、TB
- * 
+ *
  */
-function getFilesize($num){
+function getFilesize($num)
+{
     $p = 0;
     $format='bytes';
-    if($num>0 && $num<1024){
+    if ($num>0 && $num<1024) {
         $p = 0;
         return number_format($num).' '.$format;
     }
-    if($num>=1024 && $num<pow(1024, 2)){
+    if ($num>=1024 && $num<pow(1024, 2)) {
         $p = 1;
         $format = 'KB';
     }
@@ -323,7 +324,8 @@ function filter($site = '', $torrent = array())
 /**
  * 日志记录函数
  */
-function wlog($data='',$name = '',$path = ''){
+function wlog($data='', $name = '', $path = '')
+{
     // 数据转换
     if (is_bool($data)) {
         $show_data=$data ? 'true' : 'false';
@@ -336,8 +338,8 @@ function wlog($data='',$name = '',$path = ''){
     $dir = $path===''? TORRENT_PATH . 'cache' . DS : $path;
     IFile::mkdir($dir);
     $myfile = $dir.$name.'.txt';
-    $file_pointer = @fopen($myfile,"a");
-	$worldsnum = @fwrite($file_pointer,$show_data);
+    $file_pointer = @fopen($myfile, "a");
+    $worldsnum = @fwrite($file_pointer, $show_data);
     @fclose($file_pointer);
     return $worldsnum;
 }
@@ -389,22 +391,23 @@ function oddFilter($var)
  */
 function evenFilter($var)
 {
-	// 返回$var最后一个二进制位，
+    // 返回$var最后一个二进制位，
     // 为0则保留（偶数的二进制的最后一位肯定是0）
-	return(!($var & 1));
+    return(!($var & 1));
 }
 
 /**
  * 发布员签名
  * 注意：同时配置iyuu.cn与secret时，优先使用secret。
  */
-function sign( $timestamp ){
-	global $configALL;
-	// 爱语飞飞
-	$token = isset($configALL['iyuu.cn']) && $configALL['iyuu.cn'] ? $configALL['iyuu.cn'] : '';
-	// 鉴权
-	$token = isset($configALL['secret']) && $configALL['secret'] ? $configALL['secret'] : $token;
-	return sha1($timestamp . $token);
+function sign($timestamp)
+{
+    global $configALL;
+    // 爱语飞飞
+    $token = isset($configALL['iyuu.cn']) && $configALL['iyuu.cn'] ? $configALL['iyuu.cn'] : '';
+    // 鉴权
+    $token = isset($configALL['secret']) && $configALL['secret'] ? $configALL['secret'] : $token;
+    return sha1($timestamp . $token);
 }
 
 /**
@@ -412,15 +415,17 @@ function sign( $timestamp ){
  * token算法：IYUU + uid + T + sha1(openid+time+盐)
  * @param string $token		用户请求token
  */
-function getUid($token){
-	//验证是否IYUU开头，strpos($token,'T')<15,token总长度小于60(40+10+5)
-	return (strlen($token)<60)&&(strpos($token,'IYUU')===0)&&(strpos($token,'T')<15) ? substr($token,4,strpos($token,'T')-4): false;
+function getUid($token)
+{
+    //验证是否IYUU开头，strpos($token,'T')<15,token总长度小于60(40+10+5)
+    return (strlen($token)<60)&&(strpos($token, 'IYUU')===0)&&(strpos($token, 'T')<15) ? substr($token, 4, strpos($token, 'T')-4): false;
 }
 
 /**
  * 显示支持的站点列表
  */
-function ShowTableSites($dir = 'Protocols',$filter = array()){
+function ShowTableSites($dir = 'Protocols', $filter = array())
+{
     // 过滤的文件
     switch ($dir) {
         case 'Protocols':
@@ -434,31 +439,30 @@ function ShowTableSites($dir = 'Protocols',$filter = array()){
             break;
     }
     $data = [];
-	$i = $j = $k = 0;
-	foreach(glob(APP_PATH.$dir.DS.'*.php') as $key => $start_file)
-	{
-		$start_file = str_replace("\\","/",$start_file);
-		$offset = strripos($start_file,'/');
-		if ($offset===false) {
-			$start_file = substr($start_file,0,-4);
-		} else {
-			$start_file = substr($start_file,$offset+1,-4);
+    $i = $j = $k = 0;
+    foreach (glob(APP_PATH.$dir.DS.'*.php') as $key => $start_file) {
+        $start_file = str_replace("\\", "/", $start_file);
+        $offset = strripos($start_file, '/');
+        if ($offset===false) {
+            $start_file = substr($start_file, 0, -4);
+        } else {
+            $start_file = substr($start_file, $offset+1, -4);
         }
         // 过滤示例、过滤解码接口
-		if (in_array($start_file, $filter)) {
-			continue;
+        if (in_array($start_file, $filter)) {
+            continue;
         }
         // 控制多少列
-		if ($i > 4) {
-			$k++;
-			$i = 0;
+        if ($i > 4) {
+            $k++;
+            $i = 0;
         }
         $i++;
-		$j++;
-		$data[$k][] = $j.". ".$start_file;		
-	}
-	//输出表格
-	$table = new Table();
-	$table->setRows($data);
-	echo($table->render());
+        $j++;
+        $data[$k][] = $j.". ".$start_file;
+    }
+    //输出表格
+    $table = new Table();
+    $table->setRows($data);
+    echo($table->render());
 }
