@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32806a4860870f6306b69cf349584387",
+    "content-hash": "10281f19c929443b7db18d1ab159ec63",
     "packages": [
         {
             "name": "curl/curl",
@@ -66,58 +66,6 @@
                 "dot"
             ],
             "time": "2018-12-04T19:47:03+00:00"
-        },
-        {
-            "name": "owner888/phpspider",
-            "version": "v2.1.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/owner888/phpspider.git",
-                "reference": "e6021148adec201418c16ba26f39bc013ba5b4d9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/owner888/phpspider/zipball/e6021148adec201418c16ba26f39bc013ba5b4d9",
-                "reference": "e6021148adec201418c16ba26f39bc013ba5b4d9",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "php": ">=5.5.0"
-            },
-            "suggest": {
-                "ext-pcntl、ext-redis": "For better performance. "
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "phpspider\\": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Seatle Yang",
-                    "email": "seatle@foxmail.com",
-                    "homepage": "http://www.phpspider.org",
-                    "role": "Developer"
-                }
-            ],
-            "description": "The PHPSpider Framework.",
-            "homepage": "http://www.phpspider.org",
-            "keywords": [
-                "framework",
-                "phpspider"
-            ],
-            "time": "2018-08-15T08:04:29+00:00"
         }
     ],
     "packages-dev": [],
@@ -126,6 +74,10 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-curl": "*"
+    },
     "platform-dev": []
 }

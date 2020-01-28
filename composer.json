@@ -3,7 +3,6 @@
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-curl": "*",
-    "owner888/phpspider": "^2.1",
     "curl/curl": "^2.2"
   },
   "autoload": {
