@@ -10,7 +10,7 @@ define('TORRENT_PATH', ROOT_PATH.DS.'torrent'.DS);
 
 // 严格开发模式
 error_reporting(E_ALL);
-#ini_set('display_errors', 1);
+ini_set('display_errors', 1);
 
 // 永不超时
 ini_set('max_execution_time', 0);
@@ -27,7 +27,7 @@ if (PHP_SAPI != 'cli') {
 
 // 设置时区
 date_default_timezone_set('Asia/Shanghai');
-
+echo microtime(true).' 环境变量初始化完成！'.PHP_EOL;
 // 系统配置
 if (file_exists(ROOT_PATH."/config/config.php")) {
     // 配置（全局变量）
@@ -36,14 +36,16 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
     // 示例配置
     $configALL = require_once ROOT_PATH . '/config/config.sample.php';
 }
+echo microtime(true).' 全局配置载入完成！'.PHP_EOL;
 // 读取支持列表
 if (is_file(ROOT_PATH . "/config/sites.json")) {
     $sitesJson = file_get_contents(ROOT_PATH . "/config/sites.json");
     $configALL['sitesALL'] = json_decode($sitesJson, true);
+    echo microtime(true).' 支持站点JSON载入完成！'.PHP_EOL;
 }
 
 require_once ROOT_PATH . '/vendor/autoload.php';
-
+echo microtime(true).' composer依赖载入完成！'.PHP_EOL;
 global $argv;
 $start_file = str_replace("\\", "/", trim($argv[0]));
 if (substr($start_file, -8)==="init.php") {
