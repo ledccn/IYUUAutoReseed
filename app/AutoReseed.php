@@ -346,18 +346,18 @@ class AutoReseed
                             $id = $result->arguments->torrent_added->id;
                             $name = $result->arguments->torrent_added->name;
                         }
-                        print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n";
                         if ($is_url) {
                             print "种子：".$torrent. "\n";
                         }
+                        print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n";
                         print "名字：".$name."\n\n";
                         return true;
                     } else {
                         $errmsg = isset($result->result) ? $result->result : '未知错误，请稍后重试！';
-                        print "-----RPC添加种子任务，失败 [{$errmsg}] \n";
                         if ($is_url) {
                             print "种子：".$torrent. "\n";
                         }
+                        print "-----RPC添加种子任务，失败 [{$errmsg}] \n\n";                        
                     }
                     break;
                 case 'qBittorrent':
@@ -370,6 +370,9 @@ class AutoReseed
                         $extra_options['filename'] = rand(1, 4294967200).'.torrent';
                         $result = self::$links[$rpcKey]['rpc']->add_metainfo($torrent, $save_path, $extra_options);	// 种子元数据添加下载任务
                     }
+                    if ($is_url) {
+                        print "种子：".$torrent. "\n";
+                    }
                     if ($result === 'Ok.') {
                         print "********RPC添加下载任务成功 [{$result}] \n\n";
                         return true;
@@ -378,7 +381,7 @@ class AutoReseed
                     }
                     break;
                 default:
-                    echo '[ERROR] '.$type;
+                    echo '[ERROR] '.$type. PHP_EOL. PHP_EOL;
                     break;
             }
         } catch (\Exception $e) {
@@ -396,20 +399,15 @@ class AutoReseed
         $resArray = array();
         // 签名
         $hashArray['timestamp'] = time();
-        // 爱语飞飞token
         $hashArray['sign'] = Oauth::getSign();
         $hashArray['version'] = self::VER;
         // 写请求日志
         wlog($hashArray, 'hashString');
-
-        if (is_null(self::$move)) {
-            self::reseed($hashArray);
-            self::wechatMessage();
-        } else {
-            self::reseed($hashArray);
-            self::wechatMessage();
+        if ( self::$move!==null ) {
             self::move($hashArray);
-        }
+        } 
+        self::reseed($hashArray);
+        self::wechatMessage();
     }
 
     /**
@@ -631,7 +629,9 @@ class AutoReseed
         // 发起请求
         echo "正在提交转移信息…… \n";
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['move'], $hashArray);
-        $resArray = json_decode($res->response, true);    
+        $resArray = json_decode($res->response, true);
+        // 写日志
+        wlog($resArray, 'move');
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
             echo "转移数据返回：成功！！！ \n\n";
@@ -640,22 +640,20 @@ class AutoReseed
             echo '-----转移请求失败，原因：' .$errmsg. " \n\n";
             exit(1);
         }
-        // 写日志
-        wlog($resArray, 'move');
         // 可辅种站点信息
         $sites = $resArray['sites'];
         // 支持站点数量
         #self::$wechatMsg['sitesCount'] = count($sites);
         // 按客户端移动 开始
         foreach (self::$links as $k => $v) {
-            if (empty($resArray['clients_'.$k])) {
-                echo "clients_".$k."没有查询到可辅种数据 \n\n";
-                continue;
-            }
             if (self::$move!=null && self::$move[0] == $k){
                 echo "clients_".$k."是目标转移客户端，避免冲突，已跳过！ \n\n";
                 continue;
             }
+            if (empty($resArray['clients_'.$k])) {
+                echo "clients_".$k."没有查询到可转移数据 \n\n";
+                continue;
+            }            
             $infohash_Dir = $move = array();
             // info_hash与下载目录对应表
             $infohash_Dir = self::$links[$k]['hash'];
@@ -846,7 +844,7 @@ class AutoReseed
             case 1:         // 减
                 foreach ($pathArray as $key => $val) {
                     if ( strpos($path, $key)===0 ) {
-                        return str_replace($key, '', $path, 1);
+                        return substr($path, strlen($key));
                     }
                 }
                 return $path;
@@ -861,7 +859,7 @@ class AutoReseed
             case 3:         // 替换
                 foreach ($pathArray as $key => $val) {
                     if ( strpos($path, $key)===0 ) {
-                        return str_replace($key, $val, $path, 1);
+                        return $val . substr($path, strlen($key));
                     }
                 }
                 return $path;
