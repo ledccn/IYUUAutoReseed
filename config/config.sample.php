@@ -7,8 +7,9 @@
  * IYUU自动辅种工具--如何下载最新源码？ https://www.iyuu.cn/archives/338/
  * IYUU自动辅种工具--合作站点鉴权配置说明 https://www.iyuu.cn/archives/337/
  * IYUU自动下载种子之RSS订阅使用教程 https://www.iyuu.cn/archives/349/
+ * IYUU自动转移做种客户端-使用教程 https://www.iyuu.cn/archives/351/
     脚本仓库下载法：
-    github：git clone https://github.com/ledccn/IYUUAutoReseed
+    git clone https://github.com/ledccn/IYUUAutoReseed
     cd IYUUAutoReseed
     composer install
  */
@@ -422,6 +423,13 @@ return array(
     ),
     // byr 序号：44	北邮
     'byr'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+    ),
+    // CCFBits 序号：45
+    'ccfbits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
