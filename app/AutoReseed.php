@@ -194,7 +194,7 @@ class AutoReseed
                             $client = new qBittorrent($v['host'], $v['username'], $v['password']);
                             break;
                         default:
-                            echo '[ERROR] '.$v['type'];
+                            echo '[Links ERROR] '.$v['type'];
                             exit(1);
                             break;
                     }
@@ -205,10 +205,10 @@ class AutoReseed
                     print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
                     // 检查是否转移种子的做种客户端？
                     if (isset($v['move']) && $v['move'] && is_null(self::$move)) {
-                        self::$move = array($k,$v['type']);
+                        self::$move = array($k,$v['move']);
                     }
                 } catch (\Exception $e) {
-                    echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
+                    echo '[Links ERROR] ' . $e->getMessage() . PHP_EOL;
                     exit(1);
                 }
             }
@@ -416,6 +416,14 @@ class AutoReseed
     public static function reseed($hashArray = array()){
         global $configALL;
         $sites = array();
+        // 前置过滤
+        if ( self::$move!==null && self::$move[1]===2 ) {
+            foreach ($hashArray['hash'] as $key => $json) {
+                if ($key!==self::$move[0]) {
+                    $hashArray['hash'][$key] = '[]';
+                }
+            }
+        }
         // 发起请求
         echo "正在提交辅种信息…… \n";
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);

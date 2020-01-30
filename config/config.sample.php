@@ -33,6 +33,7 @@ return array(
                 'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
                 'username'	=>	'',
                 'password'	=>	'',
+                #'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义，4未定义
             ),
             # 结束
             # 开始
