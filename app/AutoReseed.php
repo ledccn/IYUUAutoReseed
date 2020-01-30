@@ -46,7 +46,7 @@ class AutoReseed
      * cookie检查
      * @var array
      */
-    public static $cookieCheck = ['hdchina','hdcity'];
+    public static $cookieCheck = ['hdchina','hdcity','ccfbits'];
     /**
      * 缓存路径
      * @var string
@@ -567,6 +567,39 @@ class AutoReseed
                                 // 城市下载种子时会302转向
                                 $url = download($url, $cookie, $userAgent);
                                 break;
+                            case 'ccfbits':
+                                $_url = 'http://' .$sites[$sitesID]['base_url']. '/' .$download_page;
+                                $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
+                                $userAgent = $configALL['default']['userAgent'];
+                                print "种子：".$_url. "\n";
+                                // 评论url
+                                $commentUrl = 'http://' .$sites[$sitesID]['base_url']. '/comment.php?action=add';
+                                // 评论数据
+                                $data = ['谢谢','谢谢分享','感谢发布者','谢谢分享!','谢谢分享。','感谢分享','感谢分享！','感谢分享。','感谢','谢谢发布者'];
+                                $conut = count($data)-1;
+                                $commentData = [
+                                    'body' => $data[mt_rand(0, $conut)],
+                                    'tid'  => $value['torrent_id'],
+                                ];
+                                if (isset($configALL[$siteName]['comment'])) {
+                                    // 自动评论
+                                    self::$curl->post($commentUrl, $commentData);
+                                    sleep(mt_rand(2, 3));
+                                    $url = download($_url, $cookie, $userAgent);
+                                }else {
+                                    $url = download($_url, $cookie, $userAgent);
+                                    // 检查是否需要自动评论
+                                    if (strpos($url, '必须填写种子评论后才能下载该种子') != false) {
+                                        echo "当前站点您的等级太低，已启用自动评论下载种子功能 \n";
+                                        ff($siteName. '站点，辅种时已启用自动评论');
+                                        $configALL[$siteName]['comment'] = 1;
+                                        //自动评论
+                                        self::$curl->post($commentUrl, $commentData);
+                                        sleep(mt_rand(2, 3));
+                                        $url = download($_url, $cookie, $userAgent);
+                                    }
+                                }
+                                break;
                             default:
                                 // 默认站点：推送给下载器种子URL链接
                                 break;
@@ -894,6 +927,9 @@ class AutoReseed
                     $ip_type = $configALL[$site]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
                 }
                 $url = $_url."&passkey=". $configALL[$site]['passkey'] . $ip_type. "&https=1";
+                break;
+            case 'ccfbits':
+                $url = $_url;
                 break;
             default:
                 $url = $_url."&passkey=". $configALL[$site]['passkey'];
