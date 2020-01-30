@@ -417,9 +417,9 @@ class AutoReseed
         global $configALL;
         $sites = array();
         // 前置过滤
-        if ( self::$move!==null && self::$move[1]===2 ) {
+        if ( self::$move!==null && self::$move[1]==2 ) {
             foreach ($hashArray['hash'] as $key => $json) {
-                if ($key!==self::$move[0]) {
+                if ( $key != 'clients_'.self::$move[0] ) {
                     $hashArray['hash'][$key] = '[]';
                 }
             }
@@ -581,9 +581,14 @@ class AutoReseed
                                     'body' => $data[mt_rand(0, $conut)],
                                     'tid'  => $value['torrent_id'],
                                 ];
+                                $curl = new Curl();
+                                $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
+                                $curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
+                                $curl->setOpt(CURLOPT_COOKIE, $cookie);
+                                $curl->setUserAgent($userAgent);
                                 if (isset($configALL[$siteName]['comment'])) {
                                     // 自动评论
-                                    self::$curl->post($commentUrl, $commentData);
+                                    $curl->post($commentUrl, $commentData);
                                     sleep(mt_rand(2, 3));
                                     $url = download($_url, $cookie, $userAgent);
                                 }else {
@@ -594,11 +599,12 @@ class AutoReseed
                                         ff($siteName. '站点，辅种时已启用自动评论');
                                         $configALL[$siteName]['comment'] = 1;
                                         //自动评论
-                                        self::$curl->post($commentUrl, $commentData);
+                                        $curl->post($commentUrl, $commentData);
                                         sleep(mt_rand(2, 3));
                                         $url = download($_url, $cookie, $userAgent);
                                     }
                                 }
+                                $curl->close();
                                 break;
                             default:
                                 // 默认站点：推送给下载器种子URL链接
