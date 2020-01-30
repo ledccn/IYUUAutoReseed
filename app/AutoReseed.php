@@ -77,7 +77,7 @@ class AutoReseed
      */
     public static $ExitCode = 0;
     /**
-     * 客户端转移做种 状态码[请把transmission配置为第一个客户端]
+     * 客户端转移做种
      * @var array
      */
     public static $move = null;
@@ -105,7 +105,7 @@ class AutoReseed
         self::ShowTableSites();
         global $configALL;
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
-        echo "程序正在初始化运行参数... \n";
+        echo "程序正在初始化运行参数... ".PHP_EOL;
         // 递归删除上次历史记录
         IFile::rmdir(self::$cacheDir, true);
         // 建立目录
@@ -128,12 +128,12 @@ class AutoReseed
         $list[] = 'gitee 源码仓库：https://gitee.com/ledc/IYUUAutoReseed';
         $list[] = 'github源码仓库：https://github.com/ledccn/IYUUAutoReseed';
         $list[] = '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki';
-        $list[] = "QQ群：859882209 【IYUU自动辅种交流】 \n";
+        $list[] = "QQ群：859882209 【IYUU自动辅种交流】".PHP_EOL;
         foreach ($list as $key => $value) {
             echo $value.PHP_EOL;
         }
         // 发起请求
-        echo "正在连接IYUUAutoReseed服务器，查询支持列表…… \n";
+        echo "正在连接IYUUAutoReseed服务器，查询支持列表…… ".PHP_EOL;
         $curl = new Curl();
         $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
         $curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
@@ -182,7 +182,7 @@ class AutoReseed
                 // 跳过未配置的客户端
                 if (empty($v['username']) || empty($v['password'])) {
                     unset(self::$clients[$k]);
-                    echo "clients_".$k." 用户名或密码未配置，已跳过 \n\n";
+                    echo "clients_".$k." 用户名或密码未配置，已跳过".PHP_EOL.PHP_EOL;
                     continue;
                 }
                 try {
@@ -235,11 +235,11 @@ class AutoReseed
                         $result = self::$links[$k]['rpc']->get($ids, $fields);
                         if (empty($result->result) || $result->result != 'success') {
                             // 获取种子列表 失败
-                            echo "获取种子列表失败，原因可能是transmission暂时无响应，请稍后重试！ \n";
+                            echo "获取种子列表失败，原因可能是transmission暂时无响应，请稍后重试！".PHP_EOL;
                             break;
                         }
                         if (empty($result->arguments->torrents)) {
-                            echo "未获取到数据，请多多保种，然后重试！ \n";
+                            echo "未获取到数据，请多多保种，然后重试！".PHP_EOL;
                             break;
                         }
                         // 对象转数组
@@ -247,7 +247,7 @@ class AutoReseed
                         // 过滤，只保留正常做种
                         $res = array_filter($res, "filterStatus");
                         if (empty($res)) {
-                            echo "未获取到需要辅种的数据，请多多保种，然后重试！ \n";
+                            echo "未获取到需要辅种的数据，请多多保种，然后重试！".PHP_EOL;
                             break;
                         }
                         // 提取数组：hashString
@@ -273,13 +273,13 @@ class AutoReseed
                         $result = self::$links[$k]['rpc']->torrentList();
                         $res = json_decode($result, true);
                         if (empty($res)) {
-                            echo "未获取到数据，请多多保种，然后重试！ \n";
+                            echo "未获取到数据，请多多保种，然后重试！".PHP_EOL;
                             break;
                         }
                         // 过滤，只保留正常做种
                         $res = array_filter($res, "qbfilterStatus");
                         if (empty($res)) {
-                            echo "未获取到需要辅种的数据，请多多保种，然后重试！ \n";
+                            echo "未获取到需要辅种的数据，请多多保种，然后重试！".PHP_EOL;
                             break;
                         }
                         // 提取数组：hashString
@@ -302,12 +302,12 @@ class AutoReseed
                         #p(self::$links[$k]['hash']);exit;
                         break;
                     default:
-                        echo '[ERROR] '.$v['type'];
+                        echo '[get ERROR] '.$v['type'] . PHP_EOL;
                         exit(1);
                         break;
                 }
             } catch (\Exception $e) {
-                echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
+                echo '[get ERROR] ' . $e->getMessage() . PHP_EOL;
                 exit(1);
             }
         }
@@ -347,17 +347,18 @@ class AutoReseed
                             $name = $result->arguments->torrent_added->name;
                         }
                         if ($is_url) {
-                            print "种子：".$torrent. "\n";
+                            print "种子：".$torrent . PHP_EOL;
                         }
-                        print "********RPC添加下载任务成功 [{$result->result}] (id=$id) \n";
-                        print "名字：".$name."\n\n";
+                        print "名字：".$name . PHP_EOL;
+                        print "********RPC添加下载任务成功 [{$result->result}] (id=$id)".PHP_EOL.PHP_EOL;
+                        
                         return true;
                     } else {
                         $errmsg = isset($result->result) ? $result->result : '未知错误，请稍后重试！';
                         if ($is_url) {
-                            print "种子：".$torrent. "\n";
+                            print "种子：".$torrent . PHP_EOL;
                         }
-                        print "-----RPC添加种子任务，失败 [{$errmsg}] \n\n";                        
+                        print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;                        
                     }
                     break;
                 case 'qBittorrent':
@@ -371,13 +372,13 @@ class AutoReseed
                         $result = self::$links[$rpcKey]['rpc']->add_metainfo($torrent, $save_path, $extra_options);	// 种子元数据添加下载任务
                     }
                     if ($is_url) {
-                        print "种子：".$torrent. "\n";
+                        print "种子：".$torrent.PHP_EOL;
                     }
                     if ($result === 'Ok.') {
-                        print "********RPC添加下载任务成功 [{$result}] \n\n";
+                        print "********RPC添加下载任务成功 [{$result}]".PHP_EOL.PHP_EOL;
                         return true;
                     } else {
-                        print "-----RPC添加种子任务，失败 [{$result}] \n\n";
+                        print "-----RPC添加种子任务，失败 [{$result}]".PHP_EOL.PHP_EOL;
                     }
                     break;
                 default:
@@ -425,17 +426,17 @@ class AutoReseed
             }
         }
         // 发起请求
-        echo "正在提交辅种信息…… \n";
+        echo "正在提交辅种信息……".PHP_EOL;
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
         $resArray = json_decode($res->response, true);
         // 写返回日志
         wlog($resArray, 'reseed');
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
-            echo "辅种信息提交成功！！！ \n\n";
+            echo "辅种信息提交成功！！！".PHP_EOL.PHP_EOL;
         } else {
             $errmsg = isset($resArray['errmsg']) ? $resArray['errmsg'] : '远端服务器无响应，请稍后重试！';
-            echo '-----辅种失败，原因：' .$errmsg. " \n\n";
+            echo '-----辅种失败，原因：' .$errmsg.PHP_EOL.PHP_EOL;
             exit(1);
         }
         // 可辅种站点信息
@@ -446,7 +447,7 @@ class AutoReseed
         // 按客户端循环辅种 开始
         foreach (self::$links as $k => $v) {
             if (empty($resArray['clients_'.$k])) {
-                echo "clients_".$k."没有查询到可辅种数据 \n\n";
+                echo "clients_".$k."没有查询到可辅种数据".PHP_EOL.PHP_EOL;
                 continue;
             }
             $reseed = $infohash_Dir = array();
@@ -470,43 +471,43 @@ class AutoReseed
                     // 页面规则
                     $download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
                     $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
-                    echo "clients_".$k."正在辅种... {$siteName} \n";
+                    echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
                     /**
                      * 前置检测
                      */
                     // passkey检测
                     if (empty($configALL[$siteName]['passkey'])) {
-                        echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！ \n\n";
+                        echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedSkip']++;
                         continue;
                     }
                     // cookie检测
                     if ( in_array($siteName, self::$cookieCheck) && empty($configALL[$siteName]['cookie']) ) {
-                        echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' . "\n\n";
+                        echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' .PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedSkip']++;
                         continue;
                     }
                     // 流控检测
                     if ( isset($configALL[$siteName]['limit']) ) {
-                        echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url} \n\n";
+                        echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL;
                         // 流控日志
                         if ($siteName == 'hdchina') {
                             $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
                             $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
                         }
-                        wlog('clients_'.$k."\n".$downloadDir."\n"."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url} \n\n", 'reseedLimit');
+                        wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL, 'reseedLimit');
                         self::$wechatMsg['reseedSkip']++;
                         continue;
                     }
                     // 重复做种检测
                     if ( isset($value['info_hash']) && isset($infohash_Dir[$value['info_hash']]) ) {
-                        echo '-------与客户端现有种子重复：'.$_url."\n\n";
+                        echo '-------与客户端现有种子重复：'.$_url.PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedRepeat']++;
                         continue;
                     }
                     // 历史添加检测
                     if ( is_file(self::$cacheHash . $value['info_hash'].'.txt') ) {
-                        echo '-------当前种子上次辅种已成功添加，已跳过！ '.$_url."\n\n";
+                        echo '-------当前种子上次辅种已成功添加，已跳过！ '.$_url.PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedPass']++;
                         continue;
                     }
@@ -530,7 +531,7 @@ class AutoReseed
                                 $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
                                 $details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
                                 $details_html = download($details_url, $cookie, $userAgent);
-                                print "种子详情页：".$details_url. "\n";
+                                print "种子详情页：".$details_url.PHP_EOL;
                                 // 提取种子下载地址
                                 $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
                                 $offset = strpos($details_html, $download_page);
@@ -538,10 +539,10 @@ class AutoReseed
                                 // 种子地址
                                 $_url = substr($urlTemp, 0, strpos($urlTemp, '">'));
                                 $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
-                                print "种子下载页：".$_url. "\n";
+                                print "种子下载页：".$_url.PHP_EOL;
                                 $url = download($_url, $cookie, $userAgent);
                                 if (strpos($url, '系统检测到过多的种子下载请求') != false) {
-                                    echo "当前站点触发人机验证，已加入排除列表 \n";
+                                    echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
                                     ff($siteName. '站点，辅种时触发人机验证！');
                                     $configALL[$siteName]['limit'] = 1;
                                     self::$noReseed[] = 'hdchina';
@@ -550,7 +551,7 @@ class AutoReseed
                             case 'hdcity':
                                 $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
                                 $userAgent = $configALL['default']['userAgent'];
-                                print "种子：".$_url. "\n";
+                                print "种子：".$_url.PHP_EOL;
                                 if (isset($configALL[$siteName]['cuhash'])) {
                                     // 已获取cuhash
                                     # code...
@@ -590,14 +591,14 @@ class AutoReseed
                         // 添加成功的种子，以infohash为文件名，写入缓存
                         if ($ret) {
                             // 成功的种子
-                            wlog($url."\n", $value['info_hash'], self::$cacheHash);
-                            wlog($url."\n", 'reseedSuccess');
+                            wlog($url.PHP_EOL, $value['info_hash'], self::$cacheHash);
+                            wlog($url.PHP_EOL, 'reseedSuccess');
                             // 成功累加
                             self::$wechatMsg['reseedSuccess']++;
                             continue;
                         } else {
                             // 失败的种子
-                            wlog($url."\n", 'reseedError');
+                            wlog($url.PHP_EOL, 'reseedError');
                             // 失败累加
                             self::$wechatMsg['reseedError']++;
                             continue;
@@ -606,7 +607,7 @@ class AutoReseed
                         /**
                          *  不辅种
                          */
-                        echo '-------已跳过不辅种的站点：'.$_url."\n\n";
+                        echo '-------已跳过不辅种的站点：'.$_url.PHP_EOL.PHP_EOL;
                         // 按站点规范日志内容
                         switch ($siteName) {
                             case 'hdchina':
@@ -619,7 +620,7 @@ class AutoReseed
                                 break;
                         }
                         // 写入日志文件，供用户手动辅种
-                        wlog('clients_'.$k."\n".$downloadDir."\n".$url."\n".$details_url."\n\n", $siteName);
+                        wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$url.PHP_EOL.$details_url.PHP_EOL.PHP_EOL, $siteName);
                     }
                 }
             }
@@ -635,17 +636,17 @@ class AutoReseed
         // 前置过滤：2020年1月26日15:52:41
         self::hashFilter($hashArray['hash']);
         // 发起请求
-        echo "正在提交转移信息…… \n";
+        echo "正在提交转移信息……".PHP_EOL;
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['move'], $hashArray);
         $resArray = json_decode($res->response, true);
         // 写日志
         wlog($resArray, 'move');
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
-            echo "转移数据返回：成功！！！ \n\n";
+            echo "转移数据返回：成功！！！".PHP_EOL.PHP_EOL;
         } else {
             $errmsg = isset($resArray['errmsg']) ? $resArray['errmsg'] : '远端服务器无响应，请稍后重试！';
-            echo '-----转移请求失败，原因：' .$errmsg. " \n\n";
+            echo '-----转移请求失败，原因：' .$errmsg.PHP_EOL.PHP_EOL;
             exit(1);
         }
         // 可辅种站点信息
@@ -655,11 +656,11 @@ class AutoReseed
         // 按客户端移动 开始
         foreach (self::$links as $k => $v) {
             if (self::$move!=null && self::$move[0] == $k){
-                echo "clients_".$k."是目标转移客户端，避免冲突，已跳过！ \n\n";
+                echo "clients_".$k."是目标转移客户端，避免冲突，已跳过！".PHP_EOL.PHP_EOL;
                 continue;
             }
             if (empty($resArray['clients_'.$k])) {
-                echo "clients_".$k."没有查询到可转移数据 \n\n";
+                echo "clients_".$k."没有查询到可转移数据".PHP_EOL.PHP_EOL;
                 continue;
             }            
             $infohash_Dir = $move = array();
@@ -681,43 +682,43 @@ class AutoReseed
                 // 页面规则
                 $download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
                 $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
-                echo "clients_".$k."正在转移... {$siteName} \n";
+                echo "clients_".$k."正在转移... {$siteName}".PHP_EOL;
                 /**
                  * 前置检测
                  */
                 // passkey检测
                 if (empty($configALL[$siteName]['passkey'])) {
-                    echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！ \n\n";
+                    echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
                     #self::$wechatMsg['reseedSkip']++;
                     continue;
                 }
                 // cookie检测
                 if ( in_array($siteName, self::$cookieCheck) && empty($configALL[$siteName]['cookie']) ) {
-                    echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' . "\n\n";
+                    echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' .PHP_EOL.PHP_EOL;
                     #self::$wechatMsg['reseedSkip']++;
                     continue;
                 }
                 // 流控检测
                 if ( isset($configALL[$siteName]['limit']) ) {
-                    echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url} \n\n";
+                    echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL;
                     // 流控日志
                     if ($siteName == 'hdchina') {
                         $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
                         $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
                     }
-                    wlog('clients_'.$k."\n".$downloadDir."\n"."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url} \n\n", 'MoveLimit');
+                    wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL, 'MoveLimit');
                     #self::$wechatMsg['reseedSkip']++;
                     continue;
                 }
                 // 历史转移检测
                 if ( is_file(self::$cacheMove . $info_hash.'.txt') ) {
-                    echo '-------当前种子上次已成功转移，已跳过！ '.$_url."\n\n";
+                    echo '-------当前种子上次已成功转移，已跳过！ '.$_url.PHP_EOL.PHP_EOL;
                     #self::$wechatMsg['reseedPass']++;
                     continue;
                 }
                 // 不转移的站点检测
                 if ( in_array($siteName, self::$noMove) ) {
-                    echo '-------已跳过不转移的站点 ' .$siteName. '！！ ' . "\n\n";
+                    echo '-------已跳过不转移的站点 ' .$siteName. '！！ ' .PHP_EOL.PHP_EOL;
                     #self::$wechatMsg['reseedSkip']++;
                     continue;
                 }
@@ -737,7 +738,7 @@ class AutoReseed
                         $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
                         $details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
                         $details_html = download($details_url, $cookie, $userAgent);
-                        print "种子详情页：".$details_url. "\n";
+                        print "种子详情页：".$details_url.PHP_EOL;
                         // 提取种子下载地址
                         $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
                         $offset = strpos($details_html, $download_page);
@@ -745,10 +746,10 @@ class AutoReseed
                         // 种子地址
                         $_url = substr($urlTemp, 0, strpos($urlTemp, '">'));
                         $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
-                        print "种子下载页：".$_url. "\n";
+                        print "种子下载页：".$_url.PHP_EOL;
                         $url = download($_url, $cookie, $userAgent);
                         if (strpos($url, '系统检测到过多的种子下载请求') != false) {
-                            echo "当前站点触发人机验证，已加入排除列表 \n";
+                            echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
                             ff($siteName. '站点，辅种时触发人机验证！');
                             $configALL[$siteName]['limit'] = 1;
                         }
@@ -756,7 +757,7 @@ class AutoReseed
                     case 'hdcity':
                         $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
                         $userAgent = $configALL['default']['userAgent'];
-                        print "种子：".$_url. "\n";
+                        print "种子：".$_url.PHP_EOL;
                         if (isset($configALL[$siteName]['cuhash'])) {
                             // 已获取cuhash
                             # code...
@@ -777,11 +778,11 @@ class AutoReseed
                         // 默认站点：推送给下载器种子URL链接
                         break;
                 }
-                echo "种子URL已推送给下载器，下载器正在下载种子... \n";
+                echo "种子URL已推送给下载器，下载器正在下载种子...".PHP_EOL;
                 // 实际路径与相对路径之间互转
                 $downloadDir = self::pathReplace($downloadDir);
                 if ( is_null($downloadDir) ) {
-                    die("全局配置的move数组内，type配置错误，请重新配置！！！ \n");
+                    die("全局配置的move数组内，type配置错误，请重新配置！！！".PHP_EOL);
                 }
                 $ret = false;
                 // 把拼接的种子URL，推送给下载器
@@ -803,14 +804,14 @@ class AutoReseed
                  */
                 if ($ret) {
                     // 转移成功的种子，以infohash为文件名，写入缓存
-                    wlog($url."\n", $info_hash, self::$cacheMove);
-                    wlog($url."\n", 'MoveSuccess');
+                    wlog($url.PHP_EOL, $info_hash, self::$cacheMove);
+                    wlog($url.PHP_EOL, 'MoveSuccess');
                     // 成功累加
                     #self::$wechatMsg['reseedSuccess']++;
                     continue;
                 } else {
                     // 失败的种子
-                    wlog($url."\n", 'MoveError');
+                    wlog($url.PHP_EOL, 'MoveError');
                     // 失败累加
                     #self::$wechatMsg['reseedError']++;
                     continue;
@@ -829,7 +830,7 @@ class AutoReseed
             if (empty($data))  continue;
             foreach ($data as $key => $info_hash) {
                 if ( is_file(self::$cacheMove . $info_hash.'.txt') ) {
-                    echo '-------当前种子上次已成功转移，前置过滤已跳过！ ' . "\n\n";
+                    echo '-------当前种子上次已成功转移，前置过滤已跳过！ ' .PHP_EOL.PHP_EOL;
                     unset($data[$key]);
                 }
             }
@@ -909,7 +910,7 @@ class AutoReseed
      */
     public static function wechatMessage()
     {
-        $br = "\r\n";
+        $br = PHP_EOL;
         $text = 'IYUU自动辅种-统计报表';
         $desp = '总做种：'.self::$wechatMsg['hashCount'] . '  [客户端正在做种的hash总数]' .$br;
         $desp .= '返回数据：'.self::$wechatMsg['reseedCount']. '  [服务器返回的可辅种数据]' .$br;
