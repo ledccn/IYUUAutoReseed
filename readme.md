@@ -32,7 +32,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits。
 
 ## 运行环境
-所有具备PHP运行环境的所有平台，例如：Linux、Windows、MacOS！
+具备PHP运行环境的所有平台，例如：Linux、Windows、MacOS！
 
 官方下载的记得开启crul、fileinfo、mbstring，这3个扩展。
 
@@ -43,8 +43,12 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
  - github仓库：https://github.com/ledccn/IYUUAutoReseed
  - 码云仓库：https://gitee.com/ledc/IYUUAutoReseed
 
+
 ## 使用方法
-详见Wiki： https://gitee.com/ledc/IYUUAutoReseed/wikis 
+详见Wiki：
+https://gitee.com/ledc/IYUUAutoReseed/wikis 
+https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
+
 
 ## 需求提交/错误反馈
  - 点击链接加入群聊【IYUU自动辅种交流】：[https://jq.qq.com/?_wv=1027&k=5JOfOlM][1]

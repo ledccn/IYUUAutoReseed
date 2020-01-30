@@ -79,7 +79,7 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 ## Windows安装PHP运行环境
 也可以去官方下载【https://www.php.net/downloads】，官方下载的记得开启`curl、fileinfo、mbstring`，这3个扩展。
 另外我打包了一份，下载地址：
-微云链接：https://share.weiyun.com/5EiXLfn 密码：ezsvnb
+微云链接：https://share.weiyun.com/5I13dek 密码：utcjsx
 下载回来是一个ZIP压缩包，解压到`D:\IYUUAutoReseed\`目录内，文件结构如图：
 ![编辑配置7.png][12]
 点击红框内`执行辅种`即可。
