@@ -107,11 +107,16 @@ class TransmissionRPC implements AbstractClientInterface
      * Default values for stream context
      * @var array
      */
-    private $default_context_opts = array('http' => array(
-        'user_agent' => self::HTTP_UA,
-        'timeout' => '60',    // Don't want to be too slow
-        'ignore_errors' => true,    // Leave the error parsing/handling to the code
-    )
+    private $default_context_opts = array(
+        'http' => array(
+            'user_agent' => self::HTTP_UA,
+            'timeout' => '60',    // Don't want to be too slow
+            'ignore_errors' => true,    // Leave the error parsing/handling to the code
+        ),
+        "ssl"=>array(
+            "verify_peer"=>false,
+            "verify_peer_name"=>false,
+        )
     );
 
     /**
@@ -714,10 +719,6 @@ class TransmissionRPC implements AbstractClientInterface
         // Setup authentication (if provided)
         if ($this->username && $this->password) {
             $contextopts['http']['header'] = sprintf("Authorization: Basic %s\r\n", base64_encode($this->username . ':' . $this->password));
-            $contextopts['http']['ssl'] = array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            );
         }
 
         if ($this->debug) {
