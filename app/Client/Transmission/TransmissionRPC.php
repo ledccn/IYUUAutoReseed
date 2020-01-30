@@ -369,7 +369,9 @@ class TransmissionRPC implements AbstractClientInterface
      */
     public function add_metainfo($torrent_metainfo, $save_path = '', $extra_options = array())
     {
-        $extra_options['download-dir'] = $save_path;
+        if (!empty($save_path)) {
+            $extra_options['download-dir'] = $save_path;
+        }
         $extra_options['metainfo'] = base64_encode($torrent_metainfo);
 
         return $this->request("torrent-add", $extra_options);
