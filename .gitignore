@@ -1,9 +1,9 @@
 /torrent
 /config/config.php
+/config/sites.json
 /php-7.2.12-nts
+/vendor
 /*.bat
 /*.sh
-/vendor
 .idea
 .php_cs.cache
-/config/sites.json
