@@ -7,3 +7,4 @@
 /*.sh
 .idea
 .php_cs.cache
+vendor
