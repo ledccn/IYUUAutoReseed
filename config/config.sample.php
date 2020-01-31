@@ -39,7 +39,7 @@ return array(
             # 开始
             array(
                 'type'	=>	'qBittorrent',	// 支持：transmission、qBittorrent
-                'host'	=>	'http://www.baidu.com:8083',
+                'host'	=>	'http://127.0.0.1:8083',
                 'username'	=>	'',
                 'password'	=>	'',
             ),
