@@ -21,7 +21,7 @@ class AutoReseed
      * 版本号
      * @var string
      */
-    const VER = '0.2.0';
+    const VER = '1.0.0';
     /**
      * RPC连接池
      * @var array
@@ -59,13 +59,15 @@ class AutoReseed
      * @var string
      * @var array
      */
-    public static $apiUrl = 'http://pt.iyuu.cn';
+    public static $apiUrl = 'http://api.iyuu.cn';
     public static $endpoints = array(
-        'add'    => '/api/add',
-        'update' => '/api/update',
-        'reseed' => '/api/reseed',
-        'move'   => '/api/move',
-        'login'  => '/login',
+        'add'     => '/api/add',
+        'update'  => '/api/update',
+        'reseed'  => '/api/reseed',
+        'infohash'=> '/api/infohash',
+        'sites'   => '/api/sites',
+        'move'    => '/api/move',
+        'login'   => '/user/login',
     );
     /**
      * curl
@@ -137,8 +139,9 @@ class AutoReseed
         $curl = new Curl();
         $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
         $curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
-        $res = $curl->post(self::$apiUrl);
-        $sites = json_decode($res->response, true);
+        $res = $curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign());
+        $rs = json_decode($res->response, true);
+        $sites = isset($rs['data']['sites']) && $rs['data']['sites'] ? $rs['data']['sites'] : false;
         // 数据写入本地
         if ($sites) {
             $json = array_column($sites, null, 'site');
@@ -149,6 +152,9 @@ class AutoReseed
             $worldsnum = @fwrite($file_pointer, $json);
             @fclose($file_pointer);
         } else {
+            if (isset($rs['msg']) && $rs['msg']) {
+                die($rs['msg']);
+            }
             die('远端服务器无响应，请稍后再试！！！');
         }
         $data = [];
@@ -399,8 +405,8 @@ class AutoReseed
     {
         $resArray = array();
         // 签名
-        $hashArray['timestamp'] = time();
         $hashArray['sign'] = Oauth::getSign();
+        $hashArray['timestamp'] = time();
         $hashArray['version'] = self::VER;
         // 写请求日志
         wlog($hashArray, 'hashString');
@@ -429,14 +435,15 @@ class AutoReseed
         // 发起请求
         echo "正在提交辅种信息……".PHP_EOL;
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
-        $resArray = json_decode($res->response, true);
+        $res = json_decode($res->response, true);
+        $resArray = isset($res['data']) && $res['data'] ? $res['data'] : array();
         // 写返回日志
-        wlog($resArray, 'reseed');
+        wlog($res, 'reseed');
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
             echo "辅种信息提交成功！！！".PHP_EOL.PHP_EOL;
         } else {
-            $errmsg = isset($resArray['errmsg']) ? $resArray['errmsg'] : '远端服务器无响应，请稍后重试！';
+            $errmsg = isset($res['msg']) && $res['msg'] ? $res['msg'] : '远端服务器无响应，请稍后重试！';
             echo '-----辅种失败，原因：' .$errmsg.PHP_EOL.PHP_EOL;
             exit(1);
         }
@@ -640,14 +647,15 @@ class AutoReseed
         // 发起请求
         echo "正在提交转移信息……".PHP_EOL;
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['move'], $hashArray);
-        $resArray = json_decode($res->response, true);
+        $res = json_decode($res->response, true);
+        $resArray = isset($res['data']) && $res['data'] ? $res['data'] : array();
         // 写日志
-        wlog($resArray, 'move');
+        wlog($res, 'move');
         // 判断返回值
         if (isset($resArray['errmsg']) && ($resArray['errmsg'] == 'ok')) {
             echo "转移数据返回：成功！！！".PHP_EOL.PHP_EOL;
         } else {
-            $errmsg = isset($resArray['errmsg']) ? $resArray['errmsg'] : '远端服务器无响应，请稍后重试！';
+            $errmsg = isset($res['msg']) && $res['msg'] ? $res['msg'] : '远端服务器无响应，请稍后重试！';
             echo '-----转移请求失败，原因：' .$errmsg.PHP_EOL.PHP_EOL;
             exit(1);
         }
