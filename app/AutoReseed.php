@@ -103,9 +103,12 @@ class AutoReseed
      */
     public static function init()
     {
+        global $configALL;
+        self::$curl = new Curl();
+        self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+        self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, false);
         // 显示支持站点列表
         self::ShowTableSites();
-        global $configALL;
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
         echo "程序正在初始化运行参数... ".PHP_EOL;
         // 递归删除上次历史记录
@@ -118,8 +121,6 @@ class AutoReseed
         self::links();
         // 合作站点自动注册鉴权
         Oauth::login(self::$apiUrl . self::$endpoints['login']);
-        self::$curl = new Curl();
-        self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
     }
 
     /**
@@ -134,12 +135,8 @@ class AutoReseed
         foreach ($list as $key => $value) {
             echo $value.PHP_EOL;
         }
-        // 发起请求
         echo "正在连接IYUUAutoReseed服务器，查询支持列表…… ".PHP_EOL;
-        $curl = new Curl();
-        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
-        $curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
-        $res = $curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign());
+        $res = self::$curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign());
         $rs = json_decode($res->response, true);
         $sites = isset($rs['data']['sites']) && $rs['data']['sites'] ? $rs['data']['sites'] : false;
         // 数据写入本地
@@ -432,7 +429,6 @@ class AutoReseed
                 }
             }
         }
-        // 发起请求
         echo "正在提交辅种信息……".PHP_EOL;
         $res = self::$curl->post(self::$apiUrl . self::$endpoints['reseed'], $hashArray);
         $res = json_decode($res->response, true);
@@ -869,7 +865,6 @@ class AutoReseed
                         return substr($path, strlen($key));
                     }
                 }
-                return $path;
                 break;
             case 2:         // 加
                 foreach ($pathArray as $key => $val) {
@@ -884,7 +879,6 @@ class AutoReseed
                         return $val . substr($path, strlen($key));
                     }
                 }
-                return $path;
                 break;
             default:
                 return $path;

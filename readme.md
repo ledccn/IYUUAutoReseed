@@ -49,6 +49,9 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 https://gitee.com/ledc/IYUUAutoReseed/wikis 
 https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
 
+## 接口文档
+http://api.iyuu.cn/docs.php?type=expand
+
 
 ## 需求提交/错误反馈
  - 点击链接加入群聊【IYUU自动辅种交流】：[https://jq.qq.com/?_wv=1027&k=5JOfOlM][1]
@@ -108,7 +111,7 @@ https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
 | 寒山先生 | ¥200元 | 2020年1月18日12:37 |
 | 小城流水 | ¥5元 | 2020年1月22日22:14 |
 | 国旗(未署名) | ¥8.8元 | 2020年1月22日23:28 |
-| 当下捐赠 | ¥100元 | 2020年1月28日1:45 |
+| 当下丶 | ¥100元 | 2020年1月28日1:45 |
 
 
 补充说明：
