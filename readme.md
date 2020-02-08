@@ -42,14 +42,16 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 ## 下载源码
  - github仓库：https://github.com/ledccn/IYUUAutoReseed
  - 码云仓库：https://gitee.com/ledc/IYUUAutoReseed
+ - 仓库下载的源码，缺少vendor目录，可以去群内下载；或者通过安装php包管理器composer，进到源码目录内执行命令：`composer install`，会自动帮你安装vendor目录。
 
 
 ## 使用方法
 详见Wiki：
 https://gitee.com/ledc/IYUUAutoReseed/wikis 
+
 https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
 
-## 接口文档
+## 接口开发文档
 http://api.iyuu.cn/docs.php?type=expand
 
 
