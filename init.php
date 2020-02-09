@@ -32,6 +32,13 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
 } else {
     // 示例配置
     $configALL = require_once ROOT_PATH . '/config/config.sample.php';
+    echo microtime(true).' 缺少config.php，已载入config.sample.php示例配置。'.PHP_EOL;
+    echo microtime(true).' 请把配置文件改名为config.php，以免后续版本升级覆盖配置！！！'.PHP_EOL;
+    $t = 30;
+    do {
+        echo microtime(true)." 请把配置文件改名为config.php，{$t}秒后继续...".PHP_EOL;
+        sleep(1);
+    } while (--$t > 0);
 }
 echo microtime(true).' 全局配置载入完成！'.PHP_EOL;
 // 读取支持列表
@@ -40,7 +47,7 @@ if (is_file(ROOT_PATH . "/config/sites.json")) {
     $configALL['sitesALL'] = json_decode($sitesJson, true);
     echo microtime(true).' 支持站点JSON载入完成！'.PHP_EOL;
 }
-
+echo microtime(true).' 正在加载composer包管理器...'.PHP_EOL;
 require_once ROOT_PATH . '/vendor/autoload.php';
 echo microtime(true).' composer依赖载入完成！'.PHP_EOL;
 global $argv;

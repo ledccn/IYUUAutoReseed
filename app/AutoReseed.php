@@ -359,7 +359,7 @@ class AutoReseed
                     } else {
                         $errmsg = isset($result->result) ? $result->result : '未知错误，请稍后重试！';
                         if ($is_url) {
-                            print "种子：".$torrent . PHP_EOL;
+                            print "种子：" . substr($torrent, 0, (strpos($torrent, 'passkey') ? strpos($torrent, 'passkey') : strlen($torrent))) . PHP_EOL;
                         }
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
@@ -375,7 +375,7 @@ class AutoReseed
                         $result = self::$links[$rpcKey]['rpc']->add_metainfo($torrent, $save_path, $extra_options);	// 种子元数据添加下载任务
                     }
                     if ($is_url) {
-                        print "种子：".$torrent.PHP_EOL;
+                        print "种子：". substr($torrent, 0, (strpos($torrent, 'passkey') ? strpos($torrent, 'passkey') : strlen($torrent))) . PHP_EOL;
                     }
                     if ($result === 'Ok.') {
                         print "********RPC添加下载任务成功 [{$result}]".PHP_EOL.PHP_EOL;
@@ -786,9 +786,11 @@ class AutoReseed
                 }
                 echo "种子URL已推送给下载器，下载器正在下载种子...".PHP_EOL;
                 // 实际路径与相对路径之间互转
+                echo '转换前：'.$downloadDir.PHP_EOL;
                 $downloadDir = self::pathReplace($downloadDir);
+                echo '转换后：'.$downloadDir.PHP_EOL;
                 if (is_null($downloadDir)) {
-                    die("全局配置的move数组内，type配置错误，请重新配置！！！".PHP_EOL);
+                    die("全局配置的move数组内，路径转换参数配置错误，请重新配置！！！".PHP_EOL);
                 }
                 $ret = false;
                 // 把拼接的种子URL，推送给下载器
