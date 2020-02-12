@@ -545,6 +545,18 @@ class AutoReseed
                                 $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
                                 print "种子下载页：".$_url.PHP_EOL;
                                 $url = download($_url, $cookie, $userAgent);
+                                if (strpos($url, '第一次下载提示') != false) {
+                                    echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
+                                    echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
+                                    $t = 30;
+                                    do {
+                                        echo microtime(true)." 请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！，{$t}秒后继续...".PHP_EOL;
+                                        sleep(1);
+                                    } while (--$t > 0);
+                                    ff($siteName. '站点，辅种时触发第一次下载提示！');
+                                    $configALL[$siteName]['limit'] = 1;
+                                    self::$noReseed[] = 'hdchina';
+                                }
                                 if (strpos($url, '系统检测到过多的种子下载请求') != false) {
                                     echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
                                     ff($siteName. '站点，辅种时触发人机验证！');
