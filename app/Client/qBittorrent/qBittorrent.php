@@ -157,7 +157,6 @@ class qBittorrent extends AbstractClient
         #$extra_options['skip_checking'] = 'true';    //跳校验
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildData($extra_options);
-        #p($post_data);
         // 设置请求头
         $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary='.$this->delimiter);
         $this->curl->setHeader('Content-Length', strlen($post_data));

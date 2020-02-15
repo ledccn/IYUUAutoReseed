@@ -134,37 +134,32 @@ class AutoReseed
         echo($table->render());
     }
     /**
-     * 连接远端RPC服务器
-     * @return bool
+     * 连接远端RPC下载器
      */
     public static function links()
     {
-        if (empty(self::$links)) {
-            foreach (self::$clients as $k => $v) {
-                // 跳过未配置的客户端
-                if (empty($v['username']) || empty($v['password'])) {
-                    self::$links[$k] = array();
-                    echo "clients_".$k." 用户名或密码未配置，已跳过".PHP_EOL.PHP_EOL;
-                    continue;
+        foreach (self::$clients as $k => $v) {
+            // 跳过未配置的客户端
+            if (empty($v['username']) || empty($v['password'])) {
+                self::$links[$k] = array();
+                echo "clients_".$k." 用户名或密码未配置，已跳过".PHP_EOL.PHP_EOL;
+                continue;
+            }
+            try {
+                $client = AbstractClient::create($v);
+                self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
+                self::$links[$k]['type'] = $v['type'];
+                self::$links[$k]['rpc'] = $client;
+                $result = $client->status();
+                print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
+                // 检查是否转移种子的做种客户端？
+                if (isset($v['move']) && $v['move'] && is_null(self::$move)) {
+                    self::$move = array($k,$v['move']);
                 }
-                try {
-                    $client = AbstractClient::create($v);
-                    self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
-                    self::$links[$k]['type'] = $v['type'];
-                    self::$links[$k]['rpc'] = $client;
-                    $result = $client->status();
-                    print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
-                    // 检查是否转移种子的做种客户端？
-                    if (isset($v['move']) && $v['move'] && is_null(self::$move)) {
-                        self::$move = array($k,$v['move']);
-                    }
-                } catch (\Exception $e) {
-                    echo '[Links ERROR] ' . $e->getMessage() . PHP_EOL;
-                    exit(1);
-                }
+            } catch (\Exception $e) {
+                die('[Links ERROR] ' . $e->getMessage() . PHP_EOL);
             }
         }
-        return true;
     }
 
     /**
@@ -215,9 +210,9 @@ class AutoReseed
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
                     break;
-                case 'qBittorrent':
-                    $extra_options['paused'] = 'true';
+                case 'qBittorrent':                    
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
+                    $extra_options['paused'] = 'true';
                     if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
@@ -246,8 +241,7 @@ class AutoReseed
         return false;
     }
     /**
-     * @brief 提交种子hash给远端API，用来获取辅种数据
-     * @return
+     * 提交种子hash给远端API，用来获取辅种数据
      */
     public static function call()
     {
@@ -257,7 +251,6 @@ class AutoReseed
         self::reseed();
         self::wechatMessage();
     }
-
     /**
      * IYUUAutoReseed辅种
      */
@@ -274,7 +267,7 @@ class AutoReseed
                 continue;
             }
             // 过滤无需辅种的客户端
-            if (self::$move!==null && self::$move[1]==2) {
+            if (self::$move!==null && self::$move[0]!=$k && self::$move[1]==2) {
                 echo "clients_".$k." 根据设置无需辅种，已跳过！";
                 continue;
             }
@@ -285,7 +278,6 @@ class AutoReseed
                 continue;
             } else {
                 $infohash_Dir = $hashArray['hashString'];
-                #p($infohash_Dir);
                 unset($hashArray['hashString']);
                 // 签名
                 $hashArray['sign'] = Oauth::getSign();
@@ -369,130 +361,140 @@ class AutoReseed
                         self::$wechatMsg['reseedPass']++;
                         continue;
                     }
+                    // 检查站点是否可以辅种
+                    if (in_array($siteName, self::$noReseed)) {
+                        echo '-------已跳过不辅种的站点：'.$_url.PHP_EOL.PHP_EOL;
+                        self::$wechatMsg['reseedPass']++;
+                        // 写入日志文件，供用户手动辅种
+                        wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$_url.PHP_EOL.PHP_EOL, $siteName);                        
+                        continue;
+                    }
                     /**
                      * 种子URL组合方式区分
                      */
                     $url = self::getTorrentUrl($siteName, $_url);
-                    /**
-                     * 检查站点是否可以辅种
-                     */
-                    if ((in_array($siteName, self::$noReseed)==false)) {
-                        /**
-                         *  可以辅种
-                         */
-                        // 特殊站点：推送给下载器种子元数据
-                        switch ($siteName) {
-                            case 'hdchina':
-                                $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
-                                $userAgent = $configALL['default']['userAgent'];
-                                // 拼接URL
-                                $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
-                                $details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
-                                $details_html = download($details_url, $cookie, $userAgent);
-                                if (strpos($details_html, '没有该ID的种子') != false) {
-                                    # code... 错误通知
-                                }
-                                print "种子详情页：".$details_url.PHP_EOL;
+                    $reseedPass = false;
+                    // 特殊站点：推送给下载器种子元数据
+                    switch ($siteName) {
+                        case 'hdchina':
+                            $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
+                            $userAgent = $configALL['default']['userAgent'];
+                            // 拼接URL
+                            $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
+                            $details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+                            print "种子详情页：".$details_url.PHP_EOL;
+                            $details_html = download($details_url, $cookie, $userAgent);
+                            if (empty($details_html)) {
+                                echo 'cookie已过期，请更新后重新辅种！已加入排除列表'.PHP_EOL;
+                                $t = 30;
+                                do {
+                                    echo microtime(true)." cookie已过期，请更新后重新辅种！已加入排除列表！，{$t}秒后继续...".PHP_EOL;
+                                    sleep(1);
+                                } while (--$t > 0);
+                                $configALL[$siteName]['cookie'] = '';
+                                // 标志：跳过辅种
+                                $reseedPass = true;
+                                break;
+                            }
+                            if (strpos($details_html, '没有该ID的种子') != false) {
+                                # code... 错误通知
+                                // 标志：跳过辅种
+                                $reseedPass = true;
+                                break;
+                            }                            
+                            // 提取种子下载地址
+                            $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
+                            $offset = strpos($details_html, $download_page);
+                            $urlTemp = substr($details_html, $offset, 50);
+                            // 种子地址
+                            $_url = substr($urlTemp, 0, strpos($urlTemp, '">'));
+                            if (empty($_url)) {
+                                echo '未知错误，未提取到种子URL，请联系脚本作者！'.PHP_EOL;
+                                // 标志：跳过辅种
+                                $reseedPass = true;
+                                break;
+                            }
+                            $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
+                            print "种子下载页：".$_url.PHP_EOL;
+                            $url = download($_url, $cookie, $userAgent);
+                            if (strpos($url, '第一次下载提示') != false) {
+                                echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
+                                echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
+                                $t = 30;
+                                do {
+                                    echo microtime(true)." 请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！，{$t}秒后继续...".PHP_EOL;
+                                    sleep(1);
+                                } while (--$t > 0);
+                                ff($siteName. '站点，辅种时触发第一次下载提示！');
+                                self::$noReseed[] = 'hdchina';
+                                // 标志：跳过辅种
+                                $reseedPass = true;
+                            }
+                            if (strpos($url, '系统检测到过多的种子下载请求') != false) {
+                                echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
+                                ff($siteName. '站点，辅种时触发人机验证！');
+                                $configALL[$siteName]['limit'] = 1;
+                                self::$noReseed[] = 'hdchina';
+                                // 标志：跳过辅种
+                                $reseedPass = true;
+                            }
+                            break;
+                        case 'hdcity':
+                            $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
+                            $userAgent = $configALL['default']['userAgent'];
+                            print "种子：".$_url.PHP_EOL;
+                            if (isset($configALL[$siteName]['cuhash'])) {
+                                // 已获取cuhash
+                                # code...
+                            } else {
+                                // 获取cuhash
+                                $html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
                                 // 提取种子下载地址
-                                $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
-                                $offset = strpos($details_html, $download_page);
-                                $urlTemp = substr($details_html, $offset, 50);
-                                // 种子地址
-                                $_url = substr($urlTemp, 0, strpos($urlTemp, '">'));
-                                $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
-                                print "种子下载页：".$_url.PHP_EOL;
-                                $url = download($_url, $cookie, $userAgent);
-                                if (strpos($url, '第一次下载提示') != false) {
-                                    echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
-                                    echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
-                                    $t = 30;
-                                    do {
-                                        echo microtime(true)." 请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！，{$t}秒后继续...".PHP_EOL;
-                                        sleep(1);
-                                    } while (--$t > 0);
-                                    ff($siteName. '站点，辅种时触发第一次下载提示！');
-                                    self::$noReseed[] = 'hdchina';
-                                }
-                                if (strpos($url, '系统检测到过多的种子下载请求') != false) {
-                                    echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
-                                    ff($siteName. '站点，辅种时触发人机验证！');
-                                    $configALL[$siteName]['limit'] = 1;
-                                    self::$noReseed[] = 'hdchina';
-                                }
-                                break;
-                            case 'hdcity':
-                                $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
-                                $userAgent = $configALL['default']['userAgent'];
-                                print "种子：".$_url.PHP_EOL;
-                                if (isset($configALL[$siteName]['cuhash'])) {
-                                    // 已获取cuhash
-                                    # code...
-                                } else {
-                                    // 获取cuhash
-                                    $html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
-                                    // 提取种子下载地址
-                                    $offset = strpos($html, 'cuhash=');
-                                    $len = strlen('cuhash=');
-                                    $cuhashTemp = substr($html, $offset+$len, 40);
-                                    $configALL[$siteName]['cuhash'] = substr($cuhashTemp, 0, strpos($cuhashTemp, '"'));
-                                }
-                                $url = $_url."&cuhash=". $configALL[$siteName]['cuhash'];
-                                // 城市下载种子时会302转向
-                                $url = download($url, $cookie, $userAgent);
-                                break;
-                            default:
-                                // 默认站点：推送给下载器种子URL链接
-                                break;
-                        }
-                        // 把拼接的种子URL，推送给下载器
-                        $ret = false;
-                        // 成功返回：true
-                        $ret = self::add($k, $url, $downloadDir);
+                                $offset = strpos($html, 'cuhash=');
+                                $len = strlen('cuhash=');
+                                $cuhashTemp = substr($html, $offset+$len, 40);
+                                $configALL[$siteName]['cuhash'] = substr($cuhashTemp, 0, strpos($cuhashTemp, '"'));
+                            }
+                            $url = $_url."&cuhash=". $configALL[$siteName]['cuhash'];
+                            // 城市下载种子时会302转向
+                            $url = download($url, $cookie, $userAgent);
+                            break;
+                        default:
+                            // 默认站点：推送给下载器种子URL链接
+                            break;
+                    }
+                    // 检查switch内是否异常
+                    if ($reseedPass) {
+                        continue;
+                    }
+                    // 把拼接的种子URL，推送给下载器
+                    $ret = false;
+                    // 成功返回：true
+                    $ret = self::add($k, $url, $downloadDir);
 
-                        // 按站点规范日志内容
-                        switch ($siteName) {
-                            case 'hdchina':
-                                $url = $details_url;
-                                break;
-                            case 'hdcity':
-                                $url = $_url;
-                                break;
-                            default:
-                                break;
-                        }
-                        // 添加成功的种子，以infohash为文件名，写入缓存
-                        if ($ret) {
-                            // 成功的种子
-                            wlog($url.PHP_EOL, $value['info_hash'], self::$cacheHash);
-                            wlog($url.PHP_EOL, 'reseedSuccess');
-                            // 成功累加
-                            self::$wechatMsg['reseedSuccess']++;
-                            continue;
-                        } else {
-                            // 失败的种子
-                            wlog($url.PHP_EOL, 'reseedError');
-                            // 失败累加
-                            self::$wechatMsg['reseedError']++;
-                            continue;
-                        }
+                    // 按站点规范日志内容
+                    switch ($siteName) {
+                        case 'hdchina':
+                            $url = $details_url;
+                            break;
+                        case 'hdcity':
+                            $url = $_url;
+                            break;
+                        default:
+                            break;
+                    }
+                    // 添加成功的种子，以infohash为文件名，写入缓存
+                    if ($ret) {
+                        // 成功的种子
+                        wlog($url.PHP_EOL, $value['info_hash'], self::$cacheHash);
+                        wlog($url.PHP_EOL, 'reseedSuccess');
+                        // 成功累加
+                        self::$wechatMsg['reseedSuccess']++;
                     } else {
-                        /**
-                         *  不辅种
-                         */
-                        echo '-------已跳过不辅种的站点：'.$_url.PHP_EOL.PHP_EOL;
-                        // 按站点规范日志内容
-                        switch ($siteName) {
-                            case 'hdchina':
-                                $url = $details_url;
-                                break;
-                            case 'hdcity':
-                                $url = $_url;
-                                break;
-                            default:
-                                break;
-                        }
-                        // 写入日志文件，供用户手动辅种
-                        wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$url.PHP_EOL.$details_url.PHP_EOL.PHP_EOL, $siteName);
+                        // 失败的种子
+                        wlog($url.PHP_EOL, 'reseedError');
+                        // 失败累加
+                        self::$wechatMsg['reseedError']++;
                     }
                 }
             }
@@ -513,7 +515,6 @@ class AutoReseed
             }
             echo "正在从下载器 clients_".$k." 获取种子哈希……".PHP_EOL;
             $hashArray = self::$links[$k]['rpc']->getList($move);
-            #p($move);exit;
             if (empty($hashArray)) {
                 // 失败
                 continue;
@@ -522,14 +523,13 @@ class AutoReseed
                 // 写日志
                 wlog($hashArray, 'move'.$k);
             }
-
             // 前置过滤：移除转移成功的hash
             $rs = self::hashFilter($infohash_Dir);
             if ($rs) {
                 echo "clients_".$k." 全部转移成功，本次无需转移！".PHP_EOL.PHP_EOL;
                 continue;
             }
-
+            // 循环转移做种客户端
             foreach ($infohash_Dir as $info_hash => $downloadDir) {
                 // 做种实际路径与相对路径之间互转
                 echo '转换前：'.$downloadDir.PHP_EOL;
@@ -538,20 +538,17 @@ class AutoReseed
                 if (is_null($downloadDir)) {
                     die("全局配置的move数组内，路径转换参数配置错误，请重新配置！！！".PHP_EOL);
                 }
-
-                // 种子扩展参数
-                $extra_options = array();
+                // 种子目录：脚本要能够读取到
                 $path = self::$links[$k]['BT_backup'];
                 // 待删除种子
                 $torrentDelete = '';
-
                 // 获取种子原文件的实际路径
-
                 switch ($v['type']) {
                     case 'transmission':
+                        // 优先使用API提供的种子路径
                         $torrentPath = $move[$info_hash]['torrentFile'];
                         $torrentDelete = $move[$info_hash]['id'];
-                        // 脚本与tr不在一起的兼容性处理
+                        // API提供的种子路径不存在时，使用配置内指定的BT_backup路径
                         if (!is_file($torrentPath)) {
                             $torrentPath = str_replace("\\", "/", $torrentPath);
                             $torrentPath = $path . strrchr($torrentPath, '/');
@@ -563,14 +560,11 @@ class AutoReseed
                         }
                         $torrentPath = $path .DS. $info_hash . '.torrent';
                         $torrentDelete = $info_hash;
-                        $extra_options['skip_checking'] = 'true';    //跳校验
                         break;
                     default:
                         # code...
                         break;
                 }
-                
-                // 判断种子原文件是否存在
                 if (!is_file($torrentPath)) {
                     die("clients_".$k." 的种子文件{$torrentPath}不存在，无法完成转移！");
                 }
@@ -579,9 +573,16 @@ class AutoReseed
                 // 正式开始转移
                 echo "种子已推送给下载器，正在转移做种...".PHP_EOL;
                 $ret = false;
+                // 目标下载器类型
+                $rpcKey = self::$move[0];
+                $type = self::$links[$rpcKey]['type'];
+                if ($type == 'qBittorrent') {
+                    $extra_options['skip_checking'] = "true";    //转移时，跳校验
+                } else {
+                    $extra_options = array();
+                }                
                 // 成功返回：true
                 $ret = self::add(self::$move[0], $torrent, $downloadDir, $extra_options);
-
                 /**
                  * 转移成功的种子写日志
                  */
