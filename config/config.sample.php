@@ -33,7 +33,7 @@ return array(
                 'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
                 'username'	=>	'',
                 'password'	=>	'',
-                'BT_backup' =>  '/var/lib/transmission/torrents',   // 如果脚本与当前客户端不在一台机器，必须配置
+                'BT_backup' =>  '/var/lib/transmission/torrents',                        // 移动做种：如果脚本与当前客户端不在一台机器，必须配置
                 #'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义，4未定义
             ),
             # 结束
@@ -43,12 +43,13 @@ return array(
                 'host'	=>	'http://127.0.0.1:8083',
                 'username'	=>	'',
                 'password'	=>	'',
-                'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 必须配置
+                'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 移动做种：必须配置
                 #'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义，4未定义
             ),
             # 结束
             // 全局客户端设置 结束
         ),
+        // 移动做种必须配置
         'move' =>array(
             'type' => 0,		// 0保持不变，1减，2加，3替换
             'path' =>array(
