@@ -343,24 +343,6 @@ function wlog($data='', $name = '', $path = '')
     @fclose($file_pointer);
     return $worldsnum;
 }
-/**
- * transmission过滤函数，只保留正常做种
- */
-function filterStatus($v)
-{
-    return isset($v['status']) && $v['status']===6;
-}
-
-/**
- * qBittorrent过滤函数，只保留正常做种
- */
-function qbfilterStatus($v)
-{
-    if (isset($v['state']) && in_array($v['state'], array('uploading','stalledUP','pausedUP','queuedUP','checkingUP','forcedUP'))) {
-        return true;
-    }
-    return false;
-}
 
 //PHP stdClass Object转array
 function object_array($array)

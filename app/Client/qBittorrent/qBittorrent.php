@@ -2,12 +2,12 @@
 namespace IYUU\Client\qBittorrent;
 
 use Curl\Curl;
-use IYUU\Client\AbstractClientInterface;
+use IYUU\Client\AbstractClient;
 
 /**
  * https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation
  */
-class qBittorrent implements AbstractClientInterface
+class qBittorrent extends AbstractClient
 {
     private $debug;
     private $url;
@@ -164,11 +164,6 @@ class qBittorrent implements AbstractClientInterface
         return $this->postData('torrent_add', $post_data);
     }
 
-    public function torrentDelete($hash='', $deleteFiles = false)
-    {
-        return $this->postData('torrent_delete', ['hashes' => $hash, 'deleteFiles' => $deleteFiles ? 'true':'false']);
-    }
-
     public function torrentDeleteAll($deleteFiles = false)
     {
         $torrents = json_decode($this->torrentList());
@@ -301,10 +296,56 @@ class qBittorrent implements AbstractClientInterface
     }
 
     /**
-     * @inheritDoc
+     * 抽象方法，子类实现
      */
     public function status()
     {
         return $this->appVersion();
+    }
+
+    /**
+     * 抽象方法，子类实现
+     */
+    public function getList(&$move = array())
+    {
+        $result = $this->getData('torrent_list');
+        $res = json_decode($result, true);
+        if (empty($res)) {
+            echo "获取种子列表失败，可能qBittorrent暂时无响应，请稍后重试！".PHP_EOL;
+            return array();
+        }
+        // 过滤，只保留正常做种
+        $res = array_filter($res, function ($v) {
+            if (isset($v['state']) && in_array($v['state'], array('uploading','stalledUP','pausedUP','queuedUP','checkingUP','forcedUP'))) {
+                return true;
+            }
+            return false;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        if (empty($res)) {
+            echo "未获取到正常做种数据，请多保种，然后重试！".PHP_EOL;
+            return array();
+        }
+        // 提取数组：hashString
+        $info_hash = array_column($res, 'hash');
+        // 升序排序
+        sort($info_hash);
+        $json = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
+        // 去重 应该从文件读入，防止重复提交
+        $sha1 = sha1($json);
+        // 组装返回数据
+        $hashArray['hash'] = $json;
+        $hashArray['sha1'] = $sha1;
+        // 变换数组：hashString为键
+        $hashArray['hashString'] = array_column($res, "save_path", 'hash');
+        return $hashArray;
+    }
+
+    /**
+     * 抽象方法，子类实现
+     */
+    public function delete($hash='', $deleteFiles = false)
+    {
+        return $this->postData('torrent_delete', ['hashes' => $hash, 'deleteFiles' => $deleteFiles ? 'true':'false']);
     }
 }

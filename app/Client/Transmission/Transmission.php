@@ -28,7 +28,7 @@
 
 namespace IYUU\Client\Transmission;
 
-use IYUU\Client\AbstractClientInterface;
+use IYUU\Client\AbstractClient;
 
 /**
  * A friendly little version check...
@@ -47,18 +47,12 @@ if (version_compare(PHP_VERSION, '5.2.10', '<')) {
  * </code>
  *
  */
-class TransmissionRPC implements AbstractClientInterface
+class Transmission extends AbstractClient
 {
     /**
      * User agent used in all http communication
      */
     const HTTP_UA = 'TransmissionRPC for PHP/0.3';
-
-    /**
-     * Minimum PHP version required
-     * 5.2.10 implemented the required http stream ignore_errors option
-     */
-    const MIN_PHPVER = '5.2.10';
 
     /**
      * The URL to the bittorent client you want to communicate with
@@ -78,12 +72,6 @@ class TransmissionRPC implements AbstractClientInterface
      * @var string
      */
     public $password = '';
-
-    /**
-     * Return results as an array, or an object (default)
-     * @var bool
-     */
-    public $return_as_array = false;
 
     /**
      * Print debugging information, default is off
@@ -139,29 +127,15 @@ class TransmissionRPC implements AbstractClientInterface
     /**
      * Takes the connection parameters
      *
-     * TODO: Sanitize username, password, and URL
-     *
      * @param string $url
      * @param string $username
      * @param string $password
      */
-    public function __construct($url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null, $return_as_array = false)
+    public function __construct($url = 'http://127.0.0.1:9091/transmission/rpc', $username = null, $password = null)
     {
-        // server URL
         $this->url = $url;
-
-        // Username & password
         $this->username = $username;
         $this->password = $password;
-
-        // Get the Transmission RPC_version
-        $this->rpc_version = self::sget()->arguments->rpc_version;
-
-        // Return As Array
-        $this->return_as_array = $return_as_array;
-
-        // Reset X-Transmission-Session-Id so we (re)fetch one
-        $this->session_id = null;
     }
 
     /**
@@ -175,7 +149,7 @@ class TransmissionRPC implements AbstractClientInterface
     {
         if (!is_array($ids)) {
             $ids = array($ids);
-        }    // Convert $ids to an array if only a single id was passed
+        }
         $request = array("ids" => $ids);
         return $this->request("torrent-start", $request);
     }
@@ -191,7 +165,7 @@ class TransmissionRPC implements AbstractClientInterface
     {
         if (!is_array($ids)) {
             $ids = array($ids);
-        }    // Convert $ids to an array if only a single id was passed
+        }
         $request = array("ids" => $ids);
         return $this->request("torrent-stop", $request);
     }
@@ -207,7 +181,7 @@ class TransmissionRPC implements AbstractClientInterface
     {
         if (!is_array($ids)) {
             $ids = array($ids);
-        }    // Convert $ids to an array if only a single id was passed
+        }
         $request = array("ids" => $ids);
         return $this->request("torrent-reannounce", $request);
     }
@@ -223,7 +197,7 @@ class TransmissionRPC implements AbstractClientInterface
     {
         if (!is_array($ids)) {
             $ids = array($ids);
-        }    // Convert $ids to an array if only a single id was passed
+        }
         $request = array("ids" => $ids);
         return $this->request("torrent-verify", $request);
     }
@@ -358,6 +332,16 @@ class TransmissionRPC implements AbstractClientInterface
         return $this->request("torrent-add", $extra_options);
     }
 
+    /* Add a new torrent using a file path or a URL (For backwards compatibility)
+     * @param torrent_location The URL or path to the torrent file
+     * @param save_path Folder to save torrent in
+     * @param extra options Optional extra torrent options
+     */
+    public function add($torrent_location, $save_path = '', $extra_options = array())
+    {
+        return $this->add_file($torrent_location, $save_path, $extra_options);
+    }
+    
     /**
      * Add a torrent using the raw torrent data
      *
@@ -377,16 +361,6 @@ class TransmissionRPC implements AbstractClientInterface
         return $this->request("torrent-add", $extra_options);
     }
 
-    /* Add a new torrent using a file path or a URL (For backwards compatibility)
-     * @param torrent_location The URL or path to the torrent file
-     * @param save_path Folder to save torrent in
-     * @param extra options Optional extra torrent options
-     */
-    public function add($torrent_location, $save_path = '', $extra_options = array())
-    {
-        return $this->add_file($torrent_location, $save_path, $extra_options);
-    }
-
     /**
      * Remove torrent from transmission
      *
@@ -395,7 +369,7 @@ class TransmissionRPC implements AbstractClientInterface
      * @return mixed
      * @throws TransmissionRPCException
      */
-    public function remove($ids, $delete_local_data = false)
+    public function delete($ids, $delete_local_data = false)
     {
         if (!is_array($ids)) {
             $ids = array($ids);
@@ -594,7 +568,8 @@ class TransmissionRPC implements AbstractClientInterface
                 $array[$index] = ($value ? 1 : 0);
             }    // Store boolean values as 0 or 1
             if (is_string($value)) {
-                if (mb_detect_encoding($value, "auto") !== 'UTF-8') {
+                $type = mb_detect_encoding($value, "auto");
+                if ($type !== 'UTF-8') {
                     $array[$index] = mb_convert_encoding($value, "UTF-8");
                     //utf8_encode( $value );	// Make sure all data is UTF-8 encoded for Transmission
                 }
@@ -604,49 +579,11 @@ class TransmissionRPC implements AbstractClientInterface
     }
 
     /**
-     * Clean up the result object. Replaces all minus(-) characters in the object properties with underscores
-     * and converts any object with any all-digit property names to an array.
-     *
-     * @param object The request result to clean
-     * @returns array The cleaned object
-     * @return array|object
-     */
-    protected function cleanResultObject($object)
-    {
-        // Prepare and cast object to array
-        $return_as_array = false;
-        $array = $object;
-        if (!is_array($array)) {
-            $array = (array)$array;
-        }
-        foreach ($array as $index => $value) {
-            if (is_array($array[$index]) || is_object($array[$index])) {
-                $array[$index] = $this->cleanResultObject($array[$index]);    // Recursion
-            }
-            if (strstr($index, '-')) {
-                $valid_index = str_replace('-', '_', $index);
-                $array[$valid_index] = $array[$index];
-                unset($array[$index]);
-                $index = $valid_index;
-            }
-            // Might be an array, check index for digits, if so, an array should be returned
-            if (ctype_digit((string)$index)) {
-                $return_as_array = true;
-            }
-            if (empty($value)) {
-                unset($array[$index]);
-            }
-        }
-        // Return array cast to object
-        return $return_as_array ? $array : (object)$array;
-    }
-
-    /**
      * 执行 rpc 请求
      *
      * @param string $method 请求类型/方法, 详见 $this->allowMethods
      * @param array $arguments 附加参数, 可选
-     * @return mixed
+     * @return array
      * @throws TransmissionRPCException
      */
     protected function request($method, $arguments = array())
@@ -694,9 +631,9 @@ class TransmissionRPC implements AbstractClientInterface
         curl_close($ch);
 
         if (!$content) {
-            $content = json_encode(array('result' => 'failed'));
+            $content = array('result' => 'failed');
         }
-        return $this->return_as_array ? json_decode($content, true) : $this->cleanResultObject(json_decode($content));    // Return the sanitized result
+        return json_decode($content, true);
     }
 
     /**
@@ -767,10 +704,56 @@ class TransmissionRPC implements AbstractClientInterface
     }
 
     /**
-     * @inheritDoc
+     * 抽象方法，子类实现
      */
     public function status()
     {
-        return isset($this->sstats()->result) ? $this->sstats()->result : 'error';
+        $rs = $this->sstats();
+        return isset($rs['result']) ? $rs['result'] : 'error';
+    }
+
+    /**
+     * 抽象方法，子类实现
+     */
+    public function getList(&$move = array())
+    {
+        $ids = array();
+        $fields = array( "id", "status", "name", "hashString", "downloadDir", "torrentFile" );
+        $res = $this->get($ids, $fields);
+        if (isset($res['result']) && $res['result'] == 'success') {
+            // 成功
+        } else {
+            // 失败
+            echo "获取种子列表失败，可能transmission暂时无响应，请稍后重试！".PHP_EOL;
+            return array();
+        }
+        if (empty($res['arguments']['torrents'])) {
+            echo "未获取到正常做种数据，请多保种，然后重试！".PHP_EOL;
+            return array();
+        }
+        $res = $res['arguments']['torrents'];
+        // 过滤，只保留正常做种
+        $res = array_filter($res, function ($v) {
+            return isset($v['status']) && $v['status']===6;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        if (empty($res)) {
+            echo "未获取到正常做种数据，请多保种，然后重试！".PHP_EOL;
+            return array();
+        }
+        // 提取数组：hashString
+        $info_hash = array_column($res, 'hashString');
+        // 升序排序
+        sort($info_hash);
+        $json = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
+        // 去重 应该从文件读入，防止重复提交
+        $sha1 = sha1($json);
+        // 组装返回数据
+        $hashArray['hash'] = $json;
+        $hashArray['sha1'] = $sha1;
+        // 变换数组：hashString为键
+        $hashArray['hashString'] = array_column($res, "downloadDir", 'hashString');
+        $move = array_column($res, null, 'hashString');
+        return $hashArray;
     }
 }

@@ -4,6 +4,5 @@ use IYUU\AutoReseed;
 
 echo microtime(true).' IYUU自动辅种正在初始化...'.PHP_EOL;
 AutoReseed::init();
-$hashArray = AutoReseed::get();
-AutoReseed::call($hashArray);
+AutoReseed::call();
 exit(0);
