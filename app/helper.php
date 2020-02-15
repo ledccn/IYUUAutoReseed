@@ -421,7 +421,7 @@ function ShowTableSites($dir = 'Protocols', $filter = array())
             break;
     }
     $data = [];
-    $i = $j = $k = 0;
+    $i = $j = $k = 0;   //i列、j序号、k行
     foreach (glob(APP_PATH.$dir.DS.'*.php') as $key => $start_file) {
         $start_file = str_replace("\\", "/", $start_file);
         $offset = strripos($start_file, '/');

@@ -1,5 +1,4 @@
 <?php
-
 namespace IYUU;
 
 use Curl\Curl;
@@ -34,12 +33,8 @@ class AutoReseed
     // API接口配置
     public static $apiUrl = 'http://api.iyuu.cn';
     public static $endpoints = array(
-        'add'     => '/api/add',
-        'update'  => '/api/update',
-        'reseed'  => '/api/reseed',
         'infohash'=> '/api/infohash',
         'sites'   => '/api/sites',
-        'move'    => '/api/move',
         'login'   => '/user/login',
     );
     // curl
@@ -59,7 +54,6 @@ class AutoReseed
         'reseedSkip'		=>	0,		// 跳过：因未设置passkey，而跳过
         'reseedPass'		=>	0,		// 忽略：因上次成功添加、存在缓存，而跳过
     );
-
     // 初始化
     public static function init()
     {
@@ -82,7 +76,6 @@ class AutoReseed
         // 合作站点自动注册鉴权
         Oauth::login(self::$apiUrl . self::$endpoints['login']);
     }
-
     /**
      * 显示支持站点列表
      */
@@ -116,7 +109,7 @@ class AutoReseed
             die('远端服务器无响应，请稍后再试！！！');
         }
         $data = [];
-        $i = $j = $k = 0;
+        $i = $j = $k = 0;   // i列、j序号、k行
         foreach ($sites as $v) {
             // 控制多少列
             if ($i > 4) {
@@ -146,13 +139,14 @@ class AutoReseed
                 continue;
             }
             try {
+                // 传入配置，创建客户端实例
                 $client = AbstractClient::create($v);
-                self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
-                self::$links[$k]['type'] = $v['type'];
                 self::$links[$k]['rpc'] = $client;
+                self::$links[$k]['type'] = $v['type'];
+                self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
                 $result = $client->status();
                 print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
-                // 检查是否转移种子的做种客户端？
+                // 检查转移做种
                 if (isset($v['move']) && $v['move'] && is_null(self::$move)) {
                     self::$move = array($k,$v['move']);
                 }
@@ -161,7 +155,6 @@ class AutoReseed
             }
         }
     }
-
     /**
      * @brief 添加下载任务
      * @param string $torrent 种子元数据
@@ -210,7 +203,7 @@ class AutoReseed
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
                     break;
-                case 'qBittorrent':                    
+                case 'qBittorrent':
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
                     $extra_options['paused'] = 'true';
                     if ($is_url) {
@@ -241,7 +234,7 @@ class AutoReseed
         return false;
     }
     /**
-     * 提交种子hash给远端API，用来获取辅种数据
+     * 转移、辅种总入口
      */
     public static function call()
     {
@@ -276,17 +269,17 @@ class AutoReseed
             if (empty($hashArray)) {
                 // 失败
                 continue;
-            } else {
-                $infohash_Dir = $hashArray['hashString'];
-                unset($hashArray['hashString']);
-                // 签名
-                $hashArray['sign'] = Oauth::getSign();
-                $hashArray['timestamp'] = time();
-                $hashArray['version'] = self::VER;
-                // 写请求日志
-                wlog($hashArray, 'hashString'.$k);
-                self::$wechatMsg['hashCount'] +=count($infohash_Dir);
             }
+            // 此处需要优化大于一万条做种时，应分批上传
+            $infohash_Dir = $hashArray['hashString'];
+            unset($hashArray['hashString']);
+            // 签名
+            $hashArray['sign'] = Oauth::getSign();
+            $hashArray['timestamp'] = time();
+            $hashArray['version'] = self::VER;
+            // 写请求日志
+            wlog($hashArray, 'hashString'.$k);
+            self::$wechatMsg['hashCount'] +=count($infohash_Dir);
             echo "正在向服务器提交 clients_".$k." 种子哈希……".PHP_EOL;
             $res = self::$curl->post(self::$apiUrl . self::$endpoints['infohash'], $hashArray);
             $res = json_decode($res->response, true);
@@ -366,7 +359,7 @@ class AutoReseed
                         echo '-------已跳过不辅种的站点：'.$_url.PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedPass']++;
                         // 写入日志文件，供用户手动辅种
-                        wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$_url.PHP_EOL.PHP_EOL, $siteName);                        
+                        wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$_url.PHP_EOL.PHP_EOL, $siteName);
                         continue;
                     }
                     /**
@@ -401,7 +394,7 @@ class AutoReseed
                                 // 标志：跳过辅种
                                 $reseedPass = true;
                                 break;
-                            }                            
+                            }
                             // 提取种子下载地址
                             $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
                             $offset = strpos($details_html, $download_page);
@@ -577,11 +570,11 @@ class AutoReseed
                 $rpcKey = self::$move[0];
                 $type = self::$links[$rpcKey]['type'];
                 if ($type == 'qBittorrent') {
-                    $extra_options['skip_checking'] = "true";    //转移时，跳校验
+                    #$extra_options['skip_checking'] = "true";    //转移时，跳校验
                 } else {
                     $extra_options = array();
-                }                
-                // 成功返回：true
+                }
+                // 添加转移任务：成功返回：true
                 $ret = self::add(self::$move[0], $torrent, $downloadDir, $extra_options);
                 /**
                  * 转移成功的种子写日志
@@ -598,7 +591,7 @@ class AutoReseed
                     // 失败的种子
                     wlog($log, 'MoveError'.$k);
                 }
-            }            
+            }
         }
     }
     /**
@@ -609,7 +602,7 @@ class AutoReseed
         foreach ($infohash_Dir as $info_hash => $dir) {
             if (is_file(self::$cacheMove . $info_hash.'.txt')) {
                 unset($infohash_Dir[$info_hash]);
-                echo '-------当前种子上次已成功转移，前置过滤已跳过！ ' .PHP_EOL.PHP_EOL;                
+                echo '-------当前种子上次已成功转移，前置过滤已跳过！ ' .PHP_EOL.PHP_EOL;
             }
         }
         return empty($infohash_Dir) ? true : false;
