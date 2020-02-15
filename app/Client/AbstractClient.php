@@ -19,8 +19,11 @@ abstract class AbstractClient
         $host = $config['host'];
         $username = $config['username'];
         $password = $config['password'];
-
-        $className = "IYUU\Client\\" . $type . "\\" . $type;
+        $file = __DIR__ . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR . $type .'.php';
+        if (!is_file($file)) {
+            die($file.' 文件不存在');
+        }
+        $className = "\IYUU\Client\\" . $type . "\\" . $type;
         if (class_exists($className)) {
             echo $type." 客户端正在实例化！".PHP_EOL;
             return new $className($host, $username, $password);
