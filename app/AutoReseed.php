@@ -1,7 +1,5 @@
 <?php
-/**
- * IYUUAutoReseed自动辅种
- */
+
 namespace IYUU;
 
 use Curl\Curl;
@@ -15,52 +13,25 @@ use IYUU\Library\Table;
  */
 class AutoReseed
 {
-    /**
-     * 版本号
-     * @var string
-     */
+    // 版本号
     const VER = '1.0.0';
-    /**
-     * RPC连接池
-     * @var array
-     */
+    // RPC连接
     public static $links = array();
-    /**
-     * 客户端配置
-     * @var array
-     */
+    // 客户端配置
     public static $clients = array();
-    /**
-     * 站点列表
-     */
+    // 站点列表
     public static $sites = array();
-    /**
-     * 不辅种的站点 'ourbits','hdchina'
-     * @var array
-     */
+    // 不辅种的站点 'ourbits','hdchina'
     public static $noReseed = array();
-    /**
-     * 不转移的站点 'hdarea','hdbd'
-     * @var array
-     */
+    // 不转移的站点 'hdarea','hdbd'
     public static $noMove = array('hdarea');
-    /**
-     * cookie检查
-     * @var array
-     */
+    // cookie检查
     public static $cookieCheck = array('hdchina','hdcity');
-    /**
-     * 缓存路径
-     * @var string
-     */
+    // 缓存路径
     public static $cacheDir  = TORRENT_PATH.'cache'.DS;
     public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
     public static $cacheMove = TORRENT_PATH.'cachemove'.DS;
-    /**
-     * API接口配置
-     * @var string
-     * @var array
-     */
+    // API接口配置
     public static $apiUrl = 'http://api.iyuu.cn';
     public static $endpoints = array(
         'add'     => '/api/add',
@@ -71,24 +42,13 @@ class AutoReseed
         'move'    => '/api/move',
         'login'   => '/user/login',
     );
-    /**
-     * curl
-     */
+    // curl
     public static $curl = null;
-    /**
-     * 退出状态码
-     * @var int
-     */
+    // 退出状态码
     public static $ExitCode = 0;
-    /**
-     * 客户端转移做种
-     * @var array
-     */
+    // 客户端转移做种
     public static $move = null;
-    /**
-     * 微信消息体
-     * @var array
-     */
+    // 微信消息体
     public static $wechatMsg = array(
         'hashCount'			=>	0,		// 提交给服务器的hash总数
         'sitesCount'		=>	0,		// 可辅种站点总数
@@ -99,10 +59,8 @@ class AutoReseed
         'reseedSkip'		=>	0,		// 跳过：因未设置passkey，而跳过
         'reseedPass'		=>	0,		// 忽略：因上次成功添加、存在缓存，而跳过
     );
-    /**
-     * 初始化
-     * @return void
-     */
+
+    // 初始化
     public static function init()
     {
         global $configALL;
@@ -177,8 +135,6 @@ class AutoReseed
     }
     /**
      * 连接远端RPC服务器
-     *
-     * @param string
      * @return bool
      */
     public static function links()

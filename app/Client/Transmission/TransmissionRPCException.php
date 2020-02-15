@@ -6,7 +6,7 @@
  * Time: 2020
  */
 
-namespace IYUU\Client\Transmission;
+namespace IYUU\Client\transmission;
 
 /**
  * This is the type of exception the TransmissionRPC class will throw

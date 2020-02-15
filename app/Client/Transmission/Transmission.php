@@ -26,7 +26,7 @@
  * PHP Class support (PHP 5) (PHP 4 might work, untested)
  */
 
-namespace IYUU\Client\Transmission;
+namespace IYUU\Client\transmission;
 
 use IYUU\Client\AbstractClient;
 
@@ -47,7 +47,7 @@ if (version_compare(PHP_VERSION, '5.2.10', '<')) {
  * </code>
  *
  */
-class Transmission extends AbstractClient
+class transmission extends AbstractClient
 {
     /**
      * User agent used in all http communication
@@ -341,7 +341,7 @@ class Transmission extends AbstractClient
     {
         return $this->add_file($torrent_location, $save_path, $extra_options);
     }
-    
+
     /**
      * Add a torrent using the raw torrent data
      *
