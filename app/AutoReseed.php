@@ -179,7 +179,7 @@ class AutoReseed
                     } else {
                         $result = self::$links[$rpcKey]['rpc']->add_metainfo($torrent, $save_path, $extra_options);	// 种子元数据添加下载任务
                     }
-                    if (isset($result->result) && $result->result == 'success') {
+                    if (isset($result['result']) && $result['result'] == 'success') {
                         $id = $name = '';
                         if (isset($result->arguments->torrent_duplicate)) {
                             $id = $result->arguments->torrent_duplicate->id;
@@ -188,18 +188,11 @@ class AutoReseed
                             $id = $result->arguments->torrent_added->id;
                             $name = $result->arguments->torrent_added->name;
                         }
-                        if ($is_url) {
-                            print "种子：".$torrent . PHP_EOL;
-                        }
                         print "名字：".$name . PHP_EOL;
-                        print "********RPC添加下载任务成功 [{$result->result}] (id=$id)".PHP_EOL.PHP_EOL;
-                        
+                        print "********RPC添加下载任务成功 [" .$result['result']. "] (id=$id)".PHP_EOL.PHP_EOL;
                         return true;
                     } else {
-                        $errmsg = isset($result->result) ? $result->result : '未知错误，请稍后重试！';
-                        if ($is_url) {
-                            print "种子：" . substr($torrent, 0, (strpos($torrent, 'passkey') ? strpos($torrent, 'passkey') : strlen($torrent))) . PHP_EOL;
-                        }
+                        $errmsg = isset($result['result']) ? $result['result'] : '未知错误，请稍后重试！';
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
                     break;
@@ -214,9 +207,6 @@ class AutoReseed
                         $extra_options['filename'] = intval($rand).'.torrent';
                         $result = self::$links[$rpcKey]['rpc']->add_metainfo($torrent, $save_path, $extra_options);	// 种子元数据添加下载任务
                     }
-                    if ($is_url) {
-                        print "种子：". substr($torrent, 0, (strpos($torrent, 'passkey') ? strpos($torrent, 'passkey') : strlen($torrent))) . PHP_EOL;
-                    }
                     if ($result === 'Ok.') {
                         print "********RPC添加下载任务成功 [{$result}]".PHP_EOL.PHP_EOL;
                         return true;
@@ -225,11 +215,11 @@ class AutoReseed
                     }
                     break;
                 default:
-                    echo '[ERROR] '.$type. PHP_EOL. PHP_EOL;
+                    echo '[add ERROR] '.$type. PHP_EOL. PHP_EOL;
                     break;
             }
         } catch (\Exception $e) {
-            echo '[ERROR] ' . $e->getMessage() . PHP_EOL;
+            echo '[add ERROR] ' . $e->getMessage() . PHP_EOL;
         }
         return false;
     }
@@ -461,6 +451,7 @@ class AutoReseed
                         continue;
                     }
                     // 把拼接的种子URL，推送给下载器
+                    echo '推送种子：' . $_url . PHP_EOL;
                     $ret = false;
                     // 成功返回：true
                     $ret = self::add($k, $url, $downloadDir);
