@@ -181,12 +181,12 @@ class AutoReseed
                     }
                     if (isset($result['result']) && $result['result'] == 'success') {
                         $id = $name = '';
-                        if (isset($result->arguments->torrent_duplicate)) {
-                            $id = $result->arguments->torrent_duplicate->id;
-                            $name = $result->arguments->torrent_duplicate->name;
-                        } elseif (isset($result->arguments->torrent_added)) {
-                            $id = $result->arguments->torrent_added->id;
-                            $name = $result->arguments->torrent_added->name;
+                        if (isset($result['arguments']['torrent_duplicate'])) {
+                            $id = $result['arguments']['torrent_duplicate']['id'];
+                            $name = $result['arguments']['torrent_duplicate']['name'];
+                        } elseif (isset($result['arguments']['torrent_added'])) {
+                            $id = $result['arguments']['torrent_added']['id'];
+                            $name = $result['arguments']['torrent_added']['name'];
                         }
                         print "名字：".$name . PHP_EOL;
                         print "********RPC添加下载任务成功 [" .$result['result']. "] (id=$id)".PHP_EOL.PHP_EOL;
