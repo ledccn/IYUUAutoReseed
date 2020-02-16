@@ -468,20 +468,23 @@ class AutoReseed
                             break;
                     }
                     // 添加成功的种子，以infohash为文件名，写入缓存
+                    $log = 'clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$url.PHP_EOL.PHP_EOL;
                     if ($ret) {
                         // 成功的种子
-                        wlog($url.PHP_EOL, $value['info_hash'], self::$cacheHash);
-                        wlog($url.PHP_EOL, 'reseedSuccess');
+                        wlog($log, $value['info_hash'], self::$cacheHash);
+                        wlog($log, 'reseedSuccess');
                         // 成功累加
                         self::$wechatMsg['reseedSuccess']++;
                     } else {
                         // 失败的种子
-                        wlog($url.PHP_EOL, 'reseedError');
+                        wlog($log, 'reseedError');
                         // 失败累加
                         self::$wechatMsg['reseedError']++;
                     }
                 }
+                // 当前种子辅种 结束
             }
+            // 当前客户端辅种 结束
         }
         // 按客户端循环辅种 结束
     }
