@@ -34,7 +34,7 @@ return array(
                 'username'	=>	'',
                 'password'	=>	'',
                 'BT_backup' =>  '/var/lib/transmission/torrents',                        // 移动做种：如果脚本与当前客户端不在一台机器，必须配置
-                #'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义，4未定义
+                'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义
             ),
             # 结束
             # 开始
@@ -44,7 +44,7 @@ return array(
                 'username'	=>	'',
                 'password'	=>	'',
                 'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 移动做种：必须配置
-                #'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义，4未定义
+                'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义
             ),
             # 结束
             // 全局客户端设置 结束
