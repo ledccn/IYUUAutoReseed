@@ -15,17 +15,17 @@ class AutoReseed
     // 版本号
     const VER = '1.0.0';
     // RPC连接
-    public static $links = array();
+    private static $links = array();
     // 客户端配置
-    public static $clients = array();
+    private static $clients = array();
     // 站点列表
-    public static $sites = array();
+    private static $sites = array();
     // 不辅种的站点 'ourbits','hdchina'
-    public static $noReseed = array();
+    private static $noReseed = array();
     // 不转移的站点 'hdarea','hdbd'
-    public static $noMove = array('hdarea');
+    private static $noMove = array('hdarea');
     // cookie检查
-    public static $cookieCheck = array('hdchina','hdcity');
+    private static $cookieCheck = array('hdchina','hdcity');
     // 缓存路径
     public static $cacheDir  = TORRENT_PATH.'cache'.DS;
     public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
@@ -33,18 +33,19 @@ class AutoReseed
     // API接口配置
     public static $apiUrl = 'http://api.iyuu.cn';
     public static $endpoints = array(
-        'infohash'=> '/api/infohash',
-        'sites'   => '/api/sites',
         'login'   => '/user/login',
+        'sites'   => '/api/sites',
+        'infohash'=> '/api/infohash',
+        'notify'   => '/api/notify',
     );
     // curl
-    public static $curl = null;
+    private static $curl = null;
     // 退出状态码
     public static $ExitCode = 0;
     // 客户端转移做种
-    public static $move = null;
+    private static $move = null;
     // 微信消息体
-    public static $wechatMsg = array(
+    private static $wechatMsg = array(
         'hashCount'			=>	0,		// 提交给服务器的hash总数
         'sitesCount'		=>	0,		// 可辅种站点总数
         'reseedCount'		=>	0,		// 返回的总数据
@@ -53,6 +54,14 @@ class AutoReseed
         'reseedRepeat'		=>	0,		// 重复：客户端已做种
         'reseedSkip'		=>	0,		// 跳过：因未设置passkey，而跳过
         'reseedPass'		=>	0,		// 忽略：因上次成功添加、存在缓存，而跳过
+    );
+    // 错误通知消息体
+    private static $errNotify = array(
+        'sign' => '',
+        'site' => '',
+        'sid'   => 0,
+        'torrent_id'=> 0,
+        'error'   => '',
     );
     // 初始化
     public static function init()
@@ -193,6 +202,9 @@ class AutoReseed
                         return true;
                     } else {
                         $errmsg = isset($result['result']) ? $result['result'] : '未知错误，请稍后重试！';
+                        if (strpos($errmsg, 'http error 404: Not Found') !== false) {
+                            self::sendNotify('404');
+                        }
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
                     break;
@@ -298,12 +310,16 @@ class AutoReseed
                     // 匹配的辅种数据累加
                     self::$wechatMsg['reseedCount']++;
                     // 站点id
-                    $sitesID = $value['sid'];
+                    $sid = $value['sid'];
+                    // 种子id
+                    $torrent_id = $value['torrent_id'];
                     // 站点名
-                    $siteName = $sites[$sitesID]['site'];
+                    $siteName = $sites[$sid]['site'];
+                    // 错误通知
+                    self::setNotify($siteName, $sid, $torrent_id);
                     // 页面规则
-                    $download_page = str_replace('{}', $value['torrent_id'], $sites[$sitesID]['download_page']);
-                    $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$download_page;
+                    $download_page = str_replace('{}', $torrent_id, $sites[$sid]['download_page']);
+                    $_url = 'https://' .$sites[$sid]['base_url']. '/' .$download_page;
                     echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
                     /**
                      * 前置检测
@@ -325,8 +341,8 @@ class AutoReseed
                         echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL;
                         // 流控日志
                         if ($siteName == 'hdchina') {
-                            $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
-                            $_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+                            $details_page = str_replace('{}', $torrent_id, 'details.php?id={}&hit=1');
+                            $_url = 'https://' .$sites[$sid]['base_url']. '/' .$details_page;
                         }
                         wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL, 'reseedLimit');
                         self::$wechatMsg['reseedSkip']++;
@@ -364,7 +380,7 @@ class AutoReseed
                             $userAgent = $configALL['default']['userAgent'];
                             // 拼接URL
                             $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
-                            $details_url = 'https://' .$sites[$sitesID]['base_url']. '/' .$details_page;
+                            $details_url = 'https://' .$sites[$sid]['base_url']. '/' .$details_page;
                             print "种子详情页：".$details_url.PHP_EOL;
                             $details_html = download($details_url, $cookie, $userAgent);
                             if (empty($details_html)) {
@@ -380,13 +396,14 @@ class AutoReseed
                                 break;
                             }
                             if (strpos($details_html, '没有该ID的种子') != false) {
-                                # code... 错误通知
+                                echo '种子已被删除！'.PHP_EOL;
+                                self::sendNotify('404');
                                 // 标志：跳过辅种
                                 $reseedPass = true;
                                 break;
                             }
                             // 提取种子下载地址
-                            $download_page = str_replace('{}', '', $sites[$sitesID]['download_page']);
+                            $download_page = str_replace('{}', '', $sites[$sid]['download_page']);
                             $offset = strpos($details_html, $download_page);
                             $urlTemp = substr($details_html, $offset, 50);
                             // 种子地址
@@ -397,7 +414,7 @@ class AutoReseed
                                 $reseedPass = true;
                                 break;
                             }
-                            $_url = 'https://' .$sites[$sitesID]['base_url']. '/' . $_url;
+                            $_url = 'https://' .$sites[$sid]['base_url']. '/' . $_url;
                             print "种子下载页：".$_url.PHP_EOL;
                             $url = download($_url, $cookie, $userAgent);
                             if (strpos($url, '第一次下载提示') != false) {
@@ -431,7 +448,7 @@ class AutoReseed
                                 # code...
                             } else {
                                 // 获取cuhash
-                                $html = download('https://' .$sites[$sitesID]['base_url']. '/pt', $cookie, $userAgent);
+                                $html = download('https://' .$sites[$sid]['base_url']. '/pt', $cookie, $userAgent);
                                 // 提取种子下载地址
                                 $offset = strpos($html, 'cuhash=');
                                 $len = strlen('cuhash=');
@@ -441,6 +458,12 @@ class AutoReseed
                             $url = $_url."&cuhash=". $configALL[$siteName]['cuhash'];
                             // 城市下载种子时会302转向
                             $url = download($url, $cookie, $userAgent);
+                            if (strpos($url, 'Non-exist torrent id!') != false) {
+                                echo '种子已被删除！'.PHP_EOL;
+                                self::sendNotify('404');
+                                // 标志：跳过辅种
+                                $reseedPass = true;
+                            }
                             break;
                         default:
                             // 默认站点：推送给下载器种子URL链接
@@ -680,5 +703,38 @@ class AutoReseed
         $desp .= '跳过：'.self::$wechatMsg['reseedSkip']. '  [未设置passkey]' .$br;
         $desp .= '忽略：'.self::$wechatMsg['reseedPass']. '  [成功添加存在缓存]' .$br;
         return ff($text, $desp);
+    }
+    /**
+     * 错误的种子通知服务器
+     */
+    private static function sendNotify($error = '')
+    {
+        self::$errNotify['error'] = $error;
+        $notify = http_build_query(self::$errNotify);
+        self::$errNotify = array(
+            'sign' => '',
+            'site' => '',
+            'sid'   => 0,
+            'torrent_id'=> 0,
+            'error'   => '',
+        );
+        $res = self::$curl->get(self::$apiUrl.self::$endpoints['notify'].'?'.$notify);
+        $res = json_decode($res->response, true);
+        if (isset($res['data']['success']) && $res['data']['success']) {
+            echo '感谢您的参与，种子被删除，上报成功！！'.PHP_EOL;
+        }
+        return true;
+    }
+    /**
+     * 设置通知主体
+     */
+    private static function setNotify($siteName = '', $sid = 0, $torrent_id = 0)
+    {
+        self::$errNotify = array(
+            'sign' => Oauth::getSign(),
+            'site' => $siteName,
+            'sid'   => $sid,
+            'torrent_id'=> $torrent_id,
+        );
     }
 }
