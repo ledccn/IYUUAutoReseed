@@ -67,6 +67,7 @@ class AutoReseed
     public static function init()
     {
         global $configALL;
+        self::backup('config', $configALL);
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
         self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, false);
@@ -272,6 +273,7 @@ class AutoReseed
                 // 失败
                 continue;
             }
+            self::backup('clients_'.$k, $hashArray);
             // 此处需要优化大于一万条做种时，应分批上传
             $infohash_Dir = $hashArray['hashString'];
             unset($hashArray['hashString']);
@@ -739,5 +741,15 @@ class AutoReseed
             'sid'   => $sid,
             'torrent_id'=> $torrent_id,
         );
+    }
+    /**
+     * 备份功能
+     */
+    private static function backup($key = '',$array = []){
+        $json = json_encode($array, JSON_UNESCAPED_UNICODE);
+        $myfile = ROOT_PATH.DS.'config'.DS.$key.'.json';
+        $file_pointer = @fopen($myfile, "w");
+        $worldsnum = @fwrite($file_pointer, $json);
+        @fclose($file_pointer);
     }
 }
