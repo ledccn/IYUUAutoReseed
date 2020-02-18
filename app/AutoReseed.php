@@ -191,15 +191,15 @@ class AutoReseed
                     }
                     if (isset($result['result']) && $result['result'] == 'success') {
                         $id = $name = '';
-                        if (isset($result['arguments']['torrent_duplicate'])) {
-                            $id = $result['arguments']['torrent_duplicate']['id'];
-                            $name = $result['arguments']['torrent_duplicate']['name'];
-                        } elseif (isset($result['arguments']['torrent_added'])) {
-                            $id = $result['arguments']['torrent_added']['id'];
-                            $name = $result['arguments']['torrent_added']['name'];
+                        if (isset($result['arguments']['torrent-duplicate'])) {
+                            $id = $result['arguments']['torrent-duplicate']['id'];
+                            $name = $result['arguments']['torrent-duplicate']['name'];
+                        } elseif (isset($result['arguments']['torrent-added'])) {
+                            $id = $result['arguments']['torrent-added']['id'];
+                            $name = $result['arguments']['torrent-added']['name'];
                         }
-                        print "名字：".$name . PHP_EOL;
-                        print "********RPC添加下载任务成功 [" .$result['result']. "] (id=$id)".PHP_EOL.PHP_EOL;
+                        print "名字：" .$name . PHP_EOL;
+                        print "********RPC添加下载任务成功 [" .$result['result']. "] (id=" .$id. ")".PHP_EOL.PHP_EOL;
                         return true;
                     } else {
                         $errmsg = isset($result['result']) ? $result['result'] : '未知错误，请稍后重试！';
@@ -419,6 +419,7 @@ class AutoReseed
                             $_url = 'https://' .$sites[$sid]['base_url']. '/' . $_url;
                             print "种子下载页：".$_url.PHP_EOL;
                             $url = download($_url, $cookie, $userAgent);
+                            p($url);
                             if (strpos($url, '第一次下载提示') != false) {
                                 echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
                                 echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
