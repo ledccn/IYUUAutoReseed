@@ -56,6 +56,8 @@ return array(
                 // 当前路径 => 目标路径
                 '/downloads' => '/volume1',
             ),
+            'skip_check'     => 0,      //转移成功，跳校验
+            'delete_torrent' => 0,      //转移成功，删除当前做种
         ),
         'workingMode'	=> 0,
         'watch'         => '/volume1/downloads',

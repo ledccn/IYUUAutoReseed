@@ -587,7 +587,9 @@ class AutoReseed
                 $rpcKey = self::$move[0];
                 $type = self::$links[$rpcKey]['type'];
                 if ($type == 'qBittorrent') {
-                    #$extra_options['skip_checking'] = "true";    //转移时，跳校验
+                    if (isset($configALL['default']['move']['skip_check']) && $configALL['default']['move']['skip_check'] === 1) {
+                        $extra_options['skip_checking'] = "true";    //转移成功，跳校验
+                    }
                 } else {
                     $extra_options = array();
                 }
@@ -598,9 +600,10 @@ class AutoReseed
                  */
                 $log = $info_hash.PHP_EOL.$torrentPath.PHP_EOL.$downloadDir.PHP_EOL.PHP_EOL;
                 if ($ret) {
-                    // 删除做种，不删资源
-                    #self::$links[$k]['rpc']->delete($torrentDelete);
-
+                    //转移成功时，删除做种，不删资源
+                    if (isset($configALL['default']['move']['delete_torrent']) && $configALL['default']['move']['delete_torrent'] === 1) {
+                        self::$links[$k]['rpc']->delete($torrentDelete);
+                    }
                     // 转移成功的种子，以infohash为文件名，写入缓存
                     wlog($log, $info_hash, self::$cacheMove);
                     wlog($log, 'MoveSuccess'.$k);
