@@ -1,9 +1,0 @@
-/torrent
-/config/config.php
-/config/sites.json
-/*.bat
-/*.sh
-.idea
-.php_cs.cache
-vendor
-php-7.4.2-nts-Win32-vc15-x86
