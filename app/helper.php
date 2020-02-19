@@ -149,7 +149,7 @@ function download($url, $cookies='', $useragent='', $method = 'GET')
     if ($method === 'POST') {
         curl_setopt($ch, CURLOPT_POST, true);
     }
-    if (stripos($url, 'https://') !== false) {
+    if (stripos($url, 'https://') === 0) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSLVERSION, 1);
