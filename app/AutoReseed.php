@@ -746,7 +746,8 @@ class AutoReseed
     /**
      * 备份功能
      */
-    private static function backup($key = '',$array = []){
+    private static function backup($key = '', $array = [])
+    {
         $json = json_encode($array, JSON_UNESCAPED_UNICODE);
         $myfile = ROOT_PATH.DS.'config'.DS.$key.'.json';
         $file_pointer = @fopen($myfile, "w");
