@@ -23,7 +23,7 @@ class AutoReseed
     // 不辅种的站点 'ourbits','hdchina'
     private static $noReseed = array();
     // 不转移的站点 'hdarea','hdbd'
-    private static $noMove = array('hdarea');
+    private static $noMove = array('');
     // cookie检查
     private static $cookieCheck = array('hdchina','hdcity');
     // 缓存路径
@@ -36,7 +36,9 @@ class AutoReseed
         'login'   => '/user/login',
         'sites'   => '/api/sites',
         'infohash'=> '/api/infohash',
-        'notify'   => '/api/notify',
+        'notify'  => '/api/notify',
+        'alike'   => '/api/alike',
+        'hash'    => '/api/hash',
     );
     // curl
     private static $curl = null;
