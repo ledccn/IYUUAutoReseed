@@ -286,9 +286,11 @@ class AutoReseed
             wlog($hashArray, 'hashString'.$k);
             self::$wechatMsg['hashCount'] +=count($infohash_Dir);
             // 此处优化大于一万条做种时，设置超时
-            if(self::$wechatMsg['hashCount'] > 5000){
-                self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT,$configALL['default']['CONNECTTIMEOUT']);
-                self::$curl->setOpt(CURLOPT_TIMEOUT,$configALL['default']['TIMEOUT']);
+            if(count($infohash_Dir) > 5000){
+                $connecttimeout = isset($configALL['default']['CONNECTTIMEOUT']) && $configALL['default']['CONNECTTIMEOUT']>60 ? $configALL['default']['CONNECTTIMEOUT'] : 60;
+                $timeout = isset($configALL['default']['TIMEOUT']) && $configALL['default']['TIMEOUT']>600 ? $configALL['default']['TIMEOUT'] : 600;
+                self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT,$connecttimeout);
+                self::$curl->setOpt(CURLOPT_TIMEOUT,$timeout);
             }
             echo "正在向服务器提交 clients_".$k." 种子哈希……".PHP_EOL;
             $res = self::$curl->post(self::$apiUrl . self::$endpoints['infohash'], $hashArray);
