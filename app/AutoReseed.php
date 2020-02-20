@@ -591,12 +591,11 @@ class AutoReseed
                 // 目标下载器类型
                 $rpcKey = self::$move[0];
                 $type = self::$links[$rpcKey]['type'];
+                $extra_options = array();
                 if ($type == 'qBittorrent') {
                     if (isset($configALL['default']['move']['skip_check']) && $configALL['default']['move']['skip_check'] === 1) {
                         $extra_options['skip_checking'] = "true";    //转移成功，跳校验
                     }
-                } else {
-                    $extra_options = array();
                 }
                 // 添加转移任务：成功返回：true
                 $ret = self::add(self::$move[0], $torrent, $downloadDir, $extra_options);
