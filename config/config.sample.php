@@ -43,7 +43,7 @@ return array(
                 'host'	=>	'http://127.0.0.1:8083',
                 'username'	=>	'',
                 'password'	=>	'',
-                'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 移动做种：必须配置
+                'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 移动做种：必须配置，Linux搜索方法：find / -name BT_backup
                 'move'      =>  0,      // 0不移动，1移动并辅种，2移动仅辅种自身，3未定义
             ),
             # 结束
