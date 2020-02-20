@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.2.0';
+    const VER = '1.5.0';
     // RPC连接
     private static $links = array();
     // 客户端配置
@@ -286,11 +286,11 @@ class AutoReseed
             wlog($hashArray, 'hashString'.$k);
             self::$wechatMsg['hashCount'] +=count($infohash_Dir);
             // 此处优化大于一万条做种时，设置超时
-            if(count($infohash_Dir) > 5000){
+            if (count($infohash_Dir) > 5000) {
                 $connecttimeout = isset($configALL['default']['CONNECTTIMEOUT']) && $configALL['default']['CONNECTTIMEOUT']>60 ? $configALL['default']['CONNECTTIMEOUT'] : 60;
                 $timeout = isset($configALL['default']['TIMEOUT']) && $configALL['default']['TIMEOUT']>600 ? $configALL['default']['TIMEOUT'] : 600;
-                self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT,$connecttimeout);
-                self::$curl->setOpt(CURLOPT_TIMEOUT,$timeout);
+                self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT, $connecttimeout);
+                self::$curl->setOpt(CURLOPT_TIMEOUT, $timeout);
             }
             echo "正在向服务器提交 clients_".$k." 种子哈希……".PHP_EOL;
             $res = self::$curl->post(self::$apiUrl . self::$endpoints['infohash'], $hashArray);
@@ -693,6 +693,10 @@ class AutoReseed
                 break;
             case 'ccfbits':
                 $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
+                break;
+            case 'dicmusic':
+                $_url = str_replace('{authkey}', $configALL[$site]['passkey'], $_url);
+                $url = str_replace('{torrent_pass}', $configALL[$site]['torrent_pass'], $_url);
                 break;
             default:
                 $url = $_url."&passkey=". $configALL[$site]['passkey'];
