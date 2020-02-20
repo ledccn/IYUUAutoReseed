@@ -276,7 +276,6 @@ class AutoReseed
                 continue;
             }
             self::backup('clients_'.$k, $hashArray);
-            // 此处需要优化大于一万条做种时，应分批上传
             $infohash_Dir = $hashArray['hashString'];
             unset($hashArray['hashString']);
             // 签名
@@ -286,6 +285,11 @@ class AutoReseed
             // 写请求日志
             wlog($hashArray, 'hashString'.$k);
             self::$wechatMsg['hashCount'] +=count($infohash_Dir);
+            // 此处优化大于一万条做种时，设置超时
+            if(self::$wechatMsg['hashCount'] > 5000){
+                self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT,$configALL['default']['CONNECTTIMEOUT']);
+                self::$curl->setOpt(CURLOPT_TIMEOUT,$configALL['default']['TIMEOUT']);
+            }
             echo "正在向服务器提交 clients_".$k." 种子哈希……".PHP_EOL;
             $res = self::$curl->post(self::$apiUrl . self::$endpoints['infohash'], $hashArray);
             $res = json_decode($res->response, true);
