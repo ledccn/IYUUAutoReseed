@@ -29,7 +29,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
  2. qBittorrent
 
 ## 支持自动辅种的站点
-学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits。
+学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits、dicmusic。
 
 ## 运行环境
 具备PHP运行环境的所有平台，例如：Linux、Windows、MacOS！
@@ -113,6 +113,8 @@ http://api.iyuu.cn/docs.php?type=expand
 | 寒山先生 | ¥200元 | 2020年1月18日12:37 |
 | 小城流水 | ¥5元 | 2020年1月22日22:14 |
 | 国旗(未署名) | ¥8.8元 | 2020年1月22日23:28 |
+| Alpha | ¥10.81元 | 2020年1月24日20:23 |
+| 羽生 | ¥88.88元 | 2020年1月24日21:06 |
 | 当下丶 | ¥100元 | 2020年1月28日1:45 |
 | 陈君政 | ¥10元 | 2020年2月3日11:32 |
 | 不寐夜游 | ¥10元 | 2020年2月8日17:17 |
@@ -120,6 +122,12 @@ http://api.iyuu.cn/docs.php?type=expand
 | 陈伟平 | ¥28.88元 | 2020年2月13日12:35 |
 | PhalApi Pro商业授权 | ¥-950元 | 2020年2月14日21:56 |
 | jonnaszheng | ¥10元 | 2020年2月15日10:25 |
+| weekend（sd54zdk） | ¥10元 | 2020年2月17日14:31 |
+| 寒山先生 | ¥200元 | 2020年2月17日17:00 |
+| PLC组态远程服务 | ¥8.88元 | 2020年2月18日02:14 |
+| JeSsiE杰西 | ¥66元 | 2020年2月20日19:38 |
+| 黄叶梓（炮王） | ¥10元 | 2020年2月20日21:10 |
+| 里奥龙 | ¥88.8元 | 2020年2月20日21:48 |
 
 
 补充说明：
