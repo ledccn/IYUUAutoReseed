@@ -6,8 +6,8 @@
  * IYUU自动辅种工具--最简配置（所有平台通用教程） https://www.iyuu.cn/archives/324/
  * IYUU自动辅种工具--如何下载最新源码？ https://www.iyuu.cn/archives/338/
  * IYUU自动辅种工具--合作站点鉴权配置说明 https://www.iyuu.cn/archives/337/
- * IYUU自动下载种子之RSS订阅使用教程 https://www.iyuu.cn/archives/349/
- * IYUU自动转移做种客户端-使用教程 https://www.iyuu.cn/archives/351/
+ * IYUU自动下载种子--之RSS订阅使用教程 https://www.iyuu.cn/archives/349/
+ * IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/
     脚本仓库下载法：
     git clone https://github.com/ledccn/IYUUAutoReseed
     cd IYUUAutoReseed
@@ -402,13 +402,6 @@ return array(
     ),
     // hdzone 序号：40
     'hdzone'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-    ),
-    // cnscg 序号：41	圣城
-    'cnscg'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
