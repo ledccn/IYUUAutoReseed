@@ -461,8 +461,8 @@ return array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
-        'passkey'       => '',              // authkey
-        'torrent_pass'       => '',         // torrent_pass
+        'passkey'       => '',              // torrent_pass
+        'authkey'       => '',              // authkey
     ),
 
     // 配置文件结束

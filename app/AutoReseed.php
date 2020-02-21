@@ -695,8 +695,8 @@ class AutoReseed
                 $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
                 break;
             case 'dicmusic':
-                $_url = str_replace('{authkey}', $configALL[$site]['passkey'], $_url);
-                $url = str_replace('{torrent_pass}', $configALL[$site]['torrent_pass'], $_url);
+                $_url = str_replace('{torrent_pass}', $configALL[$site]['passkey'], $_url);
+                $url = str_replace('{authkey}', $configALL[$site]['authkey'], $_url);
                 break;
             default:
                 $url = $_url."&passkey=". $configALL[$site]['passkey'];
