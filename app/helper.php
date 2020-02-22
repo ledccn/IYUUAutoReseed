@@ -448,3 +448,12 @@ function ShowTableSites($dir = 'Protocols', $filter = array())
     $table->setRows($data);
     echo($table->render());
 }
+
+/**
+ * 是否win平台
+ * @return bool
+ */
+function isWin()
+{
+    return (DIRECTORY_SEPARATOR == '\\') ? true : false;
+}

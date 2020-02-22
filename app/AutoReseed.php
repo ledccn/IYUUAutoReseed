@@ -292,6 +292,7 @@ class AutoReseed
                 self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT, $connecttimeout);
                 self::$curl->setOpt(CURLOPT_TIMEOUT, $timeout);
             }
+            // P($infohash_Dir);      // 调试：打印目录对应表
             echo "正在向服务器提交 clients_".$k." 种子哈希……".PHP_EOL;
             $res = self::$curl->post(self::$apiUrl . self::$endpoints['infohash'], $hashArray);
             $res = json_decode($res->response, true);
@@ -645,6 +646,7 @@ class AutoReseed
         global $configALL;
         $type = $configALL['default']['move']['type'];
         $pathArray = $configALL['default']['move']['path'];
+        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
         switch ($type) {
             case 1:         // 减
                 foreach ($pathArray as $key => $val) {

@@ -47,12 +47,11 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 ## 使用方法
 详见Wiki：
-https://gitee.com/ledc/IYUUAutoReseed/wikis 
 
 https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
 
 ## 接口开发文档
-http://api.iyuu.cn/docs.php?type=expand
+http://api.iyuu.cn/docs.php
 
 
 ## 需求提交/错误反馈

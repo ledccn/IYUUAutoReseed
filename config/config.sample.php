@@ -134,7 +134,6 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'id' => 0,					// 用户ID
-        'is_vip'		=> 0,		// 是否具有VIP或特殊权限？0 普通，1 VIP
         'workingMode'	=> 0,
         'watch'         => '/root/downloads',
         'filter' => array(

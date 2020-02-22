@@ -50,6 +50,7 @@ if (is_file(ROOT_PATH . "/config/sites.json")) {
 echo microtime(true).' 正在加载composer包管理器...'.PHP_EOL;
 require_once ROOT_PATH . '/vendor/autoload.php';
 echo microtime(true).' composer依赖载入完成！'.PHP_EOL;
+echo microtime(true).' 当前脚本运行环境：'.PHP_OS.PHP_EOL;
 global $argv;
 $start_file = str_replace("\\", "/", trim($argv[0]));
 if (substr($start_file, -8)==="init.php") {
