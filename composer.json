@@ -1,4 +1,13 @@
 {
+  "name": "iyuu/IYUUAutoReseed",
+  "description": "IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，支持下载器集群，支持多盘位，支持多下载目录，支持远程连接等。",
+  "keywords": ["iyuu", "reseed"],
+  "homepage": "https://github.com/ledccn/IYUUAutoReseed",
+  "authors": [
+    {
+      "name": "David"
+    }
+  ],
   "require": {
     "ext-json": "*",
     "ext-mbstring": "*",
