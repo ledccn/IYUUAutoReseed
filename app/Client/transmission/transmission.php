@@ -133,7 +133,7 @@ class transmission extends AbstractClient
      */
     public function __construct($url = 'http://127.0.0.1:9091/transmission/rpc', $username = null, $password = null)
     {
-        $this->url = $url;
+        $this->url = rtrim($url, '/');
         $this->username = $username;
         $this->password = $password;
     }
