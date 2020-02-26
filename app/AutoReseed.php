@@ -185,7 +185,7 @@ class AutoReseed
             // 判断
             switch ($type) {
                 case 'transmission':
-                    $extra_options['paused'] = true;
+                    $extra_options['paused'] = isset($extra_options['paused']) ? $extra_options['paused'] : true;
                     if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
@@ -213,7 +213,7 @@ class AutoReseed
                     break;
                 case 'qBittorrent':
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
-                    $extra_options['paused'] = 'true';
+                    $extra_options['paused'] = isset($extra_options['paused']) ? $extra_options['paused'] : true;
                     if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
@@ -599,10 +599,13 @@ class AutoReseed
                 $rpcKey = self::$move[0];
                 $type = self::$links[$rpcKey]['type'];
                 $extra_options = array();
+                $extra_options['paused'] = isset($configALL['default']['move']['paused']) && $configALL['default']['move']['paused'] ? true : false;
                 if ($type == 'qBittorrent') {
                     if (isset($configALL['default']['move']['skip_check']) && $configALL['default']['move']['skip_check'] === 1) {
                         $extra_options['skip_checking'] = "true";    //转移成功，跳校验
                     }
+                } else {
+                    
                 }
                 // 添加转移任务：成功返回：true
                 $ret = self::add(self::$move[0], $torrent, $downloadDir, $extra_options);
