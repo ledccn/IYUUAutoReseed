@@ -134,7 +134,7 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
-        'id' => 0,					// 用户ID
+        'id' => 0,					// 用户ID(不是用户名)
         'workingMode'	=> 0,
         'watch'         => '/root/downloads',
         'filter' => array(
