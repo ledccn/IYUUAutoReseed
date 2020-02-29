@@ -56,9 +56,9 @@ return array(
                 // 当前路径 => 目标路径
                 '/downloads' => '/volume1',
             ),
-            'paused'         => 0,      //转移成功，0开始，1暂停
-            'skip_check'     => 0,      //转移成功，跳校验
-            'delete_torrent' => 0,      //转移成功，删除当前做种
+            'paused'         => 0,      //转移成功，自动开始任务：0开始，1暂停
+            'skip_check'     => 0,      //转移成功，跳校验：0不跳、1跳校验
+            'delete_torrent' => 0,      //转移成功，删除当前做种：0不删除、1删除
         ),
         'workingMode'	=> 0,
         'watch'         => '/volume1/downloads',
