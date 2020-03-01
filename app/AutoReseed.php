@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.5.3';
+    const VER = '1.5.7';
     // RPC连接
     private static $links = array();
     // 客户端配置
@@ -213,7 +213,11 @@ class AutoReseed
                     break;
                 case 'qBittorrent':
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
-                    $extra_options['paused'] = isset($extra_options['paused']) ? $extra_options['paused'] : true;
+                    if (isset($extra_options['paused'])) {
+                        $extra_options['paused'] = $extra_options['paused'] ? 'true' : 'false';
+                    }else {
+                        $extra_options['paused'] = 'true';
+                    }
                     if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
