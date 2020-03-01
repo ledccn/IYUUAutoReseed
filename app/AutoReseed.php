@@ -605,7 +605,6 @@ class AutoReseed
                         $extra_options['skip_checking'] = "true";    //转移成功，跳校验
                     }
                 } else {
-                    
                 }
                 // 添加转移任务：成功返回：true
                 $ret = self::add(self::$move[0], $torrent, $downloadDir, $extra_options);
