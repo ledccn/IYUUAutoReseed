@@ -44,7 +44,7 @@ class AutoReseed
     private static $curl = null;
     // 退出状态码
     public static $ExitCode = 0;
-    // 客户端转移做种
+    // 客户端转移做种 格式：['客户端key', '移动参数move']
     private static $move = null;
     // 微信消息体
     private static $wechatMsg = array(
