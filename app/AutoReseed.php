@@ -215,7 +215,7 @@ class AutoReseed
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
                     if (isset($extra_options['paused'])) {
                         $extra_options['paused'] = $extra_options['paused'] ? 'true' : 'false';
-                    }else {
+                    } else {
                         $extra_options['paused'] = 'true';
                     }
                     if ($is_url) {
@@ -329,6 +329,11 @@ class AutoReseed
                     // 种子id
                     $torrent_id = $value['torrent_id'];
                     // 站点名
+                    if (empty($sites[$sid]['site'])) {
+                        echo '-----当前站点不受支持，已跳过。' .PHP_EOL.PHP_EOL;
+                        self::$wechatMsg['reseedSkip']++;
+                        continue;
+                    }
                     $siteName = $sites[$sid]['site'];
                     // 错误通知
                     self::setNotify($siteName, $sid, $torrent_id);
