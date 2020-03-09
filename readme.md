@@ -10,6 +10,20 @@
 
 第三：您使用IYUU工具造成的一切损失，与IYUU无关。如不接受此条款，请不要使用IYUUAutoReseed，并立刻删除已经下载的源码。
 
+## 安装脚本，三种方式皆可
+
+1. 通过git命令安装
+
+    `git clone https://github.com/ledccn/IYUUAutoReseed.git`
+
+2. 通过composer命令安装
+
+    `composer create-project ledccn/iyuuautoreseed:dev-master`
+
+3. 直接下载zip源码包
+
+    `https://github.com/ledccn/IYUUAutoReseed/archive/master.zip`
+
 ## 功能
 
 IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，支持下载器集群，支持多盘位，支持多下载目录，支持远程连接等。
@@ -57,6 +71,7 @@ http://api.iyuu.cn/docs.php
 ## 需求提交/错误反馈
  - 点击链接加入群聊【IYUU自动辅种交流】：[https://jq.qq.com/?_wv=1027&k=5JOfOlM][1]
  - QQ群：859882209
+ - 问答社区：http://wenda.iyuu.cn
  - issues： https://gitee.com/ledc/IYUUAutoReseed/issues 
 
 ## 捐助开发者
