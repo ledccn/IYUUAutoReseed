@@ -1,2 +1,2 @@
 @echo off
-composer install
+composer create-project ledccn/iyuuautoreseed:dev-master
