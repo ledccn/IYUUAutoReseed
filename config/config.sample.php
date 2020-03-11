@@ -144,12 +144,13 @@ return array(
             ),
         ),
     ),
-    // HDSky 序号：4
-    'hdsky'      => array(
+    // hddolby 序号：4
+    'hddolby'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
     ),
     // pter 序号：5
     'pter'      => array(
@@ -186,8 +187,8 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hddolby 序号：10
-    'hddolby'      => array(
+    // HDSky 序号：10
+    'hdsky'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
