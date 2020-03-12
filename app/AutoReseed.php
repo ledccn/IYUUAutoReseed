@@ -437,7 +437,7 @@ class AutoReseed
                             $_url = 'https://' .$sites[$sid]['base_url']. '/' . $_url;
                             print "种子下载页：".$_url.PHP_EOL;
                             $url = download($_url, $cookie, $userAgent);
-                            p($url);
+                            #p($url);
                             if (strpos($url, '第一次下载提示') != false) {
                                 echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
                                 echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
