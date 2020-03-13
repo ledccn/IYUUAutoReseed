@@ -50,7 +50,6 @@ IYUU自动辅种：需要您配置各站的passkey（目前支持40多个站点�
 配置好后如图：
 ![编辑配置3.png][10]
 
-
 ----------
 
 
@@ -60,7 +59,6 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 ### 设置Ourbits：
 ![编辑配置4.png][11]
 `passkey`，在你的控制面板 - 密钥
-`is_vip`，根据你的实际情况填写，因站点有下载种子的流控，如果你不在限制之列，可以`设置为1`
 `id`，为用户中心打开后，浏览器地址栏**http://xxxxx.xxx/userdetails.php?id=`46880`**等号=后面的几个数字，如图：
 ![编辑配置6.png][12]
 
@@ -95,7 +93,6 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 <a href="http://dawei.hk:81/php-7.4.2-nts-Win32-vc15-x64.zip" target="_blank"><h3><code>http://dawei.hk:81/php-7.4.2-nts-Win32-vc15-x64.zip</code></h3></a>
 !!!
 
-
 ----------
 
 
@@ -108,18 +105,18 @@ IYUU自动辅种工具、Ourbits双方达成合作，可以对使用接口的用
 ![编辑配置8.png][15]
 
 
-  [1]: https://gitee.com/ledc/IYUUAutoReseed
-  [2]: https://www.iyuu.cn/usr/uploads/2020/02/3155906692.zip
-  [3]: https://www.iyuu.cn/usr/uploads/2019/12/2331433923.png
-  [4]: https://www.iyuu.cn/usr/uploads/2019/12/3324442680.png
-  [5]: https://www.iyuu.cn/usr/uploads/2019/12/3181272964.png
-  [6]: https://www.iyuu.cn/usr/uploads/2019/12/3669828008.png
-  [7]: https://www.iyuu.cn/usr/uploads/2019/12/2720183833.png
-  [8]: https://www.iyuu.cn/usr/uploads/2019/12/405587689.png
-  [9]: https://www.iyuu.cn/usr/uploads/2019/12/441257656.png
-  [10]: https://www.iyuu.cn/usr/uploads/2019/12/890327305.png
-  [11]: https://www.iyuu.cn/usr/uploads/2019/12/3696916642.png
-  [12]: https://www.iyuu.cn/usr/uploads/2019/12/1230288911.png
-  [13]: https://www.iyuu.cn/usr/uploads/2019/12/3007415838.png
-  [14]: https://www.iyuu.cn/usr/uploads/2019/12/3189986236.png
-  [15]: https://www.iyuu.cn/usr/uploads/2019/12/2523845772.png
+[1]: https://gitee.com/ledc/IYUUAutoReseed
+[2]: https://www.iyuu.cn/usr/uploads/2020/02/3155906692.zip
+[3]: https://www.iyuu.cn/usr/uploads/2019/12/2331433923.png
+[4]: https://www.iyuu.cn/usr/uploads/2019/12/3324442680.png
+[5]: https://www.iyuu.cn/usr/uploads/2019/12/3181272964.png
+[6]: https://www.iyuu.cn/usr/uploads/2019/12/3669828008.png
+[7]: https://www.iyuu.cn/usr/uploads/2019/12/2720183833.png
+[8]: https://www.iyuu.cn/usr/uploads/2019/12/405587689.png
+[9]: https://www.iyuu.cn/usr/uploads/2019/12/441257656.png
+[10]: https://www.iyuu.cn/usr/uploads/2019/12/890327305.png
+[11]: https://www.iyuu.cn/usr/uploads/2019/12/3696916642.png
+[12]: https://www.iyuu.cn/usr/uploads/2019/12/1230288911.png
+[13]: https://www.iyuu.cn/usr/uploads/2019/12/3007415838.png
+[14]: https://www.iyuu.cn/usr/uploads/2019/12/3189986236.png
+[15]: https://www.iyuu.cn/usr/uploads/2019/12/2523845772.png
