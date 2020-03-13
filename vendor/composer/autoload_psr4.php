@@ -6,6 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'phpspider\\' => array($vendorDir . '/owner888/phpspider'),
     'IYUU\\' => array($baseDir . '/app'),
 );
