@@ -3,15 +3,17 @@
  * 技术讨论及后续更新，请加入QQ群！！！！！！！
     群名称：IYUU自动辅种交流
     QQ群号：859882209
+ * IYUU自动辅种工具-【安装篇】如何下载最新源码？ https://www.iyuu.cn/archives/338/
+ * IYUU自动辅种工具-【安装篇】Windows之git https://www.iyuu.cn/archives/367/
+ * IYUU自动辅种工具-【安装篇】群晖Linux之git https://www.iyuu.cn/archives/372/
  * IYUU自动辅种工具--最简配置（所有平台通用教程） https://www.iyuu.cn/archives/324/
- * IYUU自动辅种工具--如何下载最新源码？ https://www.iyuu.cn/archives/338/
  * IYUU自动辅种工具--合作站点鉴权配置说明 https://www.iyuu.cn/archives/337/
  * IYUU自动下载种子--之RSS订阅使用教程 https://www.iyuu.cn/archives/349/
  * IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/
-    脚本仓库下载法：
-    git clone https://github.com/ledccn/IYUUAutoReseed
+    脚本仓库GIT下载法：
+    git clone https://gitee.com/ledc/IYUUAutoReseed.git
     cd IYUUAutoReseed
-    composer install
+    php ./iyuu.php
  */
 return array(
     // 1.【必须配置】爱语飞飞 微信通知，请访问https://iyuu.cn 用微信扫码申请
@@ -23,7 +25,7 @@ return array(
     // 4.全局默认配置
     'default'      => array(
         // 5.【必须配置】浏览器UA，打开http://demo.iyuu.cn 复制过来即可
-        'userAgent'     => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+        'userAgent'     => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.1303.189 Safari/537.36',
         // 6.【自动辅种必须配置】全局客户端设置（条目不够可以复制）
         'clients'   => array(
             // 全局客户端设置 开始
