@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.6.2';
+    const VER = '1.6.3';
     // RPC连接
     private static $links = array();
     // 客户端配置
@@ -73,8 +73,16 @@ class AutoReseed
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
         self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, false);
+
+        // 合作站点自动注册鉴权
+        $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);
+        if(!$is_login){
+            die('合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/');
+        }
+
         // 显示支持站点列表
         self::ShowTableSites();
+
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
         echo "程序正在初始化运行参数... ".PHP_EOL;
         // 递归删除上次历史记录
@@ -85,8 +93,6 @@ class AutoReseed
         IFile::mkdir(self::$cacheMove);
         // 连接全局客户端
         self::links();
-        // 合作站点自动注册鉴权
-        Oauth::login(self::$apiUrl . self::$endpoints['login']);
     }
     /**
      * 显示支持站点列表
@@ -117,6 +123,9 @@ class AutoReseed
         } else {
             if (isset($rs['msg']) && $rs['msg']) {
                 die($rs['msg']);
+            }
+            if (isset($rs['errmsg']) && $rs['errmsg']) {
+                die($rs['errmsg']);
             }
             die('远端服务器无响应，请稍后再试！！！');
         }
@@ -538,14 +547,13 @@ class AutoReseed
     public static function move()
     {
         global $configALL;
-        $sites = self::$sites;
         foreach (self::$links as $k => $v) {
             if (self::$move[0] == $k) {
                 echo "clients_".$k."是目标转移客户端，避免冲突，已跳过！".PHP_EOL.PHP_EOL;
                 continue;
             }
             echo "正在从下载器 clients_".$k." 获取种子哈希……".PHP_EOL;
-            $hashArray = self::$links[$k]['rpc']->getList($move);
+            $hashArray = self::$links[$k]['rpc']->getList(self::$move);
             if (empty($hashArray)) {
                 // 失败
                 continue;
@@ -567,6 +575,7 @@ class AutoReseed
                 $downloadDir = self::pathReplace($downloadDir);
                 echo '转换后：'.$downloadDir.PHP_EOL;
                 if (is_null($downloadDir)) {
+                    echo 'IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/'.PHP_EOL;
                     die("全局配置的move数组内，路径转换参数配置错误，请重新配置！！！".PHP_EOL);
                 }
                 // 种子目录：脚本要能够读取到
@@ -587,6 +596,7 @@ class AutoReseed
                         break;
                     case 'qBittorrent':
                         if (empty($path)) {
+                            echo 'IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/'.PHP_EOL;
                             die("clients_".$k." 未设置种子的BT_backup目录，无法完成转移！");
                         }
                         $torrentPath = $path .DS. $info_hash . '.torrent';
@@ -597,6 +607,7 @@ class AutoReseed
                         break;
                 }
                 if (!is_file($torrentPath)) {
+                    echo 'IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/'.PHP_EOL;
                     die("clients_".$k." 的种子文件{$torrentPath}不存在，无法完成转移！");
                 }
                 echo '存在种子：'.$torrentPath.PHP_EOL;
