@@ -1,4 +1,24 @@
 <?php
+/**
+                                                                         
+IIIIIIIIIIYYYYYYY       YYYYYYYUUUUUUUU     UUUUUUUUUUUUUUUU     UUUUUUUU
+I::::::::IY:::::Y       Y:::::YU::::::U     U::::::UU::::::U     U::::::U
+I::::::::IY:::::Y       Y:::::YU::::::U     U::::::UU::::::U     U::::::U
+II::::::IIY::::::Y     Y::::::YUU:::::U     U:::::UUUU:::::U     U:::::UU
+  I::::I  YYY:::::Y   Y:::::YYY U:::::U     U:::::U  U:::::U     U:::::U 
+  I::::I     Y:::::Y Y:::::Y    U:::::D     D:::::U  U:::::D     D:::::U 
+  I::::I      Y:::::Y:::::Y     U:::::D     D:::::U  U:::::D     D:::::U 
+  I::::I       Y:::::::::Y      U:::::D     D:::::U  U:::::D     D:::::U 
+  I::::I        Y:::::::Y       U:::::D     D:::::U  U:::::D     D:::::U 
+  I::::I         Y:::::Y        U:::::D     D:::::U  U:::::D     D:::::U 
+  I::::I         Y:::::Y        U:::::D     D:::::U  U:::::D     D:::::U 
+  I::::I         Y:::::Y        U::::::U   U::::::U  U::::::U   U::::::U 
+II::::::II       Y:::::Y        U:::::::UUU:::::::U  U:::::::UUU:::::::U 
+I::::::::I    YYYY:::::YYYY      UU:::::::::::::UU    UU:::::::::::::UU  
+I::::::::I    Y:::::::::::Y        UU:::::::::UU        UU:::::::::UU    
+IIIIIIIIII    YYYYYYYYYYYYY          UUUUUUUUU            UUUUUUUUU      
+                                                                         
+ */
 // 定义目录
 defined('ROOT_PATH') or define("ROOT_PATH", __DIR__);
 define('DS', DIRECTORY_SEPARATOR);
