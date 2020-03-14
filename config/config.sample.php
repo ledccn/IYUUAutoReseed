@@ -89,7 +89,47 @@ return array(
      * 以下为各站点的独立配置（互不影响、互不冲突）
      * 自动辅种：需要配置各站的passkey（没有配置passkey的站点会自动跳过）
      */
-    // m-team 序号：1
+    // ourbits
+    'ourbits'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
+        'workingMode'	=> 0,
+        'watch'         => '/root/downloads',
+        'filter' => array(
+            'size'=>array(
+                'min'	=>	'1GB',
+                'max'	=>	'280GB',
+            ),
+        ),
+    ),
+    // hddolby
+    'hddolby'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
+    ),
+    // hdhome
+    'hdhome'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
+    ),
+    // PTHome
+    'pthome'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
+    ),
+    // m-team
     'm-team'      => array(
         // 14.m-team的cookie	如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => 'tp=',
@@ -115,7 +155,7 @@ return array(
             ),
         ),
     ),
-    // keepfrds 序号：2
+    // keepfrds
     'keepfrds'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -130,88 +170,49 @@ return array(
             ),
         ),
     ),
-    // ourbits 序号：3
-    'ourbits'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-        'id' => 0,					// 用户ID(不是用户名)
-        'workingMode'	=> 0,
-        'watch'         => '/root/downloads',
-        'filter' => array(
-            'size'=>array(
-                'min'	=>	'1GB',
-                'max'	=>	'280GB',
-            ),
-        ),
-    ),
-    // hddolby 序号：4
-    'hddolby'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-        'id' => 0,					// 用户ID(不是用户名)
-    ),
-    // hdhome 序号：5
-    'hdhome'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-        'id' => 0,					// 用户ID(不是用户名)
-    ),
-    // pter 序号：6
+    // pter
     'pter'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // tjupt 序号：7
+    // tjupt
     'tjupt'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // btschool 序号：8
+    // btschool
     'btschool'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // PTHome 序号：9
-    'pthome'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-    ),
-    // HDSky 序号：10
+    // HDSky
     'hdsky'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // TorrentCCF 序号：11
+    // TorrentCCF
     'torrentccf'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // PTMSG 序号：12
+    // PTMSG
     'ptmsg'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // MoeCat 序号：13
+    // MoeCat
     'moecat'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -220,7 +221,7 @@ return array(
         // 种子Tracker的IP地址选择 可选：ipv4，ipv6
         'ip_type'		=> 'ipv4',
     ),
-    // totheglory 序号：14
+    // totheglory
     'ttg'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -229,14 +230,14 @@ return array(
         // 如果需要rss订阅，必须配置
         'rss'       => '',
     ),
-    // nanyangpt 序号：15
+    // nanyangpt
     'nanyangpt'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // springsunday.net 序号：16
+    // springsunday.net
     'ssd'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
