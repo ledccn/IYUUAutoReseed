@@ -77,7 +77,7 @@ class AutoReseed
         // 合作站点自动注册鉴权
         $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);
         if(!$is_login){
-            die('合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/');
+            echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/';
         }
 
         // 显示支持站点列表
