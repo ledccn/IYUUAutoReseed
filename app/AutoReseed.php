@@ -122,10 +122,10 @@ class AutoReseed
             @fclose($file_pointer);
         } else {
             if (isset($rs['msg']) && $rs['msg']) {
-                die($rs['msg']);
+                die($rs['msg'].PHP_EOL);
             }
             if (isset($rs['errmsg']) && $rs['errmsg']) {
-                die($rs['errmsg']);
+                die($rs['errmsg'].PHP_EOL);
             }
             die('远端服务器无响应，请稍后再试！！！');
         }
