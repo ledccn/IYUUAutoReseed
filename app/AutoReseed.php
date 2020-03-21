@@ -553,7 +553,8 @@ class AutoReseed
                 continue;
             }
             echo "正在从下载器 clients_".$k." 获取种子哈希……".PHP_EOL;
-            $hashArray = self::$links[$k]['rpc']->getList(self::$move);
+            $move = [];     // 客户端做种列表 传址
+            $hashArray = self::$links[$k]['rpc']->getList($move);
             if (empty($hashArray)) {
                 // 失败
                 continue;
