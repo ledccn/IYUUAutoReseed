@@ -320,8 +320,8 @@ class AutoReseed
             }
             // 判断返回值
             if (empty($res['msg'])) {
-                echo '提醒：未配置passkey的站点都会跳过！'.PHP_EOL;
                 echo "clients_".$k." 辅种数据下载成功！！！".PHP_EOL.PHP_EOL;
+                echo '【提醒】未配置passkey的站点都会跳过！'.PHP_EOL.PHP_EOL;
             } else {
                 $errmsg = isset($res['msg']) && $res['msg'] ? $res['msg'] : '远端服务器无响应，请稍后重试！';
                 echo '-----辅种失败，原因：' .$errmsg.PHP_EOL.PHP_EOL;
@@ -352,7 +352,7 @@ class AutoReseed
                     // 页面规则
                     $download_page = str_replace('{}', $torrent_id, $sites[$sid]['download_page']);
                     $_url = 'https://' .$sites[$sid]['base_url']. '/' .$download_page;
-                    echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
+
                     /**
                      * 前置检测
                      */
@@ -361,6 +361,8 @@ class AutoReseed
                         //echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedSkip']++;
                         continue;
+                    }else{
+                        echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
                     }
                     // cookie检测
                     if (in_array($siteName, self::$cookieCheck) && empty($configALL[$siteName]['cookie'])) {
