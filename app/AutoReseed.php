@@ -13,19 +13,19 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.6.7';
+    const VER = '1.6.9';
     // RPC连接
-    private static $links = array();
+    private static $links = [];
     // 客户端配置
-    private static $clients = array();
+    private static $clients = [];
     // 站点列表
-    private static $sites = array();
-    // 不辅种的站点 'ourbits','hdchina'
-    private static $noReseed = array();
+    private static $sites = [];
+    // 不辅种的站点 'pt','hdchina'
+    private static $noReseed = [];
     // 不转移的站点 'hdarea','hdbd'
-    private static $noMove = array('');
+    private static $noMove = [];
     // cookie检查
-    private static $cookieCheck = array('hdchina','hdcity');
+    private static $cookieCheck = ['hdchina','hdcity'];
     // 缓存路径
     public static $cacheDir  = TORRENT_PATH.'cache'.DS;
     public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
@@ -69,6 +69,7 @@ class AutoReseed
     public static function init()
     {
         global $configALL;
+        echo "版本号：".self::VER.PHP_EOL;
         self::backup('config', $configALL);
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
@@ -77,7 +78,7 @@ class AutoReseed
         // 合作站点自动注册鉴权
         $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);
         if(!$is_login){
-            echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/';
+            echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/' .PHP_EOL;
         }
 
         // 显示支持站点列表
@@ -99,9 +100,10 @@ class AutoReseed
      */
     private static function ShowTableSites()
     {
-        $list[] = 'gitee 源码仓库：https://gitee.com/ledc/IYUUAutoReseed';
+        $list[] = 'gitee源码仓库：https://gitee.com/ledc/IYUUAutoReseed';
         $list[] = 'github源码仓库：https://github.com/ledccn/IYUUAutoReseed';
         $list[] = '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki';
+        $list[] = '问答社区：http://wenda.iyuu.cn';
         $list[] = "QQ群：859882209 【IYUU自动辅种交流】".PHP_EOL;
         foreach ($list as $key => $value) {
             echo $value.PHP_EOL;
@@ -167,7 +169,7 @@ class AutoReseed
                 self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
                 $result = $client->status();
                 print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
-                // 检查转移做种
+                // 检查转移做种 (移动配置为真、self::$move为空)
                 if (isset($v['move']) && $v['move'] && is_null(self::$move)) {
                     self::$move = array($k,$v['move']);
                 }
@@ -318,6 +320,7 @@ class AutoReseed
             }
             // 判断返回值
             if (empty($res['msg'])) {
+                echo '提醒：未配置passkey的站点都会跳过！'.PHP_EOL;
                 echo "clients_".$k." 辅种数据下载成功！！！".PHP_EOL.PHP_EOL;
             } else {
                 $errmsg = isset($res['msg']) && $res['msg'] ? $res['msg'] : '远端服务器无响应，请稍后重试！';
@@ -355,7 +358,7 @@ class AutoReseed
                      */
                     // passkey检测
                     if (empty($configALL[$siteName]['passkey'])) {
-                        echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
+                        //echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedSkip']++;
                         continue;
                     }
@@ -615,7 +618,7 @@ class AutoReseed
                 $torrent = file_get_contents($torrentPath);
                 // 正式开始转移
                 echo "种子已推送给下载器，正在转移做种...".PHP_EOL;
-                $ret = false;
+
                 // 目标下载器类型
                 $rpcKey = self::$move[0];
                 $type = self::$links[$rpcKey]['type'];
@@ -627,6 +630,7 @@ class AutoReseed
                     }
                 } else {
                 }
+
                 // 添加转移任务：成功返回：true
                 $ret = self::add(self::$move[0], $torrent, $downloadDir, $extra_options);
                 /**
@@ -789,5 +793,6 @@ class AutoReseed
         $file_pointer = @fopen($myfile, "w");
         $worldsnum = @fwrite($file_pointer, $json);
         @fclose($file_pointer);
+        return $worldsnum;
     }
 }
