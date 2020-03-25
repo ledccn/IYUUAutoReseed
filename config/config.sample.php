@@ -18,15 +18,11 @@
 return array(
     // 1.【必须配置】爱语飞飞 微信通知，请访问https://iyuu.cn 用微信扫码申请
     'iyuu.cn'		=> 'IYUU',
-    // 2.server酱 微信通知配置
-    'sc.ftqq.com'   => '',
-    // 3.发布员鉴权
-    'secret' 		=> '',
-    // 4.全局默认配置
+    // 2.全局默认配置
     'default'      => array(
-        // 5.【必须配置】浏览器UA，打开http://demo.iyuu.cn 复制过来即可
+        // 3.【必须配置】浏览器UA，打开http://demo.iyuu.cn 复制过来即可
         'userAgent'     => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.1303.189 Safari/537.36',
-        // 6.【自动辅种必须配置】全局客户端设置（条目不够可以复制）
+        // 4.【自动辅种必须配置】全局客户端设置（条目不够可以复制）
         'clients'   => array(
             // 全局客户端设置 开始
             # 开始
@@ -51,7 +47,7 @@ return array(
             # 结束
             // 全局客户端设置 结束
         ),
-        // 移动做种必须配置
+        // 5.移动做种必须配置
         'move' =>array(
             'type' => 0,		// 0保持不变，1减，2加，3替换
             'path' =>array(
@@ -62,8 +58,11 @@ return array(
             'skip_check'     => 0,      //转移成功，跳校验：0不跳、1跳校验
             'delete_torrent' => 0,      //转移成功，删除当前做种：0不删除、1删除
         ),
+		// 6.RSS工作模式
         'workingMode'	=> 0,
+		// 7.监控目录
         'watch'         => '/volume1/downloads',
+		// 8.RSS过滤参数配置
         'filter' => array(
             'size'=>array(
                 'min'	=>	'1GB',
@@ -85,6 +84,10 @@ return array(
         'CONNECTTIMEOUT'=> 60,
         'TIMEOUT'       => 600,
     ),
+    // 9.server酱 微信通知配置
+    'sc.ftqq.com'   => '',
+    // 10.发布员鉴权
+    'secret' 		=> '',
     /**
      * 以下为各站点的独立配置（互不影响、互不冲突）
      * 自动辅种：需要配置各站的passkey（没有配置passkey的站点会自动跳过）
@@ -244,231 +247,231 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // yingk 序号：17
+    // yingk
     'yingk'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdcity 序号：18
+    // hdcity
     'hdcity'      => array(
         // 必须配置
         'cookie'        => '',
         // 如果需要自动辅种，必须配置cuhash
         'passkey'       => '',
     ),
-    // 52pt.site 序号：19
+    // 52pt.site
     '52pt'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // brobits.cc 序号：20
+    // brobits
     'brobits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // www.beitai.pt 序号：21
+    // beitai
     'beitai'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // pt.eastgame.org 序号：22
+    // eastgame
     'eastgame'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // pt.soulvoice.club 序号：23
+    // soulvoice
     'soulvoice'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // chdbits 序号：24
+    // chdbits
     'chdbits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // leaguehd 序号：25
+    // leaguehd
     'leaguehd'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // ptsbao.club 序号：26
+    // ptsbao
     'ptsbao'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdchina 序号：27
+    // hdchina
     'hdchina'      => array(
         // 必须配置
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdarea 序号：28
+    // hdarea
     'hdarea'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdtime 序号：29
+    // hdtime
     'hdtime'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // 1ptba 序号：30
+    // 1ptba
     '1ptba'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hd4fans 序号：31
+    // hd4fans
     'hd4fans'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hddisk.life 序号：32
+    // hddisk.life
     'hdbug'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // opencd 序号：33	皇后
+    // opencd皇后
     'opencd'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdstreet 序号：34
+    // hdstreet
     'hdstreet'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // joyhd 序号：35
+    // joyhd
     'joyhd'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // dmhy 序号：36	幼儿园
+    // dmhy幼儿园
     'dmhy'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdu 序号：37
+    // hdu
     'upxin'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // oshen 序号：38
+    // oshen
     'oshen'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // discfan 序号：39	港知堂
+    // discfan港知堂
     'discfan'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdzone 序号：40
+    // hdzone
     'hdzone'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // nicept 序号：42	老师
+    // nicept老师
     'nicept'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdbd 序号：43	伊甸园
+    // hdbd伊甸园
     'hdbd'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // byr 序号：44	北邮
+    // byr北邮
     'byr'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // CCFBits 序号：45
+    // CCFBits
     'ccfbits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // hdbits 序号：46
+    // hdbits
     'hdbits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // PTPBD 序号：47
+    // PTPBD
     'ptpbd'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // HD-T 序号：48
+    // HD-T
     'hd-torrents'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // skyeysnow 序号：50 天雪
+    // skyeysnow天雪
     'skyeysnow'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
     ),
-    // pt.sjtu 序号：51 葡萄
+    // pt.sjtu葡萄
     'pt'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -476,5 +479,5 @@ return array(
         'passkey'       => '',
     ),
 
-    // 配置文件结束
+    // 配置结束，后面的一行需要不能删除，请保留！！！
 );
