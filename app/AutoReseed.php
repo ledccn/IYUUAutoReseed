@@ -729,6 +729,9 @@ class AutoReseed
                 $_url = str_replace('{torrent_pass}', $configALL[$site]['passkey'], $_url);
                 $url = str_replace('{authkey}', $configALL[$site]['authkey'], $_url);
                 break;
+            case 'hdroute':
+                $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
+                break;
             default:
                 $url = $_url."&passkey=". $configALL[$site]['passkey'];
                 break;
