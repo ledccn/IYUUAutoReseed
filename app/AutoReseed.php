@@ -694,11 +694,11 @@ class AutoReseed
             case 3:         // 替换
                 foreach ($pathArray as $key => $val) {
                     if (strpos($path, $key)===0) {
-                        return $val . substr($path, strlen($key));
+                        return $val;
                     }
                 }
                 break;
-            default:
+            default:        // 不变
                 return $path;
                 break;
         }
