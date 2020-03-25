@@ -48,7 +48,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 ## 运行环境
 具备PHP运行环境的所有平台，例如：Linux、Windows、MacOS！
 
-官方下载的记得开启crul、fileinfo、mbstring，这3个扩展。
+官方下载的记得开启curl、json、mbstring，这3个扩展。
 
  1. Windows下安装php环境：https://www.php.net/downloads
     
@@ -56,7 +56,6 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 ## 下载源码
  - github仓库：https://github.com/ledccn/IYUUAutoReseed
  - 码云仓库：https://gitee.com/ledc/IYUUAutoReseed
- - 仓库下载的源码，缺少vendor目录，可以去群内下载；或者通过安装php包管理器composer，进到源码目录内执行命令：`composer install`，会自动帮你安装vendor目录。
 
 
 ## 使用方法
@@ -65,7 +64,9 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
 
 ## 接口开发文档
-http://api.iyuu.cn/docs.php
+如果您懂得其他语言的开发，你可以基于接口做成任何您喜欢的样子，比如手机APP，二进制包，Windows的GUI程序，浏览器插件等。欢迎分享您的作品！
+
+实时更新的接口文档：http://api.iyuu.cn/docs.php
 
 
 ## 需求提交/错误反馈
@@ -79,7 +80,7 @@ http://api.iyuu.cn/docs.php
 
 如果喜欢，请帮忙在[Github](https://github.com/ledccn/IYUUAutoReseed)或[码云](https://gitee.com/ledc/IYUUAutoReseed)给个Star，也可以对IYUUAutoReseed进行[捐赠](https://gitee.com/ledc/IYUUAutoReseed#%E6%8D%90%E5%8A%A9%E5%BC%80%E5%8F%91%E8%80%85)哦 ^_^。
 
-**您所有的打赏将用于服务器续期，增加服务的延续性。**
+**您所有的打赏将用于服务器维护及续期，增加服务的延续性。**
 
 
 
