@@ -48,7 +48,7 @@ class Oauth
         $ret = false;
         self::$token = self::getSign();
         foreach (self::$sites as $name) {
-            if (is_file(str_replace('{}', $name, self::$SiteLoginCache))){
+            if (is_file(str_replace('{}', $name, self::$SiteLoginCache))) {
                 // 存在鉴权缓存
                 $ret = true;
                 continue;
@@ -69,11 +69,11 @@ class Oauth
                 $res = $curl->get($apiUrl, $data);
                 p($res->response);
 
-                $rs = json_decode($res->response,true);
-                if (isset($rs['ret']) && $rs['ret'] == 200 && isset($rs['data']['success']) && $rs['data']['success']){
+                $rs = json_decode($res->response, true);
+                if (isset($rs['ret']) && $rs['ret'] == 200 && isset($rs['data']['success']) && $rs['data']['success']) {
                     self::setSiteLoginCache($name, $rs);
                     $ret = true;
-                }else{
+                } else {
                     $msg = isset($rs['msg']) && $rs['msg'] ? $rs['msg'] : '远端服务器无响应，请稍后重试！';
                     $msg = isset($rs['data']['errmsg']) && $rs['data']['errmsg'] ? $rs['data']['errmsg'] : $msg;
                     echo $msg . PHP_EOL;

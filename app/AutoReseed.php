@@ -77,7 +77,7 @@ class AutoReseed
 
         // 合作站点自动注册鉴权
         $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);
-        if(!$is_login){
+        if (!$is_login) {
             echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/' .PHP_EOL;
         }
 
@@ -361,7 +361,7 @@ class AutoReseed
                         //echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedSkip']++;
                         continue;
-                    }else{
+                    } else {
                         echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
                     }
                     // cookie检测

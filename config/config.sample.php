@@ -58,11 +58,11 @@ return array(
             'skip_check'     => 0,      //转移成功，跳校验：0不跳、1跳校验
             'delete_torrent' => 0,      //转移成功，删除当前做种：0不删除、1删除
         ),
-		// 6.RSS工作模式
+        // 6.RSS工作模式
         'workingMode'	=> 0,
-		// 7.监控目录
+        // 7.监控目录
         'watch'         => '/volume1/downloads',
-		// 8.RSS过滤参数配置
+        // 8.RSS过滤参数配置
         'filter' => array(
             'size'=>array(
                 'min'	=>	'1GB',
