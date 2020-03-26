@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.7.2';
+    const VER = '1.7.4';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -73,7 +73,7 @@ class AutoReseed
         self::backup('config', $configALL);
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-        self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, false);
+        #self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
 
         // 合作站点自动注册鉴权
         $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);
