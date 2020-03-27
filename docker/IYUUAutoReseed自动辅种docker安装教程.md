@@ -1,5 +1,7 @@
 # IYUUAutoReseed自动辅种docker安装教程
 
+### 教程地址：https://www.iyuu.cn/archives/386/
+
 ### 命令行安装步骤：
 
 ```sh
@@ -15,11 +17,11 @@ chmod +x ./*.sh
 
 ### 命令解释：
 
-第一步：进入/root目录内；
+第一步：进入`/root`目录内；
 
 第二步：通过git命令，拉取最新辅种脚本代码；
 
-第三步：进入/root/IYUUAutoReseed/docker目录
+第三步：进入`/root/IYUUAutoReseed/docker`目录
 
 第四步：给予`build.sh`、`iyuu.sh`可执行权限；
 
@@ -27,7 +29,7 @@ chmod +x ./*.sh
 
 第六步：测试IYUU辅种脚本是否正常运行。
 
-第四步：测试是否安装完成，命令为：`./iyuu.sh`
+第七步：测试是否安装完成，命令为：`./iyuu.sh`
 
 做完以上6步，确认没问题后，然后看教程：https://www.iyuu.cn/archives/324/，来编辑配置即可。
 

@@ -6,6 +6,7 @@
  * IYUU自动辅种工具-【安装篇】如何下载最新源码？ https://www.iyuu.cn/archives/338/
  * IYUU自动辅种工具-【安装篇】Windows之git https://www.iyuu.cn/archives/367/
  * IYUU自动辅种工具-【安装篇】群晖Linux之git https://www.iyuu.cn/archives/372/
+ * IYUU自动辅种工具-【安装篇】小钢炮手把手教程 https://www.iyuu.cn/archives/386/
  * IYUU自动辅种工具--最简配置（所有平台通用教程） https://www.iyuu.cn/archives/324/
  * IYUU自动辅种工具--合作站点鉴权配置说明 https://www.iyuu.cn/archives/337/
  * IYUU自动下载种子--之RSS订阅使用教程 https://www.iyuu.cn/archives/349/
