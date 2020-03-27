@@ -686,14 +686,14 @@ class AutoReseed
                 break;
             case 2:         // 加
                 foreach ($pathArray as $key => $val) {
-                    if (strpos($path, $key)===0) {
+                    if (strpos($path, $key)===0) {      // 没用$path == $key判断，是为了提高兼容性
                         return $val . $path;
                     }
                 }
                 break;
             case 3:         // 替换
                 foreach ($pathArray as $key => $val) {
-                    if (strpos($path, $key)===0) {
+                    if (strpos($path, $key)===0) {      // 没用$path == $key判断，是为了提高兼容性
                         return $val;
                     }
                 }
