@@ -1,14 +1,35 @@
 # IYUUAutoReseed自动辅种docker安装教程
 
-第一步：复制docker目录到您的Linux的任意目录内；
+### 命令行安装步骤：
 
-第二步：给予`build.sh`、`iyuu.sh`可执行权限；
+```sh
+cd /root
+git clone https://gitee.com/ledc/IYUUAutoReseed.git
+cd /root/IYUUAutoReseed/docker
+chmod +x ./*.sh
+./build.sh
+./iyuu.sh
+```
 
-第三步：编译镜像并运行容器，命令为：`./build.sh` 耐心等待完成；
+
+
+### 命令解释：
+
+第一步：进入/root目录内；
+
+第二步：通过git命令，拉取最新辅种脚本代码；
+
+第三步：进入/root/IYUUAutoReseed/docker目录
+
+第四步：给予`build.sh`、`iyuu.sh`可执行权限；
+
+第五步：编译镜像并运行容器，请耐心等待完成；
+
+第六步：测试IYUU辅种脚本是否正常运行。
 
 第四步：测试是否安装完成，命令为：`./iyuu.sh`
 
-然后看教程：https://www.iyuu.cn/archives/324/，来编辑配置即可。
+做完以上6步，确认没问题后，然后看教程：https://www.iyuu.cn/archives/324/，来编辑配置即可。
 
 #### 必读：脚本会在`/root`目录，创建`IYUUAutoReseed`文件夹，您只需要按照上述教程编辑好配置，放到`/root/IYUUAutoReseed/config/config.php`
 
