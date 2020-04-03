@@ -694,7 +694,7 @@ class AutoReseed
             case 3:         // 替换
                 foreach ($pathArray as $key => $val) {
                     if (strpos($path, $key)===0) {      // 没用$path == $key判断，是为了提高兼容性
-                        return $val;
+                        return $val . substr($path, strlen($key));
                     }
                 }
                 break;
