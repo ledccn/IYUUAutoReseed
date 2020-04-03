@@ -73,7 +73,7 @@ class AutoReseed
         self::backup('config', $configALL);
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-        #self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
+        self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
 
         // 合作站点自动注册鉴权
         $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);

@@ -82,7 +82,7 @@ class qBittorrent extends AbstractClient
         $this->api_version = $api_version;
         $this->curl = new Curl();
         $this->curl->setOpt(CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
-        $this->curl->setOpt(CURLOPT_SSL_VERIFYHOST, false); // 不检查证书
+        $this->curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);     // 不检查证书
         $this->curl->setOpt(CURLOPT_CONNECTTIMEOUT, 60);    // 超时
         $this->curl->setOpt(CURLOPT_TIMEOUT, 600);          // 超时
         // Authenticate and get cookie, else throw exception
