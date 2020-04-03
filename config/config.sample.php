@@ -133,6 +133,16 @@ return array(
         'passkey'       => '',
         'id' => 0,					// 用户ID(不是用户名)
     ),
+    // MoeCat
+    'moecat'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
+        // 种子Tracker的IP地址选择 可选：ipv4，ipv6
+        'ip_type'		=> 'ipv4',
+    ),
     // m-team
     'm-team'      => array(
         // 14.m-team的cookie	如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
@@ -215,15 +225,6 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
-    ),
-    // MoeCat
-    'moecat'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-        // 种子Tracker的IP地址选择 可选：ipv4，ipv6
-        'ip_type'		=> 'ipv4',
     ),
     // totheglory
     'ttg'      => array(
