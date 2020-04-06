@@ -27,14 +27,10 @@ chmod +x ./*.sh
 
 第五步：编译镜像并运行容器，请耐心等待完成；
 
-第六步：测试IYUU辅种脚本是否正常运行。
+第六步：测试是否安装完成，命令为：`./iyuu.sh`
 
-第七步：测试是否安装完成，命令为：`./iyuu.sh`
-
-做完以上6步，确认没问题后，然后看教程：https://www.iyuu.cn/archives/324/，来编辑配置即可。
-
-#### 必读：脚本会在`/root`目录，创建`IYUUAutoReseed`文件夹，您只需要按照上述教程编辑好配置，放到`/root/IYUUAutoReseed/config/config.php`
-
+做完以上步骤，确认没问题后，然后看教程：https://www.iyuu.cn/archives/324/，来编辑配置即可。
+脚本会在`/root`目录，创建`IYUUAutoReseed`文件夹，您只需要按照上述教程编辑好配置，放到`/root/IYUUAutoReseed/config/config.php`
 
 
 ### 辅种时执行的命令：`iyuu.sh`

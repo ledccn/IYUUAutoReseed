@@ -10,7 +10,7 @@
 
 第三：您使用IYUU工具造成的一切损失，与IYUU无关。如不接受此条款，请不要使用IYUUAutoReseed，并立刻删除已经下载的源码。
 
-## 安装脚本，三种方式皆可
+## 获取脚本，三种方式皆可
 
 1. 通过git命令安装
 
@@ -29,14 +29,15 @@
 IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，支持下载器集群，支持多盘位，支持多下载目录，支持远程连接等。
 
 ## 原理
-IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编写的Private Tracker辅种脚本，通过计划任务或常驻内存，按指定频率调用transmission、qBittorrent下载软件的API接口，提取正在做种的info_hash提交到服务器API接口，根据API接口返回的数据拼接种子连接，提交给下载器，自动辅种各个站点。
+IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编写的Private Tracker辅种脚本，通过计划任务或常驻内存，按指定频率调用transmission、qBittorrent下载软件的API接口，提取正在做种的info_hash提交到辅种服务器API接口（辅种过程和PT站没有任何交互），根据API接口返回的数据拼接种子连接，提交给下载器，自动辅种各个站点。
 
 ## 优势
  - 全程自动化，无需人工干预；
- - 支持多盘位，多做种目录，多下载器，支持远程连接下载器；
+ - 支持多盘位，多做种目录，多下载器，支持远程下载器；
  - 辅种精确度高，精度可配置；
  - 支持微信通知，消息即时达；
  - 自动对合集包，进行拆包辅种（暂未开发）
+ - 安全：所有隐私信息只在本地存储，绝不发送给第三方。
 
 ## 支持的下载器
  1. transmission
@@ -50,7 +51,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 官方下载的记得开启curl、json、mbstring，这3个扩展。
 
- 1. Windows下安装php环境：https://www.php.net/downloads
+ 1. Windows安装php环境：https://www.php.net/downloads
     
 
 ## 下载源码
@@ -60,8 +61,8 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 ## 使用方法
 详见Wiki：
-
 https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
+博客：https://www.iyuu.cn/
 
 ## 接口开发文档
 如果您懂得其他语言的开发，你可以基于接口做成任何您喜欢的样子，比如手机APP，二进制包，Windows的GUI程序，浏览器插件等。欢迎分享您的作品！
@@ -70,9 +71,10 @@ https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
 
 
 ## 需求提交/错误反馈
- - 点击链接加入群聊【IYUU自动辅种交流】：[https://jq.qq.com/?_wv=1027&k=5JOfOlM][1]
- - QQ群：859882209
+ - 点击链接加入QQ群聊【IYUU自动辅种交流】：[https://jq.qq.com/?_wv=1027&k=5JOfOlM][1]
+ - QQ群：859882209[入门群]，931954050[进阶群]
  - 问答社区：http://wenda.iyuu.cn
+ - 博客：https://www.iyuu.cn/
  - issues： https://gitee.com/ledc/IYUUAutoReseed/issues 
 
 ## 捐助开发者
