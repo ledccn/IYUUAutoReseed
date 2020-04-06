@@ -81,11 +81,11 @@ class AutoReseed
             echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/' .PHP_EOL;
         }
 
+        echo "程序正在初始化运行参数... ".PHP_EOL;
         // 显示支持站点列表
         self::ShowTableSites();
-
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
-        echo "程序正在初始化运行参数... ".PHP_EOL;
+        
         // 递归删除上次历史记录
         IFile::rmdir(self::$cacheDir, true);
         // 建立目录
@@ -407,7 +407,7 @@ class AutoReseed
                      */
                     $url = self::getTorrentUrl($siteName, $_url);
                     $reseedPass = false;
-                    // 特殊站点：推送给下载器种子元数据
+                    // 特殊站点：种子元数据推送给下载器
                     switch ($siteName) {
                         case 'hdchina':
                             $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
@@ -625,6 +625,7 @@ class AutoReseed
                 $rpcKey = self::$move[0];
                 $type = self::$links[$rpcKey]['type'];
                 $extra_options = array();
+                // 转移后，是否开始？
                 $extra_options['paused'] = isset($configALL['default']['move']['paused']) && $configALL['default']['move']['paused'] ? true : false;
                 if ($type == 'qBittorrent') {
                     if (isset($configALL['default']['move']['skip_check']) && $configALL['default']['move']['skip_check'] === 1) {
@@ -745,7 +746,8 @@ class AutoReseed
     {
         $br = PHP_EOL;
         $text = 'IYUU自动辅种-统计报表';
-        $desp = '总做种：'.self::$wechatMsg['hashCount'] . '  [客户端正在做种的hash总数]' .$br;
+        $desp = '版本号：'. self::VER . $br;
+        $desp .= '总做种：'.self::$wechatMsg['hashCount'] . '  [客户端正在做种的hash总数]' .$br;
         $desp .= '返回数据：'.self::$wechatMsg['reseedCount']. '  [服务器返回的可辅种数据]' .$br;
         $desp .= '支持站点：'.self::$wechatMsg['sitesCount']. '  [当前支持自动辅种的站点数量]' .$br;
         $desp .= '成功：'.self::$wechatMsg['reseedSuccess']. '  [辅种成功，会把hash加入缓存]' .$br;
