@@ -24,7 +24,7 @@
  */
 
 require_once __DIR__ . '/init.php';
-echo __FILE__.PHP_EOL;
+echo '当前脚本路径：'.__FILE__.PHP_EOL;
 sleep(1);
 use IYUU\AutoReseed;
 

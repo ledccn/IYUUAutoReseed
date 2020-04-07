@@ -60,12 +60,11 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 
 ## 使用方法
-详见Wiki：
-https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
-博客：https://www.iyuu.cn/
+- 详见Wiki：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki
+- 博客：https://www.iyuu.cn/
 
 ## 接口开发文档
-如果您懂得其他语言的开发，你可以基于接口做成任何您喜欢的样子，比如手机APP，二进制包，Windows的GUI程序，浏览器插件等。欢迎分享您的作品！
+如果您懂得其他语言的开发，可以基于接口做成任何您喜欢的样子，比如手机APP，二进制包，Windows的GUI程序，浏览器插件等。欢迎分享您的作品！
 
 实时更新的接口文档：http://api.iyuu.cn/docs.php
 
