@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.7.5';
+    const VER = '1.7.6';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -85,7 +85,7 @@ class AutoReseed
         // 显示支持站点列表
         self::ShowTableSites();
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
-        
+
         // 递归删除上次历史记录
         IFile::rmdir(self::$cacheDir, true);
         // 建立目录
