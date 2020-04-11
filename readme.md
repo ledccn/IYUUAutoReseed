@@ -26,7 +26,11 @@
 
 ## 功能
 
-IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，支持下载器集群，支持多盘位，支持多下载目录，支持远程连接等。
+IYUU自动辅种工具，功能分为两大块：自动辅种、自动转移。
+
+- 自动辅种：目前能对国内大部分的PT站点自动辅种，支持下载器集群，支持多盘位，支持多下载目录，支持远程连接等；
+
+- 自动转移：可以实现各下载器之间自动转移做种客户端，让下载器各司其职（专职的保种、专职的下载）。
 
 ## 原理
 IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编写的Private Tracker辅种脚本，通过计划任务或常驻内存，按指定频率调用transmission、qBittorrent下载软件的API接口，提取正在做种的info_hash提交到辅种服务器API接口（辅种过程和PT站没有任何交互），根据API接口返回的数据拼接种子连接，提交给下载器，自动辅种各个站点。
@@ -44,7 +48,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
  2. qBittorrent
 
 ## 支持自动辅种的站点
-学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits、dicmusic、天雪、葡萄、HDRoute。
+学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits、dicmusic、天雪、葡萄、HDRoute、伊甸园hdbd。
 
 ## 运行环境
 具备PHP运行环境的所有平台，例如：Linux、Windows、MacOS！
