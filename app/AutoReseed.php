@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.7.6';
+    const VER = '1.7.7';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -717,6 +717,7 @@ class AutoReseed
                 break;
             case 'm-team':
             case 'moecat':
+            case 'hdbd':
                 $ip_type = '';
                 if (isset($configALL[$site]['ip_type'])) {
                     $ip_type = $configALL[$site]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
