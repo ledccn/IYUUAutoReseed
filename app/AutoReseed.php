@@ -724,13 +724,11 @@ class AutoReseed
                 }
                 $url = $_url."&passkey=". $configALL[$site]['passkey'] . $ip_type. "&https=1";
                 break;
-            case 'ccfbits':
-                $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
-                break;
             case 'dicmusic':
                 $_url = str_replace('{torrent_pass}', $configALL[$site]['passkey'], $_url);
                 $url = str_replace('{authkey}', $configALL[$site]['authkey'], $_url);
                 break;
+            case 'ccfbits':
             case 'hdroute':
                 $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
                 break;
