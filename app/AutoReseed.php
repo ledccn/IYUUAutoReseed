@@ -224,6 +224,7 @@ class AutoReseed
                     break;
                 case 'qBittorrent':
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
+                    #$extra_options['skip_checking'] = 'true';    //跳校验
                     if (isset($extra_options['paused'])) {
                         $extra_options['paused'] = $extra_options['paused'] ? 'true' : 'false';
                     } else {
