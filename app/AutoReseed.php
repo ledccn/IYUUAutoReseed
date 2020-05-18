@@ -218,6 +218,8 @@ class AutoReseed
                         $errmsg = isset($result['result']) ? $result['result'] : '未知错误，请稍后重试！';
                         if (strpos($errmsg, 'http error 404: Not Found') !== false) {
                             self::sendNotify('404');
+                        } else if (strpos($errmsg, 'http error 403: Forbidden')  !== false) {
+                            self::sendNotify('403');
                         }
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
