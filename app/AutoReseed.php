@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.7.9';
+    const VER = '1.8.1';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -218,7 +218,7 @@ class AutoReseed
                         $errmsg = isset($result['result']) ? $result['result'] : '未知错误，请稍后重试！';
                         if (strpos($errmsg, 'http error 404: Not Found') !== false) {
                             self::sendNotify('404');
-                        } else if (strpos($errmsg, 'http error 403: Forbidden')  !== false) {
+                        } elseif (strpos($errmsg, 'http error 403: Forbidden')  !== false) {
                             self::sendNotify('403');
                         }
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
@@ -412,6 +412,12 @@ class AutoReseed
                     $reseedPass = false;
                     // 特殊站点：种子元数据推送给下载器
                     switch ($siteName) {
+                        case 'ssd':
+                            // 辅种计数器
+                            if (isset($configALL[$siteName]['count']) && $configALL[$siteName]['count'] > 10) {
+                                $configALL[$siteName]['limit'] = 1;
+                            }
+                            break;
                         case 'hdchina':
                             $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
                             $userAgent = $configALL['default']['userAgent'];
@@ -524,6 +530,12 @@ class AutoReseed
                             break;
                         case 'hdcity':
                             $url = $_url;
+                            break;
+                        case 'ssd':
+                            // 辅种计数器
+                            if ($ret) {
+                                $configALL[$siteName]['count']++;
+                            }
                             break;
                         default:
                             break;
