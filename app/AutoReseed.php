@@ -414,9 +414,11 @@ class AutoReseed
                     switch ($siteName) {
                         case 'ssd':
                             // 辅种计数器
-                            if (isset($configALL[$siteName]['count']) && $configALL[$siteName]['count'] > 10) {
-                                $configALL[$siteName]['limit'] = 1;
-                            }else {
+                            if ( isset($configALL[$siteName]['count']) ) {
+                                if ( $configALL[$siteName]['count'] > 10) {
+                                    $configALL[$siteName]['limit'] = 1;
+                                }                                
+                            } else {
                                 $configALL[$siteName]['count'] = 0;
                             }
                             break;
