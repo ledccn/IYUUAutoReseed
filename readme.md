@@ -75,8 +75,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 
 ## 需求提交/错误反馈
- - 点击链接加入QQ群聊【IYUU自动辅种交流】：[https://jq.qq.com/?_wv=1027&k=5JOfOlM][1]
- - QQ群：859882209[入门群]，931954050[进阶群]
+ - QQ群：859882209[2000人.入门群]，931954050[1000人.进阶群]
  - 问答社区：http://wenda.iyuu.cn
  - 博客：https://www.iyuu.cn/
  - issues： https://gitee.com/ledc/IYUUAutoReseed/issues 
@@ -174,8 +173,3 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 2.  所捐赠的资源不属于任何个人，而应作为项目或者开发团队的所需开销； 
 3.  如果捐赠了却不希望您的名字出现在这里，可以联系我们进行相应处理；
 4.  更新有延时，如未能及时更新，可联系我。
-
-
-
-[1]: https://jq.qq.com/?_wv=1027&k=5JOfOlM
-[2]: https://www.iyuu.cn/usr/uploads/2019/12/801558607.png

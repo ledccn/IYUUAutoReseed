@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.8.1';
+    const VER = '1.8.2';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -167,6 +167,7 @@ class AutoReseed
                 self::$links[$k]['rpc'] = $client;
                 self::$links[$k]['type'] = $v['type'];
                 self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
+                self::$links[$k]['root_folder'] = isset($v['root_folder']) ? $v['root_folder'] : 1;
                 $result = $client->status();
                 print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
                 // 检查转移做种 (移动配置为真、self::$move为空)
@@ -227,11 +228,14 @@ class AutoReseed
                 case 'qBittorrent':
                     $extra_options['autoTMM'] = 'false';	//关闭自动种子管理
                     #$extra_options['skip_checking'] = 'true';    //跳校验
+                    // 添加任务校验后是否暂停
                     if (isset($extra_options['paused'])) {
                         $extra_options['paused'] = $extra_options['paused'] ? 'true' : 'false';
                     } else {
                         $extra_options['paused'] = 'true';
                     }
+                    // 是否创建根目录
+                    $extra_options['root_folder'] = self::$links[$rpcKey]['root_folder'] ? 'true' : 'false';
                     if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// 种子URL添加下载任务
                     } else {
