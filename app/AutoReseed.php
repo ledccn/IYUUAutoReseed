@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.8.2';
+    const VER = '1.8.3';
     // RPC连接
     private static $links = [];
     // 客户端配置
