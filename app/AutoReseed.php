@@ -416,16 +416,6 @@ class AutoReseed
                     $reseedPass = false;
                     // 特殊站点：种子元数据推送给下载器
                     switch ($siteName) {
-                        case 'ssd':
-                            // 辅种计数器
-                            if ( isset($configALL[$siteName]['count']) ) {
-                                if ( $configALL[$siteName]['count'] > 10) {
-                                    $configALL[$siteName]['limit'] = 1;
-                                }                                
-                            } else {
-                                $configALL[$siteName]['count'] = 0;
-                            }
-                            break;
                         case 'hdchina':
                             $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
                             $userAgent = $configALL['default']['userAgent'];
@@ -538,12 +528,6 @@ class AutoReseed
                             break;
                         case 'hdcity':
                             $url = $_url;
-                            break;
-                        case 'ssd':
-                            // 辅种计数器
-                            if ($ret) {
-                                $configALL[$siteName]['count']++;
-                            }
                             break;
                         default:
                             break;
