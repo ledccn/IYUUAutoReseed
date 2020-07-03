@@ -2,7 +2,7 @@
 /**
  * 技术讨论及后续更新，请加入QQ群！！！！！！！
     群名称：IYUU自动辅种交流
-    QQ群号：859882209
+    QQ群号：859882209、931954050
  * IYUU自动辅种工具-【安装篇】如何下载最新源码？ https://www.iyuu.cn/archives/338/
  * IYUU自动辅种工具-【安装篇】Windows之git https://www.iyuu.cn/archives/367/
  * IYUU自动辅种工具-【安装篇】群晖Linux之git https://www.iyuu.cn/archives/372/

@@ -104,7 +104,7 @@ class AutoReseed
         $list[] = 'github源码仓库：https://github.com/ledccn/IYUUAutoReseed';
         $list[] = '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki';
         $list[] = '问答社区：http://wenda.iyuu.cn';
-        $list[] = "QQ群：859882209 【IYUU自动辅种交流】".PHP_EOL;
+        $list[] = "QQ群：859882209、931954050 【IYUU自动辅种交流】".PHP_EOL;
         foreach ($list as $key => $value) {
             echo $value.PHP_EOL;
         }
