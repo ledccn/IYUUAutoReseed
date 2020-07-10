@@ -1,54 +1,46 @@
 <?php
+namespace IYUU\Library;
 /**
  * Created by PhpStorm.
  * User: 大卫
  * Date: 2020-1-19
  * Time: 17:44
  */
-namespace IYUU\Library;
-
 class Table
 {
     const ALIGN_LEFT = 1;
     const ALIGN_RIGHT = 0;
     const ALIGN_CENTER = 2;
-
     /**
      * 头信息数据
      * @var array
      */
     protected $header = [];
-
     /**
      * 头部对齐方式 默认1 ALGIN_LEFT 0 ALIGN_RIGHT 2 ALIGN_CENTER
      * @var int
      */
     protected $headerAlign = 1;
-
     /**
      * 表格数据（二维数组）
      * @var array
      */
     protected $rows = [];
-
     /**
      * 单元格对齐方式 默认1 ALGIN_LEFT 0 ALIGN_RIGHT 2 ALIGN_CENTER
      * @var int
      */
     protected $cellAlign = 1;
-
     /**
      * 单元格宽度信息
      * @var array
      */
     protected $colWidth = [];
-
     /**
      * 表格输出样式
      * @var string
      */
     protected $style = 'default';
-
     /**
      * 表格样式定义
      * @var array

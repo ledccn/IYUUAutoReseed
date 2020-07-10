@@ -1,11 +1,9 @@
 <?php
+namespace IYUU\Library;
+use Curl\Curl;
 /**
  * IYUU用户注册、认证
  */
-namespace IYUU\Library;
-
-use Curl\Curl;
-
 class Oauth
 {
     // 合作的站点
@@ -86,7 +84,8 @@ class Oauth
         return $ret;
     }
     /**
-     * 写鉴权成功配置
+     * 写鉴权成功缓存
+     * @desc 作用：减少对服务器请求，跳过鉴权提示信息；
      */
     private static function setSiteLoginCache($key = '', $array = [])
     {

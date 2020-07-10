@@ -1,11 +1,5 @@
 <?php
-/**
- * @brief 文件处理
- * @version 0.6
- */
-
 namespace IYUU\Library;
-
 /**
  * @class IFile
  * @brief IFile 文件处理类
@@ -13,7 +7,6 @@ namespace IYUU\Library;
 class IFile
 {
     private $resource = null; //文件资源句柄
-
     /**
      * @brief 构造函数，打开资源流，并独占锁定
      * @param String $fileName 文件路径名

@@ -1,19 +1,17 @@
 <?php
 namespace IYUU;
-
 use Curl\Curl;
 use IYUU\Client\AbstractClient;
 use IYUU\Library\IFile;
 use IYUU\Library\Oauth;
 use IYUU\Library\Table;
-
 /**
  * IYUUAutoReseed自动辅种类
  */
 class AutoReseed
 {
     // 版本号
-    const VER = '1.8.4';
+    const VER = '1.8.5';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -69,19 +67,16 @@ class AutoReseed
     public static function init()
     {
         global $configALL;
-        echo "版本号：".self::VER.PHP_EOL;
+        echo "正在初始化运行参数，版本号：".self::VER.PHP_EOL;
+        sleep(mt_rand(1, 3));
         self::backup('config', $configALL);
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
         self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
 
-        // 合作站点自动注册鉴权
-        $is_login = Oauth::login(self::$apiUrl . self::$endpoints['login']);
-        if (!$is_login) {
-            echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/' .PHP_EOL;
-        }
+        // 合作站点自动鉴权绑定
+        Oauth::login(self::$apiUrl . self::$endpoints['login']);
 
-        echo "程序正在初始化运行参数... ".PHP_EOL;
         // 显示支持站点列表
         self::ShowTableSites();
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
@@ -100,15 +95,17 @@ class AutoReseed
      */
     private static function ShowTableSites()
     {
-        $list[] = 'gitee源码仓库：https://gitee.com/ledc/IYUUAutoReseed';
-        $list[] = 'github源码仓库：https://github.com/ledccn/IYUUAutoReseed';
-        $list[] = '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki';
-        $list[] = '问答社区：http://wenda.iyuu.cn';
-        $list[] = "QQ群：859882209、931954050 【IYUU自动辅种交流】".PHP_EOL;
-        foreach ($list as $key => $value) {
+        $list = [
+            'gitee源码仓库：https://gitee.com/ledc/IYUUAutoReseed',
+            'github源码仓库：https://github.com/ledccn/IYUUAutoReseed',
+            '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki',
+            '问答社区：http://wenda.iyuu.cn',
+            '【IYUU自动辅种交流】QQ群：859882209、931954050'.PHP_EOL,
+            '正在连接IYUUAutoReseed服务器，查询支持列表……'.PHP_EOL
+        ];
+        foreach ($list as $value) {
             echo $value.PHP_EOL;
         }
-        echo "正在连接IYUUAutoReseed服务器，查询支持列表…… ".PHP_EOL;
         $res = self::$curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign());
         $rs = json_decode($res->response, true);
         $sites = isset($rs['data']['sites']) && $rs['data']['sites'] ? $rs['data']['sites'] : false;
@@ -144,7 +141,7 @@ class AutoReseed
             $data[$k][] = $j.". ".$v['site'];
         }
         echo "IYUUAutoReseed自动辅种脚本，目前支持以下站点：".PHP_EOL;
-        //输出表格
+        // 输出支持站点表格
         $table = new Table();
         $table->setRows($data);
         echo($table->render());
@@ -152,7 +149,7 @@ class AutoReseed
     /**
      * 连接远端RPC下载器
      */
-    public static function links()
+    private static function links()
     {
         foreach (self::$clients as $k => $v) {
             // 跳过未配置的客户端
@@ -170,12 +167,12 @@ class AutoReseed
                 self::$links[$k]['root_folder'] = isset($v['root_folder']) ? $v['root_folder'] : 1;
                 $result = $client->status();
                 print $v['type'].'：'.$v['host']." Rpc连接 [{$result}] \n";
-                // 检查转移做种 (移动配置为真、self::$move为空)
-                if (isset($v['move']) && $v['move'] && is_null(self::$move)) {
+                // 检查转移做种 (self::$move为空，移动配置为真)
+                if (is_null(self::$move) && isset($v['move']) && $v['move']) {
                     self::$move = array($k,$v['move']);
                 }
             } catch (\Exception $e) {
-                die('[Links ERROR] ' . $e->getMessage() . PHP_EOL);
+                die('[连接错误] ' . $e->getMessage() . PHP_EOL);
             }
         }
     }
@@ -252,16 +249,16 @@ class AutoReseed
                     }
                     break;
                 default:
-                    echo '[add ERROR] '.$type. PHP_EOL. PHP_EOL;
+                    echo '[下载器类型错误] '.$type. PHP_EOL. PHP_EOL;
                     break;
             }
         } catch (\Exception $e) {
-            echo '[add ERROR] ' . $e->getMessage() . PHP_EOL;
+            echo '[添加下载任务出错] ' . $e->getMessage() . PHP_EOL;
         }
         return false;
     }
     /**
-     * 转移、辅种总入口
+     * 辅种或转移，总入口
      */
     public static function call()
     {
@@ -274,7 +271,7 @@ class AutoReseed
     /**
      * IYUUAutoReseed辅种
      */
-    public static function reseed()
+    private static function reseed()
     {
         global $configALL;
         // 支持站点数量
@@ -556,7 +553,7 @@ class AutoReseed
     /**
      * IYUUAutoReseed做种客户端转移
      */
-    public static function move()
+    private static function move()
     {
         global $configALL;
         foreach (self::$links as $k => $v) {
@@ -665,7 +662,7 @@ class AutoReseed
     /**
      * 过滤已转移的种子hash
      */
-    public static function hashFilter(&$infohash_Dir = array())
+    private static function hashFilter(&$infohash_Dir = array())
     {
         foreach ($infohash_Dir as $info_hash => $dir) {
             if (is_file(self::$cacheMove . $info_hash.'.txt')) {
@@ -678,7 +675,7 @@ class AutoReseed
     /**
      * 实际路径与相对路径之间互相转换
      */
-    public static function pathReplace($path = '')
+    private static function pathReplace($path = '')
     {
         global $configALL;
         $type = $configALL['default']['move']['type'];
@@ -715,7 +712,7 @@ class AutoReseed
     /**
      * 获取站点种子的URL
      */
-    public static function getTorrentUrl($site = '', $_url = '')
+    private static function getTorrentUrl($site = '', $_url = '')
     {
         global $configALL;
         switch ($site) {
@@ -735,12 +732,12 @@ class AutoReseed
                 $_url = str_replace('{torrent_pass}', $configALL[$site]['passkey'], $_url);
                 $url = str_replace('{authkey}', $configALL[$site]['authkey'], $_url);
                 break;
-            case 'ccfbits':
-            case 'hdroute':
-                $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
-                break;
             default:
-                $url = $_url."&passkey=". $configALL[$site]['passkey'];
+                if (strpos($_url,'{passkey}') !== false) {
+                    $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
+                } else {
+                    $url = $_url."&passkey=". $configALL[$site]['passkey'];
+                }
                 break;
         }
         return $url;
@@ -748,19 +745,20 @@ class AutoReseed
     /**
      * 微信模板消息拼接方法
      */
-    public static function wechatMessage()
+    private static function wechatMessage()
     {
         $br = PHP_EOL;
         $text = 'IYUU自动辅种-统计报表';
-        $desp = '版本号：'. self::VER . $br;
-        $desp .= '总做种：'.self::$wechatMsg['hashCount'] . '  [客户端正在做种的hash总数]' .$br;
-        $desp .= '返回数据：'.self::$wechatMsg['reseedCount']. '  [服务器返回的可辅种数据]' .$br;
-        $desp .= '支持站点：'.self::$wechatMsg['sitesCount']. '  [当前支持自动辅种的站点数量]' .$br;
-        $desp .= '成功：'.self::$wechatMsg['reseedSuccess']. '  [辅种成功，会把hash加入缓存]' .$br;
-        $desp .= '失败：'.self::$wechatMsg['reseedError']. '  [下载器下载种子失败或网络超时引起，可以重试]' .$br;
-        $desp .= '重复：'.self::$wechatMsg['reseedRepeat']. '  [客户端已做种]' .$br;
-        $desp .= '跳过：'.self::$wechatMsg['reseedSkip']. '  [未设置passkey]' .$br;
-        $desp .= '忽略：'.self::$wechatMsg['reseedPass']. '  [成功添加存在缓存]' .$br;
+        $desp = '### 版本号：'. self::VER . $br;
+        $desp .= '**支持站点：'.self::$wechatMsg['sitesCount']. '**  [当前支持自动辅种的站点数量]' .$br;
+        $desp .= '**总做种：'.self::$wechatMsg['hashCount'] . '**  [客户端做种的hash总数]' .$br;
+        $desp .= '**返回数据：'.self::$wechatMsg['reseedCount']. '**  [服务器返回的可辅种数据]' .$br;        
+        $desp .= '**成功：'.self::$wechatMsg['reseedSuccess']. '**  [辅种成功，会把hash加入缓存]' .$br;
+        $desp .= '**失败：'.self::$wechatMsg['reseedError']. '**  [种子下载失败或网络超时引起]' .$br;
+        $desp .= '**重复：'.self::$wechatMsg['reseedRepeat']. '**  [客户端已做种]' .$br;
+        $desp .= '**跳过：'.self::$wechatMsg['reseedSkip']. '**  [未设置passkey]' .$br;
+        $desp .= '**忽略：'.self::$wechatMsg['reseedPass']. '**  [成功添加存在缓存]' .$br;
+        $desp .= $br.'*此消息将在3天后过期*。';
         return ff($text, $desp);
     }
     /**
@@ -780,7 +778,7 @@ class AutoReseed
         $res = self::$curl->get(self::$apiUrl.self::$endpoints['notify'].'?'.$notify);
         $res = json_decode($res->response, true);
         if (isset($res['data']['success']) && $res['data']['success']) {
-            echo '感谢您的参与，种子被删除，上报成功！！'.PHP_EOL;
+            echo '感谢您的参与，失效种子上报成功！！'.PHP_EOL;
         }
         return true;
     }

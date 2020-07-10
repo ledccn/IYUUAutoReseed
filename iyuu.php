@@ -25,10 +25,7 @@
 
 require_once __DIR__ . '/init.php';
 echo '当前脚本路径：'.__FILE__.PHP_EOL;
-sleep(1);
 use IYUU\AutoReseed;
-
-echo microtime(true).' IYUU自动辅种正在初始化...'.PHP_EOL;
 AutoReseed::init();
 AutoReseed::call();
 exit(0);
