@@ -11,7 +11,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.8.5';
+    const VER = '1.8.6';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -758,7 +758,8 @@ class AutoReseed
         $desp .= '**重复：'.self::$wechatMsg['reseedRepeat']. '**  [客户端已做种]' .$br;
         $desp .= '**跳过：'.self::$wechatMsg['reseedSkip']. '**  [未设置passkey]' .$br;
         $desp .= '**忽略：'.self::$wechatMsg['reseedPass']. '**  [成功添加存在缓存]' .$br;
-        $desp .= $br.'*此消息将在3天后过期*。';
+        $desp .= $br.'**如需重新辅种，请删除：./torrent/cachehash 内的所有辅种缓存。**'.$br;
+        $desp .= '*此消息将在3天后过期*。';
         return ff($text, $desp);
     }
     /**
