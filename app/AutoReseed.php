@@ -579,14 +579,13 @@ class AutoReseed
                 continue;
             }
             // 循环转移做种客户端
-            foreach ($infohash_Dir as $info_hash => $downloadDir) {
-                // 做种实际路径与相对路径之间互转
-                echo '转换前：'.$downloadDir.PHP_EOL;
+            foreach ($infohash_Dir as $info_hash => $downloadDir) {                
                 // 调用路径过滤
                 if (self::pathFilter($downloadDir)) {
-                    echo $downloadDir;
                     continue;
                 }
+                // 做种实际路径与相对路径之间互转
+                echo '转换前：'.$downloadDir.PHP_EOL;
                 // 调用路径转换
                 $downloadDir = self::pathReplace($downloadDir);
                 echo '转换后：'.$downloadDir.PHP_EOL;                
@@ -737,7 +736,7 @@ class AutoReseed
                         return false;
                     }
                 }
-                echo '已跳过：转移选择器未匹配到：'.$path.PHP_EOL;
+                echo '已跳过！转移选择器未匹配到：'.$path.PHP_EOL;
                 return true;
             }
         }
@@ -746,7 +745,7 @@ class AutoReseed
             if (\is_array($path_filter)) {
                 foreach ($path_filter as $pathName) {
                     if (strpos($path, $pathName)===0) {      // 没用$path == $key判断，是为了提高兼容性
-                        echo '已跳过：转移过滤器匹配到：'.$path.PHP_EOL;
+                        echo '已跳过！转移过滤器匹配到：'.$path.PHP_EOL;
                         return true;
                     }
                 }
@@ -758,7 +757,7 @@ class AutoReseed
                 //先过滤器
                 foreach ($path_filter as $pathName) {
                     if (strpos($path, $pathName)===0) {
-                        echo '已跳过：转移过滤器匹配到：'.$path.PHP_EOL;
+                        echo '已跳过！转移过滤器匹配到：'.$path.PHP_EOL;
                         return true;
                     }
                 }
@@ -768,7 +767,7 @@ class AutoReseed
                         return false;
                     }
                 }
-                echo '已跳过：转移选择器未匹配到：'.$path.PHP_EOL;
+                echo '已跳过！转移选择器未匹配到：'.$path.PHP_EOL;
                 return true;
             }
         }
