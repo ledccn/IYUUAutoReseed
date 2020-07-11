@@ -11,7 +11,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.8.6';
+    const VER = '1.9.0';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -582,8 +582,14 @@ class AutoReseed
             foreach ($infohash_Dir as $info_hash => $downloadDir) {
                 // 做种实际路径与相对路径之间互转
                 echo '转换前：'.$downloadDir.PHP_EOL;
+                // 调用路径过滤
+                if (self::pathFilter($downloadDir)) {
+                    echo $downloadDir;
+                    continue;
+                }
+                // 调用路径转换
                 $downloadDir = self::pathReplace($downloadDir);
-                echo '转换后：'.$downloadDir.PHP_EOL;
+                echo '转换后：'.$downloadDir.PHP_EOL;                
                 if (is_null($downloadDir)) {
                     echo 'IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/'.PHP_EOL;
                     die("全局配置的move数组内，路径转换参数配置错误，请重新配置！！！".PHP_EOL);
@@ -680,7 +686,7 @@ class AutoReseed
         global $configALL;
         $type = $configALL['default']['move']['type'];
         $pathArray = $configALL['default']['move']['path'];
-        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
+        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性        
         switch ($type) {
             case 1:         // 减
                 foreach ($pathArray as $key => $val) {
@@ -708,6 +714,65 @@ class AutoReseed
                 break;
         }
         return null;
+    }
+    /**
+     * 处理转移种子时所设置的过滤器、选择器
+     * @return bool   true 过滤 | false 不过滤
+     */
+    private static function pathFilter(&$path = '')
+    {
+        global $configALL;
+        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
+        // 转移过滤器、选择器 David/2020年7月11日        
+        $path_filter = isset($configALL['default']['move']['path_filter']) && !empty($configALL['default']['move']['path_filter']) ? $configALL['default']['move']['path_filter'] : null;
+        $path_selector = isset($configALL['default']['move']['path_selector']) && !empty($configALL['default']['move']['path_selector']) ? $configALL['default']['move']['path_selector'] : null;
+        if (\is_null($path_filter) && \is_null($path_selector)) {
+            return false;
+        }
+        elseif (\is_null($path_filter)) {
+            //选择器
+            if (\is_array($path_selector)) {
+                foreach ($path_selector as $pathName) {
+                    if (strpos($path, $pathName)===0) {      // 没用$path == $key判断，是为了提高兼容性
+                        return false;
+                    }
+                }
+                echo '已跳过：转移选择器未匹配到：'.$path.PHP_EOL;
+                return true;
+            }
+        }
+        elseif (\is_null($path_selector)) {
+            //过滤器
+            if (\is_array($path_filter)) {
+                foreach ($path_filter as $pathName) {
+                    if (strpos($path, $pathName)===0) {      // 没用$path == $key判断，是为了提高兼容性
+                        echo '已跳过：转移过滤器匹配到：'.$path.PHP_EOL;
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } else {
+            //同时设置过滤器、选择器
+            if (\is_array($path_selector) && \is_array($path_filter)) {
+                //先过滤器
+                foreach ($path_filter as $pathName) {
+                    if (strpos($path, $pathName)===0) {
+                        echo '已跳过：转移过滤器匹配到：'.$path.PHP_EOL;
+                        return true;
+                    }
+                }
+                //后选择器
+                foreach ($path_selector as $pathName) {
+                    if (strpos($path, $pathName)===0) {
+                        return false;
+                    }
+                }
+                echo '已跳过：转移选择器未匹配到：'.$path.PHP_EOL;
+                return true;
+            }
+        }
+        return false;
     }
     /**
      * 获取站点种子的URL

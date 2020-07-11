@@ -56,6 +56,8 @@ return array(
                 // 当前路径 => 目标路径
                 '/downloads' => '/volume1',
             ),
+            'path_filter'=> array(),          //转移过滤器：不转移此路径内文件
+            'path_selector' => array(),       //转移选择器：只转移此路径内文件(为空时，全转移)    【优先级：过滤器 ＞ 选择器】
             'paused'         => 0,      //转移成功，自动开始任务：0开始，1暂停
             'skip_check'     => 0,      //转移成功，跳校验：0不跳、1跳校验
             'delete_torrent' => 0,      //转移成功，删除当前做种：0不删除、1删除
