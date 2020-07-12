@@ -111,6 +111,11 @@ return array(
                 'max'	=>	'280GB',
             ),
         ),
+        'url_replace' => array(),
+        'url_join' => array(
+            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
+            //'https=1',
+        ),
     ),
     // hddolby
     'hddolby'      => array(
@@ -119,6 +124,8 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'id' => 0,					// 用户ID(不是用户名)
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdhome
     'hdhome'      => array(
@@ -127,6 +134,8 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'id' => 0,					// 用户ID(不是用户名)
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // PTHome
     'pthome'      => array(
@@ -135,6 +144,8 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'id' => 0,					// 用户ID(不是用户名)
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // MoeCat
     'moecat'      => array(
@@ -143,8 +154,11 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'id' => 0,					// 用户ID(不是用户名)
-        // 种子Tracker的IP地址选择 可选：ipv4，ipv6
-        'ip_type'		=> 'ipv4',
+        'url_replace' => array(),
+        'url_join' => array(
+            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
+            //'https=1',
+        ),
     ),
     // m-team
     'm-team'      => array(
@@ -152,8 +166,11 @@ return array(
         'cookie'        => 'tp=',
         // 15.m-team的passkey	【必须配置】
         'passkey'       => '',
-        // 种子Tracker的IP地址选择 可选：ipv4，ipv6
-        'ip_type'		=> 'ipv4',
+        'url_replace' => array(),
+        'url_join' => array(
+            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
+            'https=1',
+        ),
         'clients'   => array(
             array(
                 'type'	=>	'transmission',	// 支持：transmission、qBittorrent
@@ -178,6 +195,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
         'workingMode'	=> 1,
         'watch'         => '',
         'filter' => array(
@@ -193,6 +212,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // tjupt
     'tjupt'      => array(
@@ -200,6 +221,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // btschool
     'btschool'      => array(
@@ -207,6 +230,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // HDSky
     'hdsky'      => array(
@@ -214,6 +239,12 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'limitRule' => array(
+            'count' => 50,      // 每次辅种50个
+            'sleep' => 15,      // 最少休眠15秒
+        ),
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // TorrentCCF
     'torrentccf'      => array(
@@ -221,6 +252,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // PTMSG
     'ptmsg'      => array(
@@ -228,6 +261,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // totheglory
     'ttg'      => array(
@@ -236,6 +271,8 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         // 如果需要rss订阅，必须配置
+        'url_replace' => array(),
+        'url_join' => array(),
         'rss'       => '',
     ),
     // nanyangpt
@@ -244,6 +281,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // springsunday.net
     'ssd'      => array(
@@ -251,6 +290,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // yingk
     'yingk'      => array(
@@ -258,6 +299,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdcity
     'hdcity'      => array(
@@ -265,6 +308,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置cuhash
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // 52pt.site
     '52pt'      => array(
@@ -272,6 +317,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // brobits
     'brobits'      => array(
@@ -279,6 +326,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // beitai
     'beitai'      => array(
@@ -286,6 +335,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // eastgame
     'eastgame'      => array(
@@ -293,6 +344,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // soulvoice
     'soulvoice'      => array(
@@ -300,6 +353,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // chdbits
     'chdbits'      => array(
@@ -307,6 +362,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // leaguehd
     'leaguehd'      => array(
@@ -314,6 +371,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // ptsbao
     'ptsbao'      => array(
@@ -321,6 +380,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdchina
     'hdchina'      => array(
@@ -328,6 +389,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdarea
     'hdarea'      => array(
@@ -335,6 +398,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdtime
     'hdtime'      => array(
@@ -342,6 +407,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // 1ptba
     '1ptba'      => array(
@@ -349,6 +416,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hd4fans
     'hd4fans'      => array(
@@ -356,6 +425,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hddisk.life
     'hdbug'      => array(
@@ -363,6 +434,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // opencd皇后
     'opencd'      => array(
@@ -370,6 +443,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdstreet
     'hdstreet'      => array(
@@ -377,6 +452,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // joyhd
     'joyhd'      => array(
@@ -384,6 +461,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // dmhy幼儿园
     'dmhy'      => array(
@@ -391,6 +470,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdu
     'upxin'      => array(
@@ -398,6 +479,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // oshen
     'oshen'      => array(
@@ -405,6 +488,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // discfan港知堂
     'discfan'      => array(
@@ -412,6 +497,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdzone
     'hdzone'      => array(
@@ -419,6 +506,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // nicept老师
     'nicept'      => array(
@@ -426,6 +515,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdbd伊甸园
     'hdbd'      => array(
@@ -433,6 +524,11 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(
+            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
+            //'https=1',
+        ),
     ),
     // byr北邮
     'byr'      => array(
@@ -440,6 +536,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // CCFBits
     'ccfbits'      => array(
@@ -447,6 +545,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdbits
     'hdbits'      => array(
@@ -454,6 +554,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // PTPBD
     'ptpbd'      => array(
@@ -461,6 +563,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // HD-T
     'hd-torrents'      => array(
@@ -468,6 +572,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // skyeysnow天雪
     'skyeysnow'      => array(
@@ -475,6 +581,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // pt.sjtu葡萄
     'pt'      => array(
@@ -482,6 +590,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdroute
     'hdroute'      => array(
@@ -489,6 +599,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // haidan
     'haidan'      => array(
@@ -496,6 +608,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // hdfans
     'hdfans'      => array(
@@ -503,6 +617,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // 配置结束，后面的一行不能删除，必须保留！！！
 );

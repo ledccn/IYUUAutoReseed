@@ -11,7 +11,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.0';
+    const VER = '1.9.1';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -106,7 +106,7 @@ class AutoReseed
         foreach ($list as $value) {
             echo $value.PHP_EOL;
         }
-        $res = self::$curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign());
+        $res = self::$curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign().'&version='.self::VER);
         $rs = json_decode($res->response, true);
         $sites = isset($rs['data']['sites']) && $rs['data']['sites'] ? $rs['data']['sites'] : false;
         // 数据写入本地
@@ -336,8 +336,6 @@ class AutoReseed
                 // 当前种子哈希对应的目录
                 $downloadDir = $infohash_Dir[$info_hash];
                 foreach ($vv['torrent'] as $id => $value) {
-                    $_url = $url = '';
-                    $download_page = $details_url = '';
                     // 匹配的辅种数据累加
                     self::$wechatMsg['reseedCount']++;
                     // 站点id
@@ -355,13 +353,15 @@ class AutoReseed
                     self::setNotify($siteName, $sid, $torrent_id);
                     // 页面规则
                     $download_page = str_replace('{}', $torrent_id, $sites[$sid]['download_page']);
-                    $_url = 'https://' .$sites[$sid]['base_url']. '/' .$download_page;
+                    // 协议
+                    $protocol = $sites[$sid]['is_https'] == 0 ? 'http://' : 'https://';
+                    $_url = $protocol . $sites[$sid]['base_url']. '/' .$download_page;
 
                     /**
                      * 前置检测
                      */
-                    // passkey检测
-                    if (empty($configALL[$siteName]['passkey'])) {
+                    // 配置与passkey检测
+                    if (empty($configALL[$siteName]) || empty($configALL[$siteName]['passkey'])) {
                         //echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
                         self::$wechatMsg['reseedSkip']++;
                         continue;
@@ -406,6 +406,34 @@ class AutoReseed
                         wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$_url.PHP_EOL.PHP_EOL, $siteName);
                         continue;
                     }
+                    // 操作站点流控的配置
+                    if (isset($configALL[$siteName]['limitRule']) && $configALL[$siteName]['limitRule']) {
+                        $limitRule = $configALL[$siteName]['limitRule'];
+                        if (isset($limitRule['count']) && isset($limitRule['sleep'])) {
+                            if ($limitRule['count'] <= 0) {
+                                echo '-------当前站点辅种数量已满足规则，保障账号安全已跳过：'.$_url.PHP_EOL.PHP_EOL;
+                                self::$wechatMsg['reseedPass']++;
+                                continue;
+                            } else {
+                                // 异步间隔流控算法：各站独立、执行时间最优
+                                $lastTime = isset($limitRule['time']) ? $limitRule['time'] : 0; // 最近一次辅种成功的时间
+                                if ($lastTime) {
+                                    $interval = time() - $lastTime;   // 间隔时间
+                                    if ($interval < $limitRule['sleep']) {
+                                        $t = $limitRule['sleep'] - $interval +  mt_rand(1,5);
+                                        do {
+                                            echo microtime(true)." 为账号安全，辅种进程休眠 {$t} 秒后继续...".PHP_EOL;
+                                            sleep(1);
+                                        } while (--$t > 0);
+                                    }
+                                }
+                            }
+                        } else {
+                            echo '-------当前站点流控规则错误，缺少count或sleep参数！请重新配置！'.$_url.PHP_EOL.PHP_EOL;
+                            self::$wechatMsg['reseedPass']++;
+                            continue;
+                        }
+                    }
                     /**
                      * 种子URL组合方式区分
                      */
@@ -418,7 +446,7 @@ class AutoReseed
                             $userAgent = $configALL['default']['userAgent'];
                             // 拼接URL
                             $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
-                            $details_url = 'https://' .$sites[$sid]['base_url']. '/' .$details_page;
+                            $details_url = $protocol .$sites[$sid]['base_url']. '/' .$details_page;
                             print "种子详情页：".$details_url.PHP_EOL;
                             $details_html = download($details_url, $cookie, $userAgent);
                             if (empty($details_html)) {
@@ -439,8 +467,7 @@ class AutoReseed
                                 break;
                             }                            
                             // 提取种子下载地址
-                            $download_page = str_replace('{}', '', $sites[$sid]['download_page']);
-                            $offset = strpos($details_html, $download_page);
+                            $offset = strpos($details_html, str_replace('{hash}', '', $sites[$sid]['download_page']));
                             if ($offset === false) {
                                 echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
                                 $reseedPass = true;
@@ -448,13 +475,13 @@ class AutoReseed
                             }
                             $urlTemp = substr($details_html, $offset, 50);
                             // 种子地址
-                            $hash = substr($urlTemp, 0, strpos($urlTemp, '">'));
-                            if (empty($hash)) {
+                            $download_page = substr($urlTemp, 0, strpos($urlTemp, '">'));
+                            if (empty($download_page)) {
                                 echo '未知错误，未提取到种子URL，请联系脚本作者！'.PHP_EOL;
                                 $reseedPass = true;
                                 break;
                             }
-                            $_url = 'https://' .$sites[$sid]['base_url']. '/' . $hash;
+                            $_url = $protocol . $sites[$sid]['base_url']. '/' . $download_page;
                             print "种子下载页：".$_url.PHP_EOL;
                             $url = download($_url, $cookie, $userAgent);
                             #p($url);
@@ -487,14 +514,14 @@ class AutoReseed
                                 # code...
                             } else {
                                 // 获取cuhash
-                                $html = download('https://' .$sites[$sid]['base_url']. '/pt', $cookie, $userAgent);
+                                $html = download($protocol .$sites[$sid]['base_url']. '/pt', $cookie, $userAgent);
                                 // 提取种子下载地址
                                 $offset = strpos($html, 'cuhash=');
                                 $len = strlen('cuhash=');
                                 $cuhashTemp = substr($html, $offset+$len, 40);
                                 $configALL[$siteName]['cuhash'] = substr($cuhashTemp, 0, strpos($cuhashTemp, '"'));
                             }
-                            $url = $_url."&cuhash=". $configALL[$siteName]['cuhash'];
+                            $url = str_replace('{cuhash}', $configALL[$siteName]['cuhash'], $_url);
                             // 城市下载种子时会302转向
                             $url = download($url, $cookie, $userAgent);
                             if (strpos($url, 'Non-exist torrent id!') != false) {
@@ -533,6 +560,14 @@ class AutoReseed
                     $log = 'clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$url.PHP_EOL.PHP_EOL;
                     if ($ret) {
                         // 成功的种子
+                        // 操作流控参数
+                        if (isset($configALL[$siteName]['limitRule']) && $configALL[$siteName]['limitRule']) {
+                            $limitRule = $configALL[$siteName]['limitRule'];
+                            if ($limitRule['count']) {
+                                $configALL[$siteName]['limitRule']['count']--;
+                                $configALL[$siteName]['limitRule']['time'] = time();
+                            }
+                        }
                         wlog($log, $value['info_hash'], self::$cacheHash);
                         wlog($log, 'reseedSuccess');
                         // 成功累加
@@ -773,36 +808,38 @@ class AutoReseed
         }
         return false;
     }
+
     /**
      * 获取站点种子的URL
+     * @param string $site
+     * @param string $_url
+     * @return string
      */
     private static function getTorrentUrl($site = '', $_url = '')
     {
         global $configALL;
-        switch ($site) {
-            case 'ttg':
-                $url = $_url."/". $configALL[$site]['passkey'];
-                break;
-            case 'm-team':
-            case 'moecat':
-            case 'hdbd':
-                $ip_type = '';
-                if (isset($configALL[$site]['ip_type'])) {
-                    $ip_type = $configALL[$site]['ip_type'] == 'ipv6' ? '&ipv6=1' : '';
+        // 兼容旧配置
+        if (isset($configALL[$site]['passkey']) && $configALL[$site]['passkey']) {
+            if (!isset($configALL[$site]['url_replace'])) {
+                $configALL[$site]['url_replace'] = array('{passkey}' => $configALL[$site]['passkey']);
+            }
+            if (!isset($configALL[$site]['url_join'])) {
+                $configALL[$site]['url_join'] = array();
+                if (in_array($site, array('m-team','mocat','hdbd'))) {
+                    if (isset($configALL[$site]['ip_type'])) {
+                        $configALL[$site]['url_join'][] = $configALL[$site]['ip_type'].'=1';
+                    }
+                    $configALL[$site]['url_join'][] = 'https=1';
                 }
-                $url = $_url."&passkey=". $configALL[$site]['passkey'] . $ip_type. "&https=1";
-                break;
-            case 'dicmusic':
-                $_url = str_replace('{torrent_pass}', $configALL[$site]['passkey'], $_url);
-                $url = str_replace('{authkey}', $configALL[$site]['authkey'], $_url);
-                break;
-            default:
-                if (strpos($_url,'{passkey}') !== false) {
-                    $url = str_replace('{passkey}', $configALL[$site]['passkey'], $_url);
-                } else {
-                    $url = $_url."&passkey=". $configALL[$site]['passkey'];
-                }
-                break;
+            }
+        }
+        // 通用操作：替换
+        if (isset($configALL[$site]['url_replace']) && $configALL[$site]['url_replace']) {
+            $url = strtr($_url, $configALL[$site]['url_replace']);
+        }
+        // 通用操作：拼接
+        if (isset($configALL[$site]['url_join']) && $configALL[$site]['url_join']) {
+            $url = $url.(strpos($url, '?') === false ? '?' : '&').implode('&',$configALL[$site]['url_join']);
         }
         return $url;
     }
