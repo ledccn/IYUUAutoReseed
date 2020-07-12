@@ -277,7 +277,7 @@ class AutoReseed
         // 支持站点数量
         self::$wechatMsg['sitesCount'] = count(self::$sites);
         $sites = self::$sites;
-        // 按客户端循环辅种 开始
+        // 遍历客户端 开始
         foreach (self::$links as $k => $v) {
             if (empty($v)) {
                 echo "clients_".$k." 用户名或密码未配置，已跳过".PHP_EOL.PHP_EOL;
@@ -331,7 +331,7 @@ class AutoReseed
                 echo '-----辅种失败，原因：' .$errmsg.PHP_EOL.PHP_EOL;
                 continue;
             }
-            // 当前客户端可辅种数据
+            // 遍历当前客户端可辅种数据
             foreach ($reseed as $info_hash => $vv) {
                 // 当前种子哈希对应的目录
                 $downloadDir = $infohash_Dir[$info_hash];
@@ -556,6 +556,7 @@ class AutoReseed
     private static function move()
     {
         global $configALL;
+        //遍历客户端
         foreach (self::$links as $k => $v) {
             if (self::$move[0] == $k) {
                 echo "clients_".$k."是目标转移客户端，避免冲突，已跳过！".PHP_EOL.PHP_EOL;
@@ -578,7 +579,7 @@ class AutoReseed
                 echo "clients_".$k." 全部转移成功，本次无需转移！".PHP_EOL.PHP_EOL;
                 continue;
             }
-            // 循环转移做种客户端
+            //遍历当前客户端种子
             foreach ($infohash_Dir as $info_hash => $downloadDir) {                
                 // 调用路径过滤
                 if (self::pathFilter($downloadDir)) {
@@ -586,7 +587,6 @@ class AutoReseed
                 }
                 // 做种实际路径与相对路径之间互转
                 echo '转换前：'.$downloadDir.PHP_EOL;
-                // 调用路径转换
                 $downloadDir = self::pathReplace($downloadDir);
                 echo '转换后：'.$downloadDir.PHP_EOL;                
                 if (is_null($downloadDir)) {
