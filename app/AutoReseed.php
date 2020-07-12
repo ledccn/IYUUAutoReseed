@@ -410,11 +410,11 @@ class AutoReseed
                      * 种子URL组合方式区分
                      */
                     $url = self::getTorrentUrl($siteName, $_url);
-                    $reseedPass = false;
+                    $reseedPass = false;    // 标志：跳过辅种
                     // 特殊站点：种子元数据推送给下载器
                     switch ($siteName) {
                         case 'hdchina':
-                            $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
+                            $cookie = $configALL[$siteName]['cookie'];
                             $userAgent = $configALL['default']['userAgent'];
                             // 拼接URL
                             $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
@@ -429,30 +429,32 @@ class AutoReseed
                                     sleep(1);
                                 } while (--$t > 0);
                                 $configALL[$siteName]['cookie'] = '';
-                                // 标志：跳过辅种
                                 $reseedPass = true;
                                 break;
                             }
                             if (strpos($details_html, '没有该ID的种子') != false) {
                                 echo '种子已被删除！'.PHP_EOL;
-                                self::sendNotify('404');
-                                // 标志：跳过辅种
+                                self::sendNotify('404');                                
                                 $reseedPass = true;
                                 break;
-                            }
+                            }                            
                             // 提取种子下载地址
                             $download_page = str_replace('{}', '', $sites[$sid]['download_page']);
                             $offset = strpos($details_html, $download_page);
-                            $urlTemp = substr($details_html, $offset, 50);
-                            // 种子地址
-                            $_url = substr($urlTemp, 0, strpos($urlTemp, '">'));
-                            if (empty($_url)) {
-                                echo '未知错误，未提取到种子URL，请联系脚本作者！'.PHP_EOL;
-                                // 标志：跳过辅种
+                            if ($offset === false) {
+                                echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
                                 $reseedPass = true;
                                 break;
                             }
-                            $_url = 'https://' .$sites[$sid]['base_url']. '/' . $_url;
+                            $urlTemp = substr($details_html, $offset, 50);
+                            // 种子地址
+                            $hash = substr($urlTemp, 0, strpos($urlTemp, '">'));
+                            if (empty($hash)) {
+                                echo '未知错误，未提取到种子URL，请联系脚本作者！'.PHP_EOL;
+                                $reseedPass = true;
+                                break;
+                            }
+                            $_url = 'https://' .$sites[$sid]['base_url']. '/' . $hash;
                             print "种子下载页：".$_url.PHP_EOL;
                             $url = download($_url, $cookie, $userAgent);
                             #p($url);
@@ -466,7 +468,6 @@ class AutoReseed
                                 } while (--$t > 0);
                                 ff($siteName. '站点，辅种时触发第一次下载提示！');
                                 self::$noReseed[] = 'hdchina';
-                                // 标志：跳过辅种
                                 $reseedPass = true;
                             }
                             if (strpos($url, '系统检测到过多的种子下载请求') != false) {
@@ -474,12 +475,11 @@ class AutoReseed
                                 ff($siteName. '站点，辅种时触发人机验证！');
                                 $configALL[$siteName]['limit'] = 1;
                                 self::$noReseed[] = 'hdchina';
-                                // 标志：跳过辅种
                                 $reseedPass = true;
                             }
                             break;
                         case 'hdcity':
-                            $cookie = isset($configALL[$siteName]['cookie']) ? $configALL[$siteName]['cookie'] : '';
+                            $cookie = $configALL[$siteName]['cookie'];
                             $userAgent = $configALL['default']['userAgent'];
                             print "种子：".$_url.PHP_EOL;
                             if (isset($configALL[$siteName]['cuhash'])) {
