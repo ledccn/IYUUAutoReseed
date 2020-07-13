@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.1';
+    const VER = '1.9.2';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -452,6 +452,7 @@ class AutoReseed
                             print "种子详情页：".$details_url.PHP_EOL;
                             $details_html = download($details_url, $cookie, $userAgent);
                             if (empty($details_html)) {
+                                ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
                                 echo 'cookie已过期，请更新后重新辅种！已加入排除列表'.PHP_EOL;
                                 $t = 30;
                                 do {
@@ -471,6 +472,7 @@ class AutoReseed
                             // 提取种子下载地址
                             $offset = strpos($details_html, str_replace('{hash}', '', $sites[$sid]['download_page']));
                             if ($offset === false) {
+                                ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
                                 echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
                                 $reseedPass = true;
                                 break;
@@ -519,6 +521,12 @@ class AutoReseed
                                 $html = download($protocol .$sites[$sid]['base_url']. '/pt', $cookie, $userAgent);
                                 // 提取种子下载地址
                                 $offset = strpos($html, 'cuhash=');
+                                if ($offset === false) {
+                                    ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
+                                    echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
+                                    $reseedPass = true;
+                                    break;
+                                }
                                 $len = strlen('cuhash=');
                                 $cuhashTemp = substr($html, $offset+$len, 40);
                                 $configALL[$siteName]['cuhash'] = substr($cuhashTemp, 0, strpos($cuhashTemp, '"'));
