@@ -1,10 +1,12 @@
 <?php
 namespace IYUU;
+
 use Curl\Curl;
 use IYUU\Client\AbstractClient;
 use IYUU\Library\IFile;
 use IYUU\Library\Oauth;
 use IYUU\Library\Table;
+
 /**
  * IYUUAutoReseed自动辅种类
  */
@@ -420,7 +422,7 @@ class AutoReseed
                                 if ($lastTime) {
                                     $interval = time() - $lastTime;   // 间隔时间
                                     if ($interval < $limitRule['sleep']) {
-                                        $t = $limitRule['sleep'] - $interval +  mt_rand(1,5);
+                                        $t = $limitRule['sleep'] - $interval +  mt_rand(1, 5);
                                         do {
                                             echo microtime(true)." 为账号安全，辅种进程休眠 {$t} 秒后继续...".PHP_EOL;
                                             sleep(1);
@@ -462,10 +464,10 @@ class AutoReseed
                             }
                             if (strpos($details_html, '没有该ID的种子') != false) {
                                 echo '种子已被删除！'.PHP_EOL;
-                                self::sendNotify('404');                                
+                                self::sendNotify('404');
                                 $reseedPass = true;
                                 break;
-                            }                            
+                            }
                             // 提取种子下载地址
                             $offset = strpos($details_html, str_replace('{hash}', '', $sites[$sid]['download_page']));
                             if ($offset === false) {
@@ -615,7 +617,7 @@ class AutoReseed
                 continue;
             }
             //遍历当前客户端种子
-            foreach ($infohash_Dir as $info_hash => $downloadDir) {                
+            foreach ($infohash_Dir as $info_hash => $downloadDir) {
                 // 调用路径过滤
                 if (self::pathFilter($downloadDir)) {
                     continue;
@@ -623,7 +625,7 @@ class AutoReseed
                 // 做种实际路径与相对路径之间互转
                 echo '转换前：'.$downloadDir.PHP_EOL;
                 $downloadDir = self::pathReplace($downloadDir);
-                echo '转换后：'.$downloadDir.PHP_EOL;                
+                echo '转换后：'.$downloadDir.PHP_EOL;
                 if (is_null($downloadDir)) {
                     echo 'IYUU自动转移做种客户端--使用教程 https://www.iyuu.cn/archives/351/'.PHP_EOL;
                     die("全局配置的move数组内，路径转换参数配置错误，请重新配置！！！".PHP_EOL);
@@ -720,7 +722,7 @@ class AutoReseed
         global $configALL;
         $type = $configALL['default']['move']['type'];
         $pathArray = $configALL['default']['move']['path'];
-        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性        
+        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
         switch ($type) {
             case 1:         // 减
                 foreach ($pathArray as $key => $val) {
@@ -757,13 +759,12 @@ class AutoReseed
     {
         global $configALL;
         $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
-        // 转移过滤器、选择器 David/2020年7月11日        
+        // 转移过滤器、选择器 David/2020年7月11日
         $path_filter = isset($configALL['default']['move']['path_filter']) && !empty($configALL['default']['move']['path_filter']) ? $configALL['default']['move']['path_filter'] : null;
         $path_selector = isset($configALL['default']['move']['path_selector']) && !empty($configALL['default']['move']['path_selector']) ? $configALL['default']['move']['path_selector'] : null;
         if (\is_null($path_filter) && \is_null($path_selector)) {
             return false;
-        }
-        elseif (\is_null($path_filter)) {
+        } elseif (\is_null($path_filter)) {
             //选择器
             if (\is_array($path_selector)) {
                 foreach ($path_selector as $pathName) {
@@ -774,8 +775,7 @@ class AutoReseed
                 echo '已跳过！转移选择器未匹配到：'.$path.PHP_EOL;
                 return true;
             }
-        }
-        elseif (\is_null($path_selector)) {
+        } elseif (\is_null($path_selector)) {
             //过滤器
             if (\is_array($path_filter)) {
                 foreach ($path_filter as $pathName) {
@@ -839,7 +839,7 @@ class AutoReseed
         }
         // 通用操作：拼接
         if (isset($configALL[$site]['url_join']) && $configALL[$site]['url_join']) {
-            $url = $url.(strpos($url, '?') === false ? '?' : '&').implode('&',$configALL[$site]['url_join']);
+            $url = $url.(strpos($url, '?') === false ? '?' : '&').implode('&', $configALL[$site]['url_join']);
         }
         return $url;
     }
@@ -853,7 +853,7 @@ class AutoReseed
         $desp = '### 版本号：'. self::VER . $br;
         $desp .= '**支持站点：'.self::$wechatMsg['sitesCount']. '**  [当前支持自动辅种的站点数量]' .$br;
         $desp .= '**总做种：'.self::$wechatMsg['hashCount'] . '**  [客户端做种的hash总数]' .$br;
-        $desp .= '**返回数据：'.self::$wechatMsg['reseedCount']. '**  [服务器返回的可辅种数据]' .$br;        
+        $desp .= '**返回数据：'.self::$wechatMsg['reseedCount']. '**  [服务器返回的可辅种数据]' .$br;
         $desp .= '**成功：'.self::$wechatMsg['reseedSuccess']. '**  [辅种成功，会把hash加入缓存]' .$br;
         $desp .= '**失败：'.self::$wechatMsg['reseedError']. '**  [种子下载失败或网络超时引起]' .$br;
         $desp .= '**重复：'.self::$wechatMsg['reseedRepeat']. '**  [客户端已做种]' .$br;

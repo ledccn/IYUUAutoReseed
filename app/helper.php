@@ -1,6 +1,7 @@
 <?php
 use IYUU\Library\IFile;
 use IYUU\Library\Table;
+
 /**
  * 调试函数
  * @param $data

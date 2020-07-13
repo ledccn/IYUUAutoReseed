@@ -1,5 +1,6 @@
 <?php
 namespace IYUU\Library;
+
 /**
  * @class IFile
  * @brief IFile 文件处理类

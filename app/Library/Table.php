@@ -1,5 +1,6 @@
 <?php
 namespace IYUU\Library;
+
 /**
  * Created by PhpStorm.
  * User: 大卫
