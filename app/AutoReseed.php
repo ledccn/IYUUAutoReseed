@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.2';
+    const VER = '1.9.3';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -474,6 +474,7 @@ class AutoReseed
                             if ($offset === false) {
                                 ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
                                 echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
+                                $configALL[$siteName]['cookie'] = '';
                                 $reseedPass = true;
                                 break;
                             }
@@ -524,6 +525,7 @@ class AutoReseed
                                 if ($offset === false) {
                                     ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
                                     echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
+                                    $configALL[$siteName]['cookie'] = '';
                                     $reseedPass = true;
                                     break;
                                 }
@@ -820,18 +822,18 @@ class AutoReseed
     /**
      * 获取站点种子的URL
      * @param string $site
-     * @param string $_url
+     * @param string $url
      * @return string
      */
-    private static function getTorrentUrl($site = '', $_url = '')
+    private static function getTorrentUrl($site = '', $url = '')
     {
         global $configALL;
         // 兼容旧配置
         if (isset($configALL[$site]['passkey']) && $configALL[$site]['passkey']) {
-            if (!isset($configALL[$site]['url_replace'])) {
+            if (empty($configALL[$site]['url_replace'])) {
                 $configALL[$site]['url_replace'] = array('{passkey}' => $configALL[$site]['passkey']);
             }
-            if (!isset($configALL[$site]['url_join'])) {
+            if (empty($configALL[$site]['url_join'])) {
                 $configALL[$site]['url_join'] = array();
                 if (in_array($site, array('m-team','mocat','hdbd'))) {
                     if (isset($configALL[$site]['ip_type'])) {
@@ -843,7 +845,7 @@ class AutoReseed
         }
         // 通用操作：替换
         if (isset($configALL[$site]['url_replace']) && $configALL[$site]['url_replace']) {
-            $url = strtr($_url, $configALL[$site]['url_replace']);
+            $url = strtr($url, $configALL[$site]['url_replace']);
         }
         // 通用操作：拼接
         if (isset($configALL[$site]['url_join']) && $configALL[$site]['url_join']) {
