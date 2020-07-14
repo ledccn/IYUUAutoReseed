@@ -1,8 +1,6 @@
 <?php
 namespace IYUU\Library;
-
 use Curl\Curl;
-
 /**
  * IYUU用户注册、认证
  */

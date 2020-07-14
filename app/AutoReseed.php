@@ -1,12 +1,10 @@
 <?php
 namespace IYUU;
-
 use Curl\Curl;
 use IYUU\Client\AbstractClient;
 use IYUU\Library\IFile;
 use IYUU\Library\Oauth;
 use IYUU\Library\Table;
-
 /**
  * IYUUAutoReseed自动辅种类
  */
