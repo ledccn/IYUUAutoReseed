@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.3';
+    const VER = '1.9.4';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -56,6 +56,8 @@ class AutoReseed
         'reseedRepeat'		=>	0,		// 重复：客户端已做种
         'reseedSkip'		=>	0,		// 跳过：因未设置passkey，而跳过
         'reseedPass'		=>	0,		// 忽略：因上次成功添加、存在缓存，而跳过
+        'MoveSuccess'       =>  0,      // 移动成功
+        'MoveError'         =>  0,      // 移动失败
     );
     // 错误通知消息体
     private static $errNotify = array(
@@ -218,8 +220,6 @@ class AutoReseed
                         $errmsg = isset($result['result']) ? $result['result'] : '未知错误，请稍后重试！';
                         if (strpos($errmsg, 'http error 404: Not Found') !== false) {
                             self::sendNotify('404');
-                        } elseif (strpos($errmsg, 'http error 403: Forbidden')  !== false) {
-                            self::sendNotify('403');
                         }
                         print "-----RPC添加种子任务，失败 [{$errmsg}]" . PHP_EOL.PHP_EOL;
                     }
@@ -704,9 +704,11 @@ class AutoReseed
                     // 转移成功的种子，以infohash为文件名，写入缓存
                     wlog($log, $info_hash, self::$cacheMove);
                     wlog($log, 'MoveSuccess'.$k);
+                    self::$wechatMsg['MoveSuccess']++;
                 } else {
                     // 失败的种子
                     wlog($log, 'MoveError'.$k);
+                    self::$wechatMsg['MoveError']++;
                 }
             }
         }
@@ -864,13 +866,20 @@ class AutoReseed
         $desp .= '**支持站点：'.self::$wechatMsg['sitesCount']. '**  [当前支持自动辅种的站点数量]' .$br;
         $desp .= '**总做种：'.self::$wechatMsg['hashCount'] . '**  [客户端做种的hash总数]' .$br;
         $desp .= '**返回数据：'.self::$wechatMsg['reseedCount']. '**  [服务器返回的可辅种数据]' .$br;
-        $desp .= '**成功：'.self::$wechatMsg['reseedSuccess']. '**  [辅种成功，会把hash加入缓存]' .$br;
+        $desp .= '**成功：'.self::$wechatMsg['reseedSuccess']. '**  [会把hash加入辅种缓存]' .$br;
         $desp .= '**失败：'.self::$wechatMsg['reseedError']. '**  [种子下载失败或网络超时引起]' .$br;
         $desp .= '**重复：'.self::$wechatMsg['reseedRepeat']. '**  [客户端已做种]' .$br;
         $desp .= '**跳过：'.self::$wechatMsg['reseedSkip']. '**  [未设置passkey]' .$br;
         $desp .= '**忽略：'.self::$wechatMsg['reseedPass']. '**  [成功添加存在缓存]' .$br;
-        $desp .= $br.'**如需重新辅种，请删除 ./torrent/cachehash 内的所有辅种缓存。**'.$br;
-        $desp .= '*此消息将在3天后过期*。';
+        $desp .= '**如需重新辅种，请删除 ./torrent/cachehash 辅种缓存。**'.$br;
+        // 移动做种
+        if (self::$wechatMsg['MoveSuccess'] || self::$wechatMsg['MoveError']) {
+            $desp .= $br.'----------'.$br;
+            $desp .= '**移动成功：'.self::$wechatMsg['MoveSuccess']. '**  [会把hash加入移动缓存]' .$br;
+            $desp .= '**移动失败：'.self::$wechatMsg['MoveError']. '**  [解决错误提示，可以重试]' .$br;
+            $desp .= '**如需重新移动，请删除 ./torrent/cachemove 移动缓存。**'.$br;
+        }        
+        $desp .= $br.'*此消息将在3天后过期*。';
         return ff($text, $desp);
     }
     /**
