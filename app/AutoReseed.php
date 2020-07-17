@@ -22,8 +22,6 @@ class AutoReseed
     private static $sites = [];
     // 不辅种的站点 'pt','hdchina'
     private static $noReseed = [];
-    // 不转移的站点 'hdarea','hdbd'
-    private static $noMove = [];
     // cookie检查
     private static $cookieCheck = ['hdchina','hdcity'];
     // 缓存路径
@@ -37,7 +35,6 @@ class AutoReseed
         'sites'   => '/api/sites',
         'infohash'=> '/api/infohash',
         'notify'  => '/api/notify',
-        'alike'   => '/api/alike',
         'hash'    => '/api/hash',
     );
     // curl
@@ -78,12 +75,15 @@ class AutoReseed
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
         self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
 
-        // 合作站点自动鉴权绑定
+        // 合作站点鉴权绑定
         Oauth::login(self::$apiUrl . self::$endpoints['login']);
 
         // 显示支持站点列表
         self::ShowTableSites();
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
+        if (empty(self::$clients)){
+            die('全局客户端为空！');
+        }
 
         // 递归删除上次历史记录
         IFile::rmdir(self::$cacheDir, true);
@@ -126,9 +126,6 @@ class AutoReseed
         } else {
             if (isset($rs['msg']) && $rs['msg']) {
                 die($rs['msg'].PHP_EOL);
-            }
-            if (isset($rs['errmsg']) && $rs['errmsg']) {
-                die($rs['errmsg'].PHP_EOL);
             }
             die('远端服务器无响应，请稍后再试！！！');
         }
@@ -269,6 +266,7 @@ class AutoReseed
         }
         self::reseed();
         self::wechatMessage();
+        exit(self::$ExitCode);
     }
     /**
      * IYUUAutoReseed辅种

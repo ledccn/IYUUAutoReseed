@@ -29,4 +29,3 @@ use IYUU\AutoReseed;
 
 AutoReseed::init();
 AutoReseed::call();
-exit(0);

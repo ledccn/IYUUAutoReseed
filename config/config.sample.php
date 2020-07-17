@@ -157,7 +157,7 @@ return array(
         'url_replace' => array(),
         'url_join' => array(
             //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
-            //'https=1',
+            'https=1',
         ),
     ),
     // m-team
