@@ -103,6 +103,15 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'id' => 0,					// 用户ID(不是用户名)
+        'url_replace' => array(),
+        'url_join' => array(
+            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
+            //'https=1',
+        ),
+        'limitRule' => array(
+            'count' => 20,      // 每次辅种20个
+            'sleep' => 15,      // 最少休眠15秒
+        ),
         'workingMode'	=> 0,
         'watch'         => '/root/downloads',
         'filter' => array(
@@ -111,11 +120,7 @@ return array(
                 'max'	=>	'280GB',
             ),
         ),
-        'url_replace' => array(),
-        'url_join' => array(
-            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
-            //'https=1',
-        ),
+
     ),
     // hddolby
     'hddolby'      => array(
@@ -158,6 +163,10 @@ return array(
         'url_join' => array(
             //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
             'https=1',
+        ),
+        'limitRule' => array(
+            'count' => 20,      // 每次辅种20个
+            'sleep' => 15,      // 最少休眠15秒
         ),
     ),
     // m-team
@@ -292,6 +301,10 @@ return array(
         'passkey'       => '',
         'url_replace' => array(),
         'url_join' => array(),
+        'limitRule' => array(
+            'count' => 20,      // 每次辅种20个
+            'sleep' => 15,      // 最少休眠15秒
+        ),
     ),
     // yingk
     'yingk'      => array(
@@ -391,6 +404,10 @@ return array(
         'passkey'       => '',
         'url_replace' => array(),
         'url_join' => array(),
+        'limitRule' => array(
+            'count' => 10,      // 每次辅种10个
+            'sleep' => 5,      // 最少休眠15秒
+        ),
     ),
     // hdarea
     'hdarea'      => array(
@@ -592,6 +609,10 @@ return array(
         'passkey'       => '',
         'url_replace' => array(),
         'url_join' => array(),
+        'limitRule' => array(
+            'count' => 20,      // 每次辅种20个
+            'sleep' => 20,      // 最少休眠20秒
+        ),
     ),
     // hdroute
     'hdroute'      => array(
