@@ -141,6 +141,10 @@ return array(
         'id' => 0,					// 用户ID(不是用户名)
         'url_replace' => array(),
         'url_join' => array(),
+        'limitRule' => array(
+            'count' => 20,      // 每次辅种20个
+            'sleep' => 5,      // 最少休眠5秒
+        ),
     ),
     // PTHome
     'pthome'      => array(
