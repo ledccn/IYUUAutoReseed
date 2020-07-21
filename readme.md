@@ -10,6 +10,8 @@
 
 第三：您使用IYUU工具造成的一切损失，与IYUU无关。如不接受此条款，请不要使用IYUUAutoReseed，并立刻删除已经下载的源码。
 
+![stars](https://img.shields.io/github/stars/ledccn/IYUUAutoReseed)![forks](https://img.shields.io/github/forks/ledccn/IYUUAutoReseed)![release](https://img.shields.io/github/release/ledccn/IYUUAutoReseed.svg)
+
 ## 获取脚本，三种方式皆可
 
 1. 通过git命令安装
