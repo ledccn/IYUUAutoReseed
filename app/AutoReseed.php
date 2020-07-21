@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.6';
+    const VER = '1.9.7';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -605,6 +605,10 @@ class AutoReseed
         foreach (self::$links as $k => $v) {
             if (self::$move[0] == $k) {
                 echo "clients_".$k."是目标转移客户端，避免冲突，已跳过！".PHP_EOL.PHP_EOL;
+                continue;
+            }
+            if (empty(self::$links[$k])) {
+                echo "clients_".$k." 用户名或密码未配置，已跳过".PHP_EOL.PHP_EOL;
                 continue;
             }
             echo "正在从下载器 clients_".$k." 获取种子哈希……".PHP_EOL;
