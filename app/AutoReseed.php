@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.5';
+    const VER = '1.9.6';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -869,6 +869,11 @@ class AutoReseed
         $desp .= '**重复：'.self::$wechatMsg['reseedRepeat']. '**  [客户端已做种]' .$br;
         $desp .= '**跳过：'.self::$wechatMsg['reseedSkip']. '**  [未设置passkey]' .$br;
         $desp .= '**忽略：'.self::$wechatMsg['reseedPass']. '**  [成功添加存在缓存]' .$br;
+        // 失败详情
+        if (self::$wechatMsg['reseedError']) {
+            $desp .= '**失败详情，见 ./torrent/cache/reseedError.txt**'.$br;
+        }
+        // 重新辅种
         $desp .= '**如需重新辅种，请删除 ./torrent/cachehash 辅种缓存。**'.$br;
         // 移动做种
         if (self::$wechatMsg['MoveSuccess'] || self::$wechatMsg['MoveError']) {
