@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.9.7';
+    const VER = '1.9.8';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -444,23 +444,12 @@ class AutoReseed
                         case 'hdchina':
                             $cookie = $configALL[$siteName]['cookie'];
                             $userAgent = $configALL['default']['userAgent'];
-                            // 拼接URL
+                            // 拼接详情页URL
                             $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
                             $details_url = $protocol .$sites[$sid]['base_url']. '/' .$details_page;
                             print "种子详情页：".$details_url.PHP_EOL;
                             $details_html = download($details_url, $cookie, $userAgent);
-                            if (empty($details_html)) {
-                                ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
-                                echo 'cookie已过期，请更新后重新辅种！已加入排除列表'.PHP_EOL;
-                                $t = 30;
-                                do {
-                                    echo microtime(true)." cookie已过期，请更新后重新辅种！已加入排除列表！，{$t}秒后继续...".PHP_EOL;
-                                    sleep(1);
-                                } while (--$t > 0);
-                                $configALL[$siteName]['cookie'] = '';
-                                $reseedPass = true;
-                                break;
-                            }
+                            // 删种检查
                             if (strpos($details_html, '没有该ID的种子') != false) {
                                 echo '种子已被删除！'.PHP_EOL;
                                 self::sendNotify('404');
@@ -471,23 +460,23 @@ class AutoReseed
                             $offset = strpos($details_html, str_replace('{hash}', '', $sites[$sid]['download_page']));
                             if ($offset === false) {
                                 ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
-                                echo 'cookie已过期，请更新后重新辅种！'.PHP_EOL;
+                                echo 'cookie已过期，请更新后重新辅种！已加入排除列表'.PHP_EOL;
+                                $t = 15;
+                                do {
+                                    echo microtime(true)." cookie已过期，请更新后重新辅种！已加入排除列表！，{$t}秒后继续...".PHP_EOL;
+                                    sleep(1);
+                                } while (--$t > 0);
                                 $configALL[$siteName]['cookie'] = '';
                                 $reseedPass = true;
                                 break;
                             }
-                            $urlTemp = substr($details_html, $offset, 50);
                             // 种子地址
-                            $download_page = substr($urlTemp, 0, strpos($urlTemp, '">'));
-                            if (empty($download_page)) {
-                                echo '未知错误，未提取到种子URL，请联系脚本作者！'.PHP_EOL;
-                                $reseedPass = true;
-                                break;
-                            }
+                            $regex = "/download.php\?hash\=(.*?)[\"|\']/i";   // 提取种子hash的正则表达式
+                            preg_match($regex, $details_html, $matchs);
+                            $download_page = str_replace('{hash}', $matchs[1], $sites[$sid]['download_page']);
                             $_url = $protocol . $sites[$sid]['base_url']. '/' . $download_page;
                             print "种子下载页：".$_url.PHP_EOL;
                             $url = download($_url, $cookie, $userAgent);
-                            #p($url);
                             if (strpos($url, '第一次下载提示') != false) {
                                 echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
                                 echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
@@ -527,9 +516,9 @@ class AutoReseed
                                     $reseedPass = true;
                                     break;
                                 }
-                                $len = strlen('cuhash=');
-                                $cuhashTemp = substr($html, $offset+$len, 40);
-                                $configALL[$siteName]['cuhash'] = substr($cuhashTemp, 0, strpos($cuhashTemp, '"'));
+                                $regex = "/cuhash\=(.*?)[\"|\']/i";   // 提取种子cuhash的正则表达式
+                                preg_match($regex, $html, $matchs);
+                                $configALL[$siteName]['cuhash'] = $matchs[1];
                             }
                             $url = str_replace('{cuhash}', $configALL[$siteName]['cuhash'], $_url);
                             // 城市下载种子时会302转向

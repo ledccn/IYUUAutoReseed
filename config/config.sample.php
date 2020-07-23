@@ -30,8 +30,8 @@ return array(
             array(
                 'type'	=>	'transmission',	// 支持：transmission、qBittorrent
                 'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
-                'username'	=>	'',
-                'password'	=>	'',
+                'username'	=>	'null',
+                'password'	=>	'null',
                 'BT_backup' =>  '/var/lib/transmission/torrents',                        // 移动做种：如果脚本与当前客户端不在一台机器，必须配置
                 'move'      =>  0,      // 0不移动，1移动并辅种，2移动且只在当前客户端辅种
             ),
@@ -40,7 +40,7 @@ return array(
             array(
                 'type'	=>	'qBittorrent',	// 支持：transmission、qBittorrent
                 'host'	=>	'http://127.0.0.1:8083',
-                'username'	=>	'',
+                'username'	=>	'admin',
                 'password'	=>	'',
                 'root_folder'=> 1,   // 0不创建根目录，1创建根目录
                 'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 移动做种：必须配置，Linux搜索方法：find / -name BT_backup
