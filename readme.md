@@ -77,7 +77,11 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 ## 相关项目
 
-#todo...
+- IYUU GUI，地址：https://github.com/Rhilip/IYUU-GUI；简介：这是一个基于IYUU提供的API，产生的一个可视化操作项目。 目的是为了降低直接上手PHP版IYUUAutoReseed的难度。
+- IYUU-Fly，地址：https://github.com/PlexPt/iyuu-fly；简介：带GUI的iyuu自动辅种程序。
+- goreseed，地址：https://github.com/gaoluhua99/goreseed；简介：golang编写调用IYUU接口的CLI辅种程序。
+- IYUUAutoReseed-web，地址：https://github.com/goveeta/IYUUAutoReseed-web
+
 
 ## 需求提交/错误反馈
 
