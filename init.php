@@ -50,6 +50,8 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
     // 配置（全局变量）
     $configALL = require_once ROOT_PATH . "/config/config.php";
 } else {
+    // 第一次会生成
+    @copy(ROOT_PATH . '/config/config.sample.php', ROOT_PATH . '/config/config.php');
     // 示例配置
     $configALL = require_once ROOT_PATH . '/config/config.sample.php';
     echo microtime(true).' 缺少config.php，已载入config.sample.php示例配置。'.PHP_EOL;
@@ -59,8 +61,7 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
         echo microtime(true)." 请编辑配置文件config.php，{$t}秒后继续...".PHP_EOL;
         sleep(1);
     } while (--$t > 0);
-    // 第一次会生成
-    @copy(ROOT_PATH . '/config/config.sample.php', ROOT_PATH . '/config/config.php');
+
 }
 echo microtime(true).' 全局配置载入完成！'.PHP_EOL;
 // 读取支持列表
