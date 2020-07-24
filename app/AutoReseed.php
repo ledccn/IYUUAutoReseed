@@ -851,6 +851,10 @@ class AutoReseed
      */
     private static function wechatMessage()
     {
+        global $configALL;
+        if ($configALL['notify_on_change'] && self::$wechatMsg['reseedSuccess'] == 0 && self::$wechatMsg['reseedError'] == 0) {
+            return;
+        }
         $br = PHP_EOL;
         $text = 'IYUU自动辅种-统计报表';
         $desp = '### 版本号：'. self::VER . $br;
