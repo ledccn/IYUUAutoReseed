@@ -58,10 +58,10 @@ if (file_exists(ROOT_PATH."/config/config.php")) {
     echo microtime(true).' 请编辑配置文件config.php，以免后续版本升级覆盖配置！！！'.PHP_EOL;
     $t = 30;
     do {
-        echo microtime(true)." 请编辑配置文件config.php，{$t}秒后继续...".PHP_EOL;
+        echo microtime(true)." 请编辑配置文件config.php，{$t}秒后退出...".PHP_EOL;
         sleep(1);
     } while (--$t > 0);
-
+    exit;
 }
 echo microtime(true).' 全局配置载入完成！'.PHP_EOL;
 // 读取支持列表
