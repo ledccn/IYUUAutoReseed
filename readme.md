@@ -81,6 +81,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 - IYUU-Fly，地址：https://github.com/PlexPt/iyuu-fly；简介：带GUI的iyuu自动辅种程序。
 - goreseed，地址：https://github.com/gaoluhua99/goreseed；简介：golang编写调用IYUU接口的CLI辅种程序。
 - IYUUAutoReseed-web，地址：https://github.com/goveeta/IYUUAutoReseed-web
+- AutoPT，地址：https://github.com/lysssssss/AutoPT；简介：此程序用于自动下载PT免费种子，并自动辅种和一体化管理。开发目的为了释放双手，专注观影！
 
 
 ## 需求提交/错误反馈
