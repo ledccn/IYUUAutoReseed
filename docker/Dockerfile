@@ -1,3 +1,14 @@
-FROM php:7.4-fpm
-EXPOSE 9000
-WORKDIR /var/www 
+FROM composer:1.10.9
+
+ENV TZ Asia/Shanghai
+ENV cron="0 */1 * * *"
+
+COPY . /IYUU
+COPY ./docker/entrypoint.sh /entrypoint.sh
+
+WORKDIR /IYUU
+
+RUN apk add --no-cache bash tzdata \
+    && composer i
+
+ENTRYPOINT [ "/entrypoint.sh" ]

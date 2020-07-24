@@ -17,6 +17,8 @@
     php ./iyuu.php
  */
 return array(
+    // 有变化才发送通知（辅种成功 + 失败 > 0）
+    'notify_on_change' => false,
     // 1.【必须配置】爱语飞飞 微信通知，请访问https://iyuu.cn 用微信扫码申请
     'iyuu.cn'		=> 'IYUU',
     // 2.全局默认配置
