@@ -81,7 +81,7 @@ class AutoReseed
         // 显示支持站点列表
         self::ShowTableSites();
         self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
-        if (empty(self::$clients)){
+        if (empty(self::$clients)) {
             die('全局客户端为空！');
         }
 
@@ -878,7 +878,7 @@ class AutoReseed
             $desp .= '**移动成功：'.self::$wechatMsg['MoveSuccess']. '**  [会把hash加入移动缓存]' .$br;
             $desp .= '**移动失败：'.self::$wechatMsg['MoveError']. '**  [解决错误提示，可以重试]' .$br;
             $desp .= '**如需重新移动，请删除 ./torrent/cachemove 移动缓存。**'.$br;
-        }        
+        }
         $desp .= $br.'*此消息将在3天后过期*。';
         return ff($text, $desp);
     }
