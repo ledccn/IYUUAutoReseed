@@ -1,6 +1,6 @@
 FROM swoft/alphp:base
-#FROM arm64v8/alpine:latest
-#FROM arm64v8/alpine:3.12
+#FROM swoft/alphp:cli
+#FROM alpine:latest
 LABEL maintainer="david <367013672@qq.com>" version="1.0"
 
 ##
