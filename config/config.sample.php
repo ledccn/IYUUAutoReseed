@@ -263,8 +263,8 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         'limitRule' => array(
-            'count' => 50,      // 每次辅种50个
-            'sleep' => 15,      // 最少休眠15秒
+            'count' => 20,      // 每次辅种50个
+            'sleep' => 20,      // 最少休眠15秒
         ),
         'url_replace' => array(),
         'url_join' => array(),

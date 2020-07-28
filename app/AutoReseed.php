@@ -23,7 +23,7 @@ class AutoReseed
     // 不辅种的站点 'pt','hdchina'
     private static $noReseed = [];
     // cookie检查
-    private static $cookieCheck = ['hdchina','hdcity'];
+    private static $cookieCheck = ['hdchina','hdcity','hdsky'];
     // 缓存路径
     public static $cacheDir  = TORRENT_PATH.'cache'.DS;
     public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
@@ -493,7 +493,7 @@ class AutoReseed
                                 echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
                                 ff($siteName. '站点，辅种时触发人机验证！');
                                 $configALL[$siteName]['limit'] = 1;
-                                self::$noReseed[] = 'hdchina';
+                                self::$noReseed[] = $siteName;
                                 $reseedPass = true;
                             }
                             break;
@@ -527,6 +527,64 @@ class AutoReseed
                                 echo '种子已被删除！'.PHP_EOL;
                                 self::sendNotify('404');
                                 // 标志：跳过辅种
+                                $reseedPass = true;
+                            }
+                            break;
+                        case 'hdsky':
+                            $cookie = $configALL[$siteName]['cookie'];
+                            $userAgent = $configALL['default']['userAgent'];
+                            // 拼接详情页URL
+                            $details_page = str_replace('{}', $value['torrent_id'], 'details.php?id={}&hit=1');
+                            $details_url = $protocol .$sites[$sid]['base_url']. '/' .$details_page;
+                            print "种子详情页：".$details_url.PHP_EOL;
+                            $details_html = download($details_url, $cookie, $userAgent);
+                            // 删种检查
+                            if (strpos($details_html, '没有该ID的种子') != false) {
+                                echo '种子已被删除！'.PHP_EOL;
+                                self::sendNotify('404');
+                                $reseedPass = true;
+                                break;
+                            }
+                            // 提取种子下载地址
+                            $remove = 'id={}&passkey={passkey}';
+                            $offset = strpos($details_html, str_replace($remove, '', $sites[$sid]['download_page']));
+                            if ($offset === false) {
+                                ff($siteName. '站点，cookie已过期，请更新后重新辅种！');
+                                echo 'cookie已过期，请更新后重新辅种！已加入排除列表'.PHP_EOL;
+                                $t = 15;
+                                do {
+                                    echo microtime(true)." cookie已过期，请更新后重新辅种！已加入排除列表！，{$t}秒后继续...".PHP_EOL;
+                                    sleep(1);
+                                } while (--$t > 0);
+                                $configALL[$siteName]['cookie'] = '';
+                                $reseedPass = true;
+                                break;
+                            }
+                            // 种子地址
+                            $regex = '/download.php\?(.*?)["|\']/i';
+                            if (preg_match($regex, $details_html, $matchs)) {
+                                $download_page = str_replace($remove, '', $sites[$sid]['download_page']).str_replace('&amp;', '&', $matchs[1]);
+                            }
+                            $_url = $protocol . $sites[$sid]['base_url']. '/' . $download_page;
+                            print "种子下载页：".$_url.PHP_EOL;
+                            $url = download($_url, $cookie, $userAgent);
+                            if (strpos($url, '第一次下载提示') != false) {
+                                echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
+                                echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
+                                $t = 30;
+                                do {
+                                    echo microtime(true)." 请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！，{$t}秒后继续...".PHP_EOL;
+                                    sleep(1);
+                                } while (--$t > 0);
+                                ff($siteName. '站点，辅种时触发第一次下载提示！');
+                                self::$noReseed[] = $siteName;
+                                $reseedPass = true;
+                            }
+                            if (strpos($url, '系统检测到过多的种子下载请求') != false) {
+                                echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
+                                ff($siteName. '站点，辅种时触发人机验证！');
+                                $configALL[$siteName]['limit'] = 1;
+                                self::$noReseed[] = $siteName;
                                 $reseedPass = true;
                             }
                             break;
