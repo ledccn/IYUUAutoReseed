@@ -605,6 +605,7 @@ class AutoReseed
                     // 按站点规范日志内容
                     switch ($siteName) {
                         case 'hdchina':
+                        case 'hdsky':
                             $url = $details_url;
                             break;
                         case 'hdcity':
