@@ -486,7 +486,7 @@ class AutoReseed
                                     sleep(1);
                                 } while (--$t > 0);
                                 ff($siteName. '站点，辅种时触发第一次下载提示！');
-                                self::$noReseed[] = 'hdchina';
+                                self::$noReseed[] = $siteName;
                                 $reseedPass = true;
                             }
                             if (strpos($url, '系统检测到过多的种子下载请求') != false) {
