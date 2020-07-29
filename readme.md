@@ -77,13 +77,12 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
 
 ## 相关项目
 
-- IYUU GUI，地址：https://github.com/Rhilip/IYUU-GUI；简介：这是一个基于IYUU提供的API，产生的一个可视化操作项目。 目的是为了降低直接上手PHP版IYUUAutoReseed的难度。
-- IYUU-Fly，地址：https://github.com/PlexPt/iyuu-fly；简介：带GUI的iyuu自动辅种程序。
-- goreseed，地址：https://github.com/gaoluhua99/goreseed；简介：golang编写调用IYUU接口的CLI辅种程序。
-- IYUUAutoReseed-web，地址：https://github.com/goveeta/IYUUAutoReseed-web
-- AutoPT，地址：https://github.com/lysssssss/AutoPT；简介：此程序用于自动下载PT免费种子，并自动辅种和一体化管理。开发目的为了释放双手，专注观影！
-- flexget_qbittorrent_mod，地址：https://github.com/IvonWei/flexget_qbittorrent_mod；简介：Flexget qBittorrent插件，实现全自动化辅种、删种、免费种筛选、签到等。
-
+- [IYUU GUI](https://github.com/Rhilip/IYUU-GUI)：这是一个基于IYUU提供的API，产生的一个可视化操作项目。 目的是为了降低直接上手PHP版IYUUAutoReseed的难度。
+- [IYUU-Fly](https://github.com/PlexPt/iyuu-fly)：带GUI的IYUU自动辅种程序。
+- [goreseed](https://github.com/gaoluhua99/goreseed)：golang编写调用IYUU接口的CLI辅种程序。
+- [IYUUAutoReseed-web](https://github.com/goveeta/IYUUAutoReseed-web)
+- [AutoPT](https://github.com/lysssssss/AutoPT)：此程序用于自动下载PT免费种子，并自动辅种和一体化管理。开发目的为了释放双手，专注观影！
+- [flexget_qbittorrent_mod](https://github.com/IvonWei/flexget_qbittorrent_mod)：Flexget qBittorrent插件，实现全自动化辅种、删种、免费种筛选、签到等。
 
 ## 需求提交/错误反馈
 
