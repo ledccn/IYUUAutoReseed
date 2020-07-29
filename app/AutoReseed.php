@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.0';
+    const VER = '1.10.1';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -570,20 +570,13 @@ class AutoReseed
                             $url = download($_url, $cookie, $userAgent);
                             if (strpos($url, '第一次下载提示') != false) {
                                 echo "当前站点触发第一次下载提示，已加入排除列表".PHP_EOL;
-                                echo "请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！".PHP_EOL;
+                                echo "请进入种子详情页，下载种子，成功后更新cookie！".PHP_EOL;
                                 $t = 30;
                                 do {
-                                    echo microtime(true)." 请进入瓷器详情页，点右上角蓝色框：下载种子，成功后更新cookie！，{$t}秒后继续...".PHP_EOL;
+                                    echo microtime(true)." 请进入种子详情页，下载种子，成功后更新cookie！，{$t}秒后继续...".PHP_EOL;
                                     sleep(1);
                                 } while (--$t > 0);
                                 ff($siteName. '站点，辅种时触发第一次下载提示！');
-                                self::$noReseed[] = $siteName;
-                                $reseedPass = true;
-                            }
-                            if (strpos($url, '系统检测到过多的种子下载请求') != false) {
-                                echo "当前站点触发人机验证，已加入排除列表".PHP_EOL;
-                                ff($siteName. '站点，辅种时触发人机验证！');
-                                $configALL[$siteName]['limit'] = 1;
                                 self::$noReseed[] = $siteName;
                                 $reseedPass = true;
                             }
@@ -614,7 +607,6 @@ class AutoReseed
                         default:
                             break;
                     }
-                    // 添加成功的种子，以infohash为文件名，写入缓存
                     $log = 'clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$url.PHP_EOL.PHP_EOL;
                     if ($ret) {
                         // 成功的种子
@@ -626,7 +618,7 @@ class AutoReseed
                                 $configALL[$siteName]['limitRule']['time'] = time();
                             }
                         }
-                        wlog($log, $value['info_hash'], self::$cacheHash);
+                        wlog($log, $value['info_hash'], self::$cacheHash);  // 添加成功的种子，以infohash为文件名，写入缓存
                         wlog($log, 'reseedSuccess');
                         // 成功累加
                         self::$wechatMsg['reseedSuccess']++;
@@ -850,7 +842,7 @@ class AutoReseed
             }
         } else {
             //同时设置过滤器、选择器
-            if (\is_array($path_selector) && \is_array($path_filter)) {
+            if (\is_array($path_filter) && \is_array($path_selector)) {
                 //先过滤器
                 foreach ($path_filter as $pathName) {
                     if (strpos($path, $pathName)===0) {
