@@ -4,7 +4,7 @@ FROM arm64v8/alpine
 
 ENV TZ Asia/Shanghai
 
-ENV cron="0 9 * * 0"
+ENV cron="0 10 * * 0"
 
 RUN set -ex \
    # && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \

@@ -1,8 +1,11 @@
 # FROM arm64v8/alpine
 # FROM arm64v8/alpine:latest
 FROM arm64v8/alpine:3.12
+
 ENV TZ Asia/Shanghai
+
 ENV cron="0 9 * * 0"
+
 RUN set -ex \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
    # && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.cn/' /etc/apk/repositories \
