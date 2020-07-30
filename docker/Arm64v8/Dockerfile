@@ -17,6 +17,8 @@ RUN set -ex \
     && git clone https://gitee.com/ledc/IYUUAutoReseed.git /IYUU \
     && cp /IYUU/config/config.sample.php /IYUU/config/config.php \
     && ln -sf /IYUU/config/config.php /config.php \
+    && apk del --purge *-dev \
+    && rm -rf /var/cache/apk/* /tmp/* /usr/share/man \
     && echo "${TZ}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
     
