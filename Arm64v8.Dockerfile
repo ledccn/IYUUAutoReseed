@@ -72,7 +72,8 @@ RUN set -ex \
         # php7-tokenizer \
         php7-zip \
         # php7-zlib \
-        php7-xml \        
+        php7-xml \
+        bash \
         && git clone https://gitee.com/ledc/IYUUAutoReseed.git /var/www \
         && cp /var/www/config/config.sample.php /var/www/config/config.php \
         && ln -sf /var/www/config/config.php /config.php \
