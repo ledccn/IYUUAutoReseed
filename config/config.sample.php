@@ -32,9 +32,9 @@ return array(
             array(
                 'type'	=>	'transmission',	// 支持：transmission、qBittorrent
                 'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
-                'username'	=>	'null',
-                'password'	=>	'null',
-                'BT_backup' =>  '/var/lib/transmission/torrents',                        // 移动做种：如果脚本与当前客户端不在一台机器，必须配置
+                'username'	=>	'',     // 没有用户名请填写null
+                'password'	=>	'',     // 没有密码  请填写null
+                'BT_backup' =>  '/torrents',                        // 移动做种：如果脚本与当前客户端不在一台机器，必须配置
                 'move'      =>  0,      // 0不移动，1移动并辅种，2移动且只在当前客户端辅种
             ),
             # 结束
@@ -45,7 +45,7 @@ return array(
                 'username'	=>	'admin',
                 'password'	=>	'',
                 'root_folder'=> 1,   // 0不创建根目录，1创建根目录
-                'BT_backup' =>  'C:\Users\ASUS\AppData\Local\qBittorrent\BT_backup',    // 移动做种：必须配置，Linux搜索方法：find / -name BT_backup
+                'BT_backup' =>  '/BT_backup',    // 移动做种：必须配置，Linux搜索方法：find / -name BT_backup
                 'move'      =>  0,      // 0不移动，1移动并辅种，2移动且只在当前客户端辅种
             ),
             # 结束
@@ -67,7 +67,7 @@ return array(
         // 6.RSS工作模式
         'workingMode'	=> 0,
         // 7.监控目录
-        'watch'         => '/volume1/downloads',
+        'watch'         => '/volume1/watch',
         // 8.RSS过滤参数配置
         'filter' => array(
             'size'=>array(
@@ -193,23 +193,6 @@ return array(
         'url_join' => array(
             //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
             'https=1',
-        ),
-        'clients'   => array(
-            array(
-                'type'	=>	'transmission',	// 支持：transmission、qBittorrent
-                'host'	=>	'http://127.0.0.1:9091/transmission/rpc',		// 警告！注意：transmission/rpc这段别动，你只需要修改 127.0.0.1:9091
-                'username'	=>	'',
-                'password'	=>	'',
-                'downloadDir'=> '',
-            ),
-        ),
-        'workingMode'	=> 1,
-        'watch'         => '',
-        'filter' => array(
-            'size'=>array(
-                'min'	=>	'1GB',
-                'max'	=>	'280GB',
-            ),
         ),
     ),
     // keepfrds
