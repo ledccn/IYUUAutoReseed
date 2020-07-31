@@ -20,7 +20,8 @@ RUN set -ex \
     && apk del --purge *-dev \
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man \
     && echo "${TZ}" > /etc/timezone \
-    && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
+    && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo '2 */6 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root
     
 WORKDIR /IYUU
 

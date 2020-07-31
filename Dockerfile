@@ -16,7 +16,8 @@ ARG app_env=prod
 # ARG add_user=www-data
 
 ENV APP_ENV=${app_env:-"prod"} \
-    TIMEZONE=${timezone:-"Asia/Shanghai"}
+    TIMEZONE=${timezone:-"Asia/Shanghai"} \
+    cron="0 10 * * 0"
 
 ##
 # ---------- building ----------
@@ -91,6 +92,7 @@ RUN set -ex \
         # - config timezone
         && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
         && echo "${TIMEZONE}" > /etc/timezone \
+        && echo '2 */5 * * * cd /var/www && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
         # ---------- some config work ----------
         # - ensure 'www-data' user exists(82 is the standard uid/gid for "www-data" in Alpine)
         # && addgroup -g 82 -S ${add_user} \
@@ -103,3 +105,5 @@ RUN set -ex \
 EXPOSE 9000
 # VOLUME ["/var/www", "/data"]
 WORKDIR /var/www
+
+CMD ["sh", "-c", "/usr/bin/php /var/www/iyuu.php ; /usr/sbin/crond ; (crontab -l ;echo \"$cron /usr/bin/php /var/www/iyuu.php &> /dev/null\") | crontab - ; tail -f /dev/null"]
