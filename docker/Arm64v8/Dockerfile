@@ -1,4 +1,3 @@
-# FROM arm64v8/alpine
 # FROM arm64v8/alpine:latest
 FROM arm64v8/alpine:3.12
 

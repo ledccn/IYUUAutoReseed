@@ -12,7 +12,7 @@
 
 ![stars](https://img.shields.io/github/stars/ledccn/IYUUAutoReseed)![forks](https://img.shields.io/github/forks/ledccn/IYUUAutoReseed)![release](https://img.shields.io/github/release/ledccn/IYUUAutoReseed.svg)
 
-## 获取脚本，三种方式皆可
+## 获取脚本，四种方式皆可
 
 1. 通过git命令安装
 
@@ -25,6 +25,10 @@
 3. 直接下载zip源码包
 
     `https://github.com/ledccn/IYUUAutoReseed/archive/master.zip`
+    
+4. Docker使用
+
+     [https://gitee.com/ledc/IYUUAutoReseed/tree/master/docker](https://gitee.com/ledc/IYUUAutoReseed/tree/master/docker)
 
 ## 功能
 

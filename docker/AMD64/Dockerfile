@@ -1,6 +1,8 @@
-FROM swoft/alphp:base
-#FROM swoft/alphp:cli
 #FROM alpine:latest
+#FROM alpine:3.12
+FROM alpine:3.8
+#FROM swoft/alphp:base
+#FROM swoft/alphp:cli
 
 LABEL maintainer="david <367013672@qq.com>" version="1.0"
 
@@ -44,7 +46,7 @@ RUN set -ex \
         # php7-common \
         # php7-bcmath \
         php7-curl \
-        # php7-ctype \
+        # php7-ctype \        
         php7-dom \
         # php7-fileinfo \
         # php7-gettext \
@@ -61,6 +63,7 @@ RUN set -ex \
         # php7-pdo_mysql \
         # php7-pdo_sqlite \
         # php7-phar \
+        # php7-pcntl \
         # php7-posix \
         # php7-redis \
         php7-simplexml \

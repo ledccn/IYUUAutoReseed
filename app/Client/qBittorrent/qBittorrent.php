@@ -168,7 +168,7 @@ class qBittorrent extends AbstractClient
         $torrents = json_decode($this->torrentList());
         $response = '';
         foreach ($torrents as $torrent) {
-            $response .= $this->torrentDelete($torrent->hash, $deleteFiles);
+            $response .= $this->delete($torrent->hash, $deleteFiles);
         }
 
         return $response;
