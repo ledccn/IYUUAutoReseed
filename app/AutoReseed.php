@@ -322,7 +322,7 @@ class AutoReseed
                 continue;
             }
             // 判断返回值
-            if (empty($res['msg'])) {
+            if (isset($res['ret']) && $res['ret']==200) {
                 echo "clients_".$k." 辅种数据下载成功！！！".PHP_EOL.PHP_EOL;
                 echo '【提醒】未配置passkey的站点都会跳过！'.PHP_EOL.PHP_EOL;
             } else {
@@ -726,18 +726,6 @@ class AutoReseed
             self::$wechatMsg['reseedSkip']++;
             return false;
         }
-        // 流控检测
-        if (isset($configALL[$siteName]['limit'])) {
-            echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL;
-            // 流控日志
-            if ($siteName == 'hdchina') {
-                $details_page = str_replace('{}', $torrent_id, 'details.php?id={}&hit=1');
-                $_url = 'https://' .self::$sites[$sid]['base_url']. '/' .$details_page;
-            }
-            wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL, 'reseedLimit');
-            self::$wechatMsg['reseedSkip']++;
-            return false;
-        }
         // 重复做种检测
         if (isset($infohash_Dir[$info_hash])) {
             echo '-------与客户端现有种子重复：'.$_url.PHP_EOL.PHP_EOL;
@@ -758,6 +746,18 @@ class AutoReseed
             wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL.$_url.PHP_EOL.PHP_EOL, $siteName);
             return false;
         }
+        // 流控检测
+        if (isset($configALL[$siteName]['limit'])) {
+            echo "-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL;
+            // 流控日志
+            if ($siteName == 'hdchina') {
+                $details_page = str_replace('{}', $torrent_id, 'details.php?id={}&hit=1');
+                $_url = 'https://' .self::$sites[$sid]['base_url']. '/' .$details_page;
+            }
+            wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL, 'reseedLimit');
+            self::$wechatMsg['reseedSkip']++;
+            return false;
+        }        
         // 操作站点流控的配置
         if (isset($configALL[$siteName]['limitRule']) && $configALL[$siteName]['limitRule']) {
             $limitRule = $configALL[$siteName]['limitRule'];
