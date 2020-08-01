@@ -456,3 +456,12 @@ function isWin()
 {
     return (DIRECTORY_SEPARATOR == '\\') ? true : false;
 }
+
+function sleepIYUU($t, $msg)
+{
+    echo $msg . PHP_EOL;
+    do {
+        echo microtime(true).$msg.' '.$t.'秒后继续...'.PHP_EOL;
+        sleep(1);
+    } while (--$t > 0);
+}
