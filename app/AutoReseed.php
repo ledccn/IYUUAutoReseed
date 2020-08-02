@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.3';
+    const VER = '1.10.4';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -370,7 +370,7 @@ class AutoReseed
                     if (in_array($siteName, self::$cookieCheck)) {
                         // 特殊站点：种子元数据推送给下载器
                         $reseedPass = false;    // 标志：跳过辅种
-                        $cookie = $configALL[$siteName]['cookie'];
+                        $cookie = trim($configALL[$siteName]['cookie']);
                         $userAgent = $configALL['default']['userAgent'];
                         switch ($siteName) {
                             case 'hdchina':
@@ -908,7 +908,7 @@ class AutoReseed
         // 兼容旧配置
         if (isset($configALL[$site]['passkey']) && $configALL[$site]['passkey']) {
             if (empty($configALL[$site]['url_replace'])) {
-                $configALL[$site]['url_replace'] = array('{passkey}' => $configALL[$site]['passkey']);
+                $configALL[$site]['url_replace'] = array('{passkey}' => trim($configALL[$site]['passkey']));
             }
             if (empty($configALL[$site]['url_join'])) {
                 $configALL[$site]['url_join'] = array();
