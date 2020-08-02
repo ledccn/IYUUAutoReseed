@@ -236,7 +236,8 @@ class qBittorrent extends AbstractClient
         // Find authentication cookie and set in curl connection
         foreach ($this->curl->response_headers as $header) {
             if (preg_match('/SID=(\S[^;]+)/', $header, $matches)) {
-                $this->curl->setHeader('Cookie', $matches[0]);
+                $qb415 = '; QB_'.$matches[0];   // 兼容qBittorrent v4.1.5[小钢炮等]
+                $this->curl->setHeader('Cookie', $matches[0].$qb415);
                 return true;
             }
         };
