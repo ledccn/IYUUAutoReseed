@@ -757,7 +757,7 @@ class AutoReseed
             wlog('clients_'.$k.PHP_EOL.$downloadDir.PHP_EOL."-------因当前" .$siteName. "站点触发流控，已跳过！！ {$_url}".PHP_EOL.PHP_EOL, 'reseedLimit');
             self::$wechatMsg['reseedSkip']++;
             return false;
-        }        
+        }
         // 操作站点流控的配置
         if (isset($configALL[$siteName]['limitRule']) && $configALL[$siteName]['limitRule']) {
             $limitRule = $configALL[$siteName]['limitRule'];
