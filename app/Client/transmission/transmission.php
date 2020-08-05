@@ -618,6 +618,10 @@ class transmission extends AbstractClient
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->url);
+        if (stripos($this->url, 'https://') === 0) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 禁止验证证书
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);     // 不检查证书
+        }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->username . ':' . $this->password);
