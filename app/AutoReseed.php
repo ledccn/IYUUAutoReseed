@@ -703,19 +703,19 @@ class AutoReseed
         $info_hash = $torrent['info_hash'];
         $siteName = self::$sites[$sid]['site'];
 
-        // cookie检测
-        if (in_array($siteName, self::$cookieCheck) && empty($configALL[$siteName]['cookie'])) {
-            echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' .PHP_EOL.PHP_EOL;
-            self::$wechatMsg['reseedSkip']++;
-            return false;
-        }
-        // passkey检测
+        // passkey检测 [优先检查passkey，排除用户没有的站点]
         if (empty($configALL[$siteName]) || empty($configALL[$siteName]['passkey'])) {
             //echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
             self::$wechatMsg['reseedSkip']++;
             return false;
         } else {
             echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
+        }
+        // cookie检测
+        if (in_array($siteName, self::$cookieCheck) && empty($configALL[$siteName]['cookie'])) {
+            echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' .PHP_EOL.PHP_EOL;
+            self::$wechatMsg['reseedSkip']++;
+            return false;
         }
         // 重复做种检测
         if (isset($infohash_Dir[$info_hash])) {
