@@ -18,7 +18,7 @@ ARG app_env=prod
 
 ENV APP_ENV=${app_env:-"prod"} \
     TIMEZONE=${timezone:-"Asia/Shanghai"} \
-    cron="0 10 * * 0"
+    cron="8 11 * * 0"
 
 ##
 # ---------- building ----------
