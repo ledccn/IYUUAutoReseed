@@ -45,7 +45,7 @@ return array(
                 'host'	=>	'http://127.0.0.1:8083',
                 'username'	=>	'admin',
                 'password'	=>	'',
-                'root_folder'=> 1,   // 0不创建根目录，1创建根目录
+                'root_folder'=> 1,   // 0不创建根目录，1创建根目录(下载器默认1)
                 'BT_backup' =>  '/BT_backup',    // 移动做种：必须配置，Linux搜索方法：find / -name BT_backup
                 'move'      =>  0,      // 0不移动，1移动并辅种，2移动且只在当前客户端辅种
             ),
@@ -61,7 +61,7 @@ return array(
             ),
             'path_filter'=> array(),          //转移过滤器：不转移此路径内文件
             'path_selector' => array(),       //转移选择器：只转移此路径内文件(为空时，全转移)    【优先级：过滤器 ＞ 选择器】
-            'paused'         => 0,      //转移成功，自动开始任务：0开始，1暂停
+            'paused'         => 1,      //转移成功，自动开始任务：0开始，1暂停
             'skip_check'     => 0,      //转移成功，跳校验：0不跳、1跳校验
             'delete_torrent' => 0,      //转移成功，删除当前做种：0不删除、1删除
         ),
