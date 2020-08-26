@@ -55,7 +55,7 @@ IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编�
  2. qBittorrent
 
 ## 支持自动辅种的站点
-学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits、dicmusic、天雪、葡萄、HDRoute、伊甸园hdbd、海胆haidan、HDfans、龙之家。
+学校、杜比、家园、天空、朋友、馒头、萌猫、我堡、猫站、铂金家、烧包、北洋、TCCF、南洋、TTG、映客、城市、52pt、brobits、备胎、SSD、CHD、ptmsg、leaguehd、聆音、瓷器、hdarea、eastgame(TLF)、1ptba、hdtime、hd4fans、opencd、hdbug、hdstreet、joyhd、u2、upxin(HDU)、oshen、discfan(GZT)、cnscg圣城(已删除)、北邮、CCFBits、dicmusic、天雪、葡萄、HDRoute、伊甸园hdbd、海胆haidan、HDfans、龙之家、百川PT。
 
 ## 运行环境
 具备PHP运行环境的所有平台，例如：Linux、Windows、MacOS！
