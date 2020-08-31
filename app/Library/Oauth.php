@@ -9,7 +9,7 @@ use Curl\Curl;
 class Oauth
 {
     // 合作的站点
-    public static $sites = ['ourbits','hddolby','hdhome','pthome','moecat'];
+    public static $sites = ['ourbits','hddolby','hdhome','pthome','chdbits'];
     // 爱语飞飞token
     public static $token = '';
     // 合作站点用户id

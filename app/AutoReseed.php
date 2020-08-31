@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.7';
+    const VER = '1.10.8';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -70,7 +70,7 @@ class AutoReseed
         global $configALL;
         echo '正在初始化运行参数，版本号：'.self::VER.PHP_EOL;
         echo '当前时间：'.date('Y-m-d H:i:s').PHP_EOL;
-        sleep(mt_rand(1, 5));
+        //sleep(mt_rand(1, 5));
         self::backup('config', $configALL);
         self::$curl = new Curl();
         self::$curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);

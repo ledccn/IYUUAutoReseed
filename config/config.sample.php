@@ -99,7 +99,7 @@ return array(
      * 以下为各站点的独立配置（互不影响、互不冲突）
      * 自动辅种：需要配置各站的passkey（没有配置passkey的站点会自动跳过）
      */
-    // ourbits
+    // 【合作站点用户鉴权】ourbits
     'ourbits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -125,7 +125,7 @@ return array(
         ),
 
     ),
-    // hddolby
+    // 【合作站点用户鉴权】hddolby
     'hddolby'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -139,7 +139,7 @@ return array(
             'sleep' => 5,      // 最少休眠5秒
         ),
     ),
-    // hdhome
+    // 【合作站点用户鉴权】hdhome
     'hdhome'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -153,7 +153,7 @@ return array(
             'sleep' => 5,      // 最少休眠5秒
         ),
     ),
-    // PTHome
+    // 【合作站点用户鉴权】PTHome
     'pthome'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
@@ -166,6 +166,16 @@ return array(
             'count' => 20,      // 每次辅种20个
             'sleep' => 5,      // 最少休眠5秒
         ),
+    ),
+    // 【合作站点用户鉴权】chdbits
+    'chdbits'      => array(
+        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
+        'cookie'        => '',
+        // 如果需要自动辅种，必须配置
+        'passkey'       => '',
+        'id' => 0,					// 用户ID(不是用户名)
+        'url_replace' => array(),
+        'url_join' => array(),
     ),
     // MoeCat
     'moecat'      => array(
@@ -360,15 +370,6 @@ return array(
     ),
     // soulvoice
     'soulvoice'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-        'url_replace' => array(),
-        'url_join' => array(),
-    ),
-    // chdbits
-    'chdbits'      => array(
         // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
