@@ -288,9 +288,9 @@ return array(
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
         // 如果需要rss订阅，必须配置
+        'rss'       => '',
         'url_replace' => array(),
         'url_join' => array(),
-        'rss'       => '',
     ),
     // nanyangpt
     'nanyangpt'      => array(
