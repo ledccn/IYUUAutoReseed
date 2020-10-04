@@ -925,6 +925,11 @@ class AutoReseed
         if (isset($configALL[$site]['url_join']) && $configALL[$site]['url_join']) {
             $url = $url.(strpos($url, '?') === false ? '?' : '&').implode('&', $configALL[$site]['url_join']);
         }
+        // 海豚音乐：替换authkey和passkey
+        if (strcmp($site,"dicmusic" )==0){
+            $url = str_replace('{torrent_pass}', $configALL[$site]['passkey'], $url);
+            $url = str_replace('{authkey}', $configALL[$site]['authkey'], $url);
+        }
         return $url;
     }
     /**
