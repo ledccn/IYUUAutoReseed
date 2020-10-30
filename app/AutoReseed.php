@@ -162,6 +162,7 @@ class AutoReseed
                 self::$links[$k]['type'] = $v['type'];
                 self::$links[$k]['BT_backup'] = isset($v['BT_backup']) && $v['BT_backup'] ? $v['BT_backup'] : '';
                 self::$links[$k]['root_folder'] = isset($v['root_folder']) ? $v['root_folder'] : 1;
+                self::$links[$k]['category'] = isset($v['category']) && $v['category'] ? $v['category'] : '';
                 $result = $client->status();
                 print $v['type'].'：'.$v['host']." Rpc连接 [{$result}]".PHP_EOL;
                 // 检查转移做种 (self::$move为空，移动配置为真)
@@ -223,6 +224,9 @@ class AutoReseed
                     }
                     // 是否创建根目录
                     $extra_options['root_folder'] = self::$links[$rpcKey]['root_folder'] ? 'true' : 'false';
+                    if (isset(self::$links[$rpcKey]['category'])) {
+                        $extra_options['category'] = self::$links[$rpcKey]['category'];
+                    }
                     if ($is_url) {
                         $result = self::$links[$rpcKey]['rpc']->add($torrent, $save_path, $extra_options);			// URL添加
                     } else {
