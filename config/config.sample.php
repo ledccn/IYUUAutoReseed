@@ -45,7 +45,7 @@ return array(
                 'host'	=>	'http://127.0.0.1:8083',
                 'username'	=>	'admin',
                 'password'	=>	'',
-                'root_folder'=> 1,   // 0不创建根目录，1创建根目录(下载器默认1)
+                'root_folder'=> 1,   // 创建多文件子目录：0不创建，1创建(下载器默认1)【此处必须与下载器真实配置相同，否则添加任务不会校验！】
                 'BT_backup' =>  '/BT_backup',    // 移动做种：必须配置，Linux搜索方法：find / -name BT_backup
                 'move'      =>  0,      // 0不移动，1移动并辅种，2移动且只在当前客户端辅种
             ),
