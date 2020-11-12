@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.8';
+    const VER = '1.10.9';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -81,7 +81,7 @@ class AutoReseed
 
         // 显示支持站点列表
         self::ShowTableSites();
-        self::$clients = isset($configALL['default']['clients']) && $configALL['default']['clients'] ? $configALL['default']['clients'] : array();
+        self::$clients = empty($configALL['default']['clients']) ? [] : $configALL['default']['clients'];
 
         // 递归删除上次历史记录
         IFile::rmdir(self::$cacheDir, true);
@@ -105,12 +105,12 @@ class AutoReseed
             '【IYUU自动辅种交流】QQ群：859882209、931954050'.PHP_EOL,
             '正在连接IYUUAutoReseed服务器，查询支持列表……'.PHP_EOL
         ];
-        foreach ($list as $v) {
+        array_walk($list,function ($v, $k){
             echo $v.PHP_EOL;
-        }
+        });
         $res = self::$curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign().'&version='.self::VER);
         $rs = json_decode($res->response, true);
-        $sites = isset($rs['data']['sites']) && $rs['data']['sites'] ? $rs['data']['sites'] : [];
+        $sites = empty($rs['data']['sites']) ? [] : $rs['data']['sites'];
         // 数据写入本地
         if (empty($sites)) {
             if (!empty($rs['msg'])) {
@@ -118,12 +118,7 @@ class AutoReseed
             }
             die('网络故障或远端服务器无响应，请稍后再试！！！');
         }
-
         self::$sites = array_column($sites, null, 'id');
-        $json = array_column($sites, null, 'site');
-        ksort($json);
-        $sitesConfig = ROOT_PATH.DS.'config'.DS.'sites.json';
-        file_put_contents($sitesConfig, \json_encode($json, JSON_UNESCAPED_UNICODE));
 
         $data = [];
         $i = $j = $k = 0;   // i列、j序号、k行
@@ -142,6 +137,12 @@ class AutoReseed
         $table = new Table();
         $table->setRows($data);
         echo($table->render());
+
+        // 生成IYUUPTT使用的JSON
+        $json = array_column($sites, null, 'site');
+        ksort($json);
+        $sitesConfig = ROOT_PATH.DS.'config'.DS.'sites.json';
+        file_put_contents($sitesConfig, \json_encode($json, JSON_UNESCAPED_UNICODE));
     }
     /**
      * 连接远端RPC下载器
@@ -169,14 +170,17 @@ class AutoReseed
                     self::$move = array($k,$v['move']);
                 }
             } catch (\Exception $e) {
-                die('[连接错误] ' . $e->getMessage() . PHP_EOL);
+                die('[连接错误] '. $v['host'] . $e->getMessage() . PHP_EOL);
             }
         }
     }
+
     /**
      * @brief 添加下载任务
+     * @param $rpcKey
      * @param string $torrent 种子元数据
      * @param string $save_path 保存路径
+     * @param array $extra_options
      * @return bool
      */
     public static function add($rpcKey, $torrent, $save_path = '', $extra_options = array())
@@ -273,7 +277,7 @@ class AutoReseed
                 continue;
             }
             // 过滤无需辅种的客户端
-            if (self::$move!==null && self::$move[0]!=$k && self::$move[1]==2) {
+            if ((self::$move !== null) && (self::$move[0] != $k) && (self::$move[1] == 2)) {
                 echo "clients_".$k." 根据设置无需辅种，已跳过！";
                 continue;
             }
@@ -282,7 +286,7 @@ class AutoReseed
             if (empty($hashArray)) {
                 continue;
             }
-            self::backup('clients_'.$k, $hashArray);
+
             $infohash_Dir = $hashArray['hashString'];   // 哈希目录对应字典
             unset($hashArray['hashString']);
             // 签名
@@ -291,11 +295,11 @@ class AutoReseed
             $hashArray['version'] = self::VER;
             // 写请求日志
             wlog($hashArray, 'hashString'.$k);
-            self::$wechatMsg['hashCount'] +=count($infohash_Dir);
+            self::$wechatMsg['hashCount'] += count($infohash_Dir);
             // 此处优化大于一万条做种时，设置超时
             if (count($infohash_Dir) > 5000) {
-                $connecttimeout = isset($configALL['default']['CONNECTTIMEOUT']) && $configALL['default']['CONNECTTIMEOUT']>60 ? $configALL['default']['CONNECTTIMEOUT'] : 60;
-                $timeout = isset($configALL['default']['TIMEOUT']) && $configALL['default']['TIMEOUT']>600 ? $configALL['default']['TIMEOUT'] : 600;
+                $connecttimeout = isset($configALL['default']['CONNECTTIMEOUT']) && $configALL['default']['CONNECTTIMEOUT'] > 60 ? $configALL['default']['CONNECTTIMEOUT'] : 60;
+                $timeout = isset($configALL['default']['TIMEOUT']) && $configALL['default']['TIMEOUT'] > 600 ? $configALL['default']['TIMEOUT'] : 600;
                 self::$curl->setOpt(CURLOPT_CONNECTTIMEOUT, $connecttimeout);
                 self::$curl->setOpt(CURLOPT_TIMEOUT, $timeout);
             }
@@ -614,6 +618,7 @@ class AutoReseed
                 }
                 // 种子目录：脚本要能够读取到
                 $path = self::$links[$k]['BT_backup'];
+                $torrentPath = '';
                 // 待删除种子
                 $torrentDelete = '';
                 // 获取种子原文件的实际路径
@@ -637,7 +642,6 @@ class AutoReseed
                         $torrentDelete = $info_hash;
                         break;
                     default:
-                        # code...
                         break;
                 }
                 if (!is_file($torrentPath)) {
@@ -659,7 +663,6 @@ class AutoReseed
                     if (isset($configALL['default']['move']['skip_check']) && $configALL['default']['move']['skip_check'] === 1) {
                         $extra_options['skip_checking'] = "true";    //转移成功，跳校验
                     }
-                } else {
                 }
 
                 // 添加转移任务：成功返回：true
@@ -725,7 +728,7 @@ class AutoReseed
         }
         // 历史添加检测
         if (is_file(self::$cacheHash . $info_hash.'.txt')) {
-            echo '-------当前种子上次辅种已成功添加，已跳过！ '.$_url.PHP_EOL.PHP_EOL;
+            echo '-------当前种子上次辅种已成功添加【'.self::$cacheHash . $info_hash.'】，已跳过！ '.$_url.PHP_EOL.PHP_EOL;
             self::$wechatMsg['reseedPass']++;
             return false;
         }
@@ -795,14 +798,16 @@ class AutoReseed
         }
         return empty($infohash_Dir) ? true : false;
     }
+
     /**
      * 实际路径与相对路径之间互相转换
+     * @param string $path
      * @return string | null        string转换成功
      */
     private static function pathReplace($path = '')
     {
         global $configALL;
-        $type = $configALL['default']['move']['type'];
+        $type = intval($configALL['default']['move']['type']);
         $pathArray = $configALL['default']['move']['path'];
         $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
         switch ($type) {
@@ -844,11 +849,13 @@ class AutoReseed
         global $configALL;
         $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
         // 转移过滤器、选择器 David/2020年7月11日
-        $path_filter = isset($configALL['default']['move']['path_filter']) && !empty($configALL['default']['move']['path_filter']) ? $configALL['default']['move']['path_filter'] : null;
-        $path_selector = isset($configALL['default']['move']['path_selector']) && !empty($configALL['default']['move']['path_selector']) ? $configALL['default']['move']['path_selector'] : null;
+        $path_filter = !empty($configALL['default']['move']['path_filter']) ? $configALL['default']['move']['path_filter'] : null;
+        $path_selector = !empty($configALL['default']['move']['path_selector']) ? $configALL['default']['move']['path_selector'] : null;
         if (\is_null($path_filter) && \is_null($path_selector)) {
             return false;
-        } elseif (\is_null($path_filter)) {
+        }
+
+        if (\is_null($path_filter)) {
             //选择器
             if (\is_array($path_selector)) {
                 foreach ($path_selector as $pathName) {
@@ -909,7 +916,7 @@ class AutoReseed
             }
             if (empty($configALL[$site]['url_join'])) {
                 $configALL[$site]['url_join'] = array();
-                if (in_array($site, array('m-team','mocat','hdbd'))) {
+                if (in_array($site, array('m-team','hdbd'))) {
                     if (isset($configALL[$site]['ip_type'])) {
                         $configALL[$site]['url_join'][] = $configALL[$site]['ip_type'].'=1';
                     }

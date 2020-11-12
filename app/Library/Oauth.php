@@ -11,34 +11,38 @@ class Oauth
     // 合作的站点
     public static $sites = ['ourbits','hddolby','hdhome','pthome','chdbits'];
     // 爱语飞飞token
-    public static $token = '';
+    private static $token = '';
     // 合作站点用户id
-    public static $user_id = 0;
+    private static $user_id = 0;
     // 合作站点密钥
-    public static $passkey = '';
+    private static $passkey = '';
     // 合作站名字
-    public static $site = '';
+    private static $site = '';
     // 登录缓存路径
-    public static $SiteLoginCache = ROOT_PATH.DS.'config'.DS.'siteLoginCache_{}.json';
+    private static $SiteLoginCache = ROOT_PATH.DS.'config'.DS.'siteLoginCache_{}.json';
     /**
      * 从配置文件内读取爱语飞飞token作为鉴权参数
      */
     public static function getSign()
     {
         global $configALL;
-        // 爱语飞飞
-        $token = isset($configALL['iyuu.cn']) && $configALL['iyuu.cn'] ? $configALL['iyuu.cn'] : '';
-        if (empty($token) || strlen($token)<46) {
-            echo "缺少辅种接口请求参数：爱语飞飞token \n";
-            echo "请访问https://iyuu.cn 用微信扫码申请，并填入配置文件config.php内。\n\n";
+        $token = empty($configALL['iyuu.cn'])  ? '' : $configALL['iyuu.cn'];
+        if (empty($token) || strlen($token) < 46) {
+            echo "缺少辅种接口请求参数：爱语飞飞token ".PHP_EOL;
+            echo "请访问https://iyuu.cn 用微信扫码申请，并填入配置文件config.php内。".PHP_EOL.PHP_EOL;
             exit(1);
         }
         return $token;
     }
+
     /**
      * 用户注册与登录
      * 作用：在服务器端实现微信用户与合作站点用户id的关联
      * 参数：爱语飞飞token + 合作站点用户id + sha1(合作站点密钥passkey) + 合作站点标识
+     * @param string $apiUrl
+     * @param array $sites
+     * @return bool
+     * @throws \ErrorException
      */
     public static function login($apiUrl = '', $sites = array())
     {

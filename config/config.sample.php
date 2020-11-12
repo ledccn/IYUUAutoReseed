@@ -177,23 +177,6 @@ return array(
         'url_replace' => array(),
         'url_join' => array(),
     ),
-    // MoeCat
-    'moecat'      => array(
-        // 如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）
-        'cookie'        => '',
-        // 如果需要自动辅种，必须配置
-        'passkey'       => '',
-        'id' => 0,					// 用户ID(不是用户名)
-        'url_replace' => array(),
-        'url_join' => array(
-            //'ipv6=1',   // 种子Tracker的IP地址选择 可选：ipv4，ipv6
-            'https=1',
-        ),
-        'limitRule' => array(
-            'count' => 20,      // 每次辅种20个
-            'sleep' => 15,      // 最少休眠15秒
-        ),
-    ),
     // m-team
     'm-team'      => array(
         // 14.m-team的cookie	如果需要用下载免费种脚本，须配置（只是自动辅种，可以不配置此项）

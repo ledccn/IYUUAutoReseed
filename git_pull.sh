@@ -5,5 +5,4 @@ echo $pwddir
 cd $(dirname $0)
 git fetch --all
 git reset --hard origin/master
-git pull
 php ./iyuu.php

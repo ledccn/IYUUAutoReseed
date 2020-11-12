@@ -393,8 +393,9 @@ function sign($timestamp)
 
 /**
  * @brief 分离token中的用户uid
- * token算法：IYUU + uid + T + sha1(openid+time+盐)
- * @param string $token		用户请求token
+ * @desc token算法：IYUU + uid + T + sha1(openid+time+盐)
+ * @param string $token 用户请求token
+ * @return bool|string
  */
 function getUid($token)
 {
