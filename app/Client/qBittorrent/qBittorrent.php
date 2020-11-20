@@ -70,7 +70,27 @@ class qBittorrent extends AbstractClient
         'maindata' => [
             '1' => null,
             '2' => '/api/v2/sync/maindata'
-        ]
+        ],
+        'get_all_category' => [
+            '1' => null,
+            '2' => '/api/v2/categories'
+        ],
+        'add_new_category' => [
+            '1' => null,
+            '2' => '/api/v2/torrents/createCategory'
+        ],
+        'get_all_tags' => [
+            '1' => null,
+            '2' => '/api/v2/tags'
+        ],
+        'create_tags' => [
+            '1' => null,
+            '2' => '/api/v2/torrents/createTags'
+        ],
+        'add_tags' => [
+            '1' => null,
+            '2' => '/api/v2/torrents/addTags'
+        ],
     ];
 
     public function __construct($url='', $username='', $password='', $api_version = 2, $debug = false)
@@ -129,6 +149,7 @@ class qBittorrent extends AbstractClient
             'skip_checking'    =>  true,
             'paused'    =>  true,
             'root_folder'    =>  true,
+            'category' => '',
         )
      *  @return array
      */
@@ -248,6 +269,56 @@ class qBittorrent extends AbstractClient
     private function errorMessage()
     {
         return 'Curl Error Code: ' . $this->curl->error_code . ' (' . $this->curl->response . ')';
+    }
+    private function getTags()
+    {
+        $this->curl->get($this->url . $this->endpoints['get_all_tags'][$this->api_version]);
+        if ($this->debug) {
+            var_dump($this->curl->request_headers);
+            var_dump($this->curl->response_headers);
+        }
+        return json_decode($this->curl->response, true);
+    }
+    private function createTags($tags)
+    {
+        $this->curl->post($this->url . $this->endpoints['create_tags'][$this->api_version], array(
+            'tags' => join(',', $tags)
+        ));
+        if ($this->debug) {
+            var_dump($this->curl->request_headers);
+            var_dump($this->curl->response_headers);
+        }
+        return $this->curl->http_status_code == 200;
+    }
+    private function addTags($hashs, $tags)
+    {
+        $this->curl->post($this->url . $this->endpoints['add_tags'][$this->api_version], array(
+            'tags' => join(',', $tags),
+            'hashs' => join('|', $hashs)
+        ));
+        if ($this->debug) {
+            var_dump($this->curl->request_headers);
+            var_dump($this->curl->response_headers);
+        }
+        return $this->curl->http_status_code == 200;
+    }
+    private function ensureTag($hash, $tags)
+    {
+        $curr_tags = $this->getTags();
+        $tags_need_create = array();
+        foreach ($tags as $tag) {
+            if (!in_array($tag, $curr_tags)) {
+                array_push($tags_need_create, $tag);
+            }
+        }
+        if (!$this->createTags($tags_need_create)) {
+            return false;
+        }
+        return $this->addTags(array($hash), $tags);
+    }
+    private function ensurecategory($hash, $category)
+    {
+
     }
     /**
      * 拼接种子urls multipart/form-data

@@ -43,6 +43,8 @@ return array(
             array(
                 'type'	=>	'qBittorrent',	// 支持：transmission、qBittorrent
                 'host'	=>	'http://127.0.0.1:8083',
+                'category' => '', // 辅种任务默认分类
+                'add_site_tag' => false,
                 'username'	=>	'admin',
                 'password'	=>	'',
                 'root_folder'=> 1,   // 创建多文件子目录：0不创建，1创建(下载器默认1)【此处必须与下载器真实配置相同，否则添加任务不会校验！】
