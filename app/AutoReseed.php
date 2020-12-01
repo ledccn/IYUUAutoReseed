@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.9';
+    const VER = '1.10.10';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -102,7 +102,7 @@ class AutoReseed
             'github源码仓库：https://github.com/ledccn/IYUUAutoReseed',
             '教程：https://gitee.com/ledc/IYUUAutoReseed/tree/master/wiki',
             '问答社区：http://wenda.iyuu.cn',
-            '【IYUU自动辅种交流】QQ群：859882209、931954050'.PHP_EOL,
+            '【IYUU自动辅种交流】QQ群：859882209、931954050、924099912'.PHP_EOL,
             '正在连接IYUUAutoReseed服务器，查询支持列表……'.PHP_EOL
         ];
         array_walk($list,function ($v, $k){
