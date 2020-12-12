@@ -131,6 +131,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        // 如果需要辅种，必须配置
+        'rss'       => '',
         'id' => 0,					// 用户ID(不是用户名)
         'url_replace' => array(),
         'url_join' => array(),
@@ -145,6 +147,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        // 如果需要辅种，必须配置
+        'rss'       => '',
         'id' => 0,					// 用户ID(不是用户名)
         'url_replace' => array(),
         'url_join' => array(),
@@ -159,6 +163,8 @@ return array(
         'cookie'        => '',
         // 如果需要自动辅种，必须配置
         'passkey'       => '',
+        // 如果需要辅种，必须配置
+        'rss'       => '',
         'id' => 0,					// 用户ID(不是用户名)
         'url_replace' => array(),
         'url_join' => array(),
