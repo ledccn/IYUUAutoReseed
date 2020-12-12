@@ -8,18 +8,8 @@ use Curl\Curl;
  */
 class Oauth
 {
-    // 合作的站点
-    public static $sites = ['ourbits','hddolby','hdhome','pthome','chdbits'];
-    // 爱语飞飞token
-    private static $token = '';
-    // 合作站点用户id
-    private static $user_id = 0;
-    // 合作站点密钥
-    private static $passkey = '';
-    // 合作站名字
-    private static $site = '';
     // 登录缓存路径
-    private static $SiteLoginCache = ROOT_PATH.DS.'config'.DS.'siteLoginCache_{}.json';
+    const SiteLoginCache = ROOT_PATH.DS.'config'.DS.'siteLoginCache_{}.json';
     /**
      * 从配置文件内读取爱语飞飞token作为鉴权参数
      */
@@ -48,57 +38,64 @@ class Oauth
     {
         global $configALL;
         // 云端下发合作的站点标识
-        self::$sites = $sites ? $sites : self::$sites;
+        if (empty($sites)) {
+            die('云端下发合作站点信息失败，请稍后重试');
+        }
+        $_sites = array_column($sites, 'site');
         $ret = false;
-        self::$token = self::getSign();
-        foreach (self::$sites as $name) {
-            if (is_file(str_replace('{}', $name, self::$SiteLoginCache))) {
+        $token = self::getSign();
+        foreach ($_sites as $k => $site) {
+            if (is_file(str_replace('{}', $site, self::SiteLoginCache))) {
                 // 存在鉴权缓存
                 $ret = true;
                 continue;
             }
-            if (isset($configALL[$name]['passkey']) && $configALL[$name]['passkey'] && isset($configALL[$name]['id']) && $configALL[$name]['id']) {
-                self::$user_id = $configALL[$name]['id'];
-                self::$passkey =  sha1($configALL[$name]['passkey']);     // 避免泄露用户passkey秘钥
-                self::$site = $name;
+            if (isset($configALL[$site]['passkey']) && $configALL[$site]['passkey'] && isset($configALL[$site]['id']) && $configALL[$site]['id']) {
+                $user_id = $configALL[$site]['id'];
+                $passkey =  $configALL[$site]['passkey'];
 
                 $curl = new Curl();
                 $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
                 $data = [
-                    'token'  => self::$token,
-                    'id'     => self::$user_id,
-                    'passkey'=> self::$passkey,
-                    'site'   => self::$site,
+                    'token'  => $token,
+                    'id'     => $user_id,
+                    'passkey'=> sha1($passkey),     // 避免泄露用户passkey秘钥
+                    'site'   => $site,
                 ];
                 $res = $curl->get($apiUrl, $data);
                 p($res->response);
 
                 $rs = json_decode($res->response, true);
-                if (isset($rs['ret']) && $rs['ret'] == 200 && isset($rs['data']['success']) && $rs['data']['success']) {
-                    self::setSiteLoginCache($name, $rs);
+                if (isset($rs['ret']) && ($rs['ret'] === 200) && isset($rs['data']['success']) && $rs['data']['success']) {
+                    self::setSiteLoginCache($site, $rs);
                     $ret = true;
                 } else {
-                    $msg = isset($rs['msg']) && $rs['msg'] ? $rs['msg'] : '远端服务器无响应，请稍后重试！';
-                    $msg = isset($rs['data']['errmsg']) && $rs['data']['errmsg'] ? $rs['data']['errmsg'] : $msg;
+                    $msg = !empty($rs['msg']) ? $rs['msg'] : '远端服务器无响应，请稍后重试！';
+                    $msg = !empty($rs['data']['errmsg']) ? $rs['data']['errmsg'] : $msg;
                     echo $msg . PHP_EOL;
                 }
             } else {
-                echo $name.'合作站点参数配置不完整，请同时填写passkey和用户id。' . PHP_EOL;
+                echo $site.'合作站点参数配置不完整，请同时填写passkey和用户id。' . PHP_EOL;
                 echo '合作站点鉴权配置，请查阅：https://www.iyuu.cn/archives/337/'. PHP_EOL. PHP_EOL;
             }
         }
         return $ret;
     }
+
     /**
      * 写鉴权成功缓存
      * @desc 作用：减少对服务器请求，跳过鉴权提示信息；
+     * @param string $site
+     * @param array $array
+     * @return bool|int
      */
-    private static function setSiteLoginCache($key = '', $array = [])
+    private static function setSiteLoginCache($site = '', $array = [])
     {
         $json = json_encode($array, JSON_UNESCAPED_UNICODE);
-        $myfile = str_replace('{}', $key, self::$SiteLoginCache);
+        $myfile = str_replace('{}', $site, self::SiteLoginCache);
         $file_pointer = @fopen($myfile, "w");
         $worldsnum = @fwrite($file_pointer, $json);
         @fclose($file_pointer);
+        return $worldsnum;
     }
 }

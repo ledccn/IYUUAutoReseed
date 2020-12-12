@@ -100,9 +100,10 @@ class IFile
 
     /**
      * @brief  创建文件夹
-     * @param String $path  路径
-     * @param int    $chmod 文件夹权限
+     * @param String $path 路径
+     * @param int $chmod 文件夹权限
      * @note  $chmod 参数不能是字符串(加引号)，否则linux会出现权限问题
+     * @return bool
      */
     public static function mkdir($path, $chmod=0777)
     {
@@ -113,7 +114,7 @@ class IFile
      * @brief 复制文件
      * @param String $from 源文件路径
      * @param String $to   目标文件路径
-     * @param String $mod  操作模式，c:复制(默认); x:剪切(删除$from文件)
+     * @param String $mode  操作模式，c:复制(默认); x:剪切(删除$from文件)
      * @return bool  操作结果 true:成功; false:失败;
      */
     public static function copy($from, $to, $mode = 'c')
@@ -178,7 +179,7 @@ class IFile
     /**
      * @brief 获取文件类型
      * @param  String $fileName  文件名
-     * @return String $filetype  文件类型
+     * @return String|array $filetype  文件类型
      * @note 如果文件不存在，返回false,如果文件后缀名不在识别列表之内，返回NULL，对于docx及elsx格式文档识别在会出现识别为ZIP格式的错误，这是office2007的bug目前尚未修复，请谨慎使用
      */
     public static function getFileType($fileName)

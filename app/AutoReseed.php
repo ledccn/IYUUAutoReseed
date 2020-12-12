@@ -13,17 +13,19 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.10';
+    const VER = '1.10.12';
     // RPC连接
     private static $links = [];
     // 客户端配置
     private static $clients = [];
     // 站点列表
     private static $sites = [];
+    // 推荐的合作站点
+    private static $recommend = [];
     // 不辅种的站点 'pt','hdchina'
     private static $noReseed = [];
     // cookie检查
-    private static $cookieCheck = ['hdchina','hdcity','hdsky'];
+    private static $cookieCheck = [];
     // 缓存路径
     public static $cacheDir  = TORRENT_PATH.'cache'.DS;
     public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
@@ -36,6 +38,8 @@ class AutoReseed
         'infohash'=> '/api/infohash',
         'hash'    => '/api/hash',
         'notify'  => '/api/notify',
+        'recommendSites' => '/Api/GetRecommendSites',
+        'getSign'   => '/Api/GetSign'
     );
     // curl
     private static $curl = null;
@@ -64,7 +68,11 @@ class AutoReseed
         'torrent_id'=> 0,
         'error'   => '',
     );
-    // 初始化
+
+    /**
+     * 初始化
+     * @throws \ErrorException
+     */
     public static function init()
     {
         global $configALL;
@@ -77,11 +85,18 @@ class AutoReseed
         self::$curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
 
         // 合作站点鉴权绑定
-        Oauth::login(self::$apiUrl . self::$endpoints['login']);
+        $recommend_sites = [];
+        $ret = self::$curl->get(self::$apiUrl . self::$endpoints['recommendSites']);
+        $ret = json_decode($ret->response, true);
+        if (isset($ret['ret']) && $ret['ret'] === 200 && isset($ret['data']['recommend']) && is_array($ret['data']['recommend'])) {
+            $recommend_sites = $ret['data']['recommend'];
+            self::$recommend = array_column($recommend_sites, 'site');  // init
+        }
+        Oauth::login(self::$apiUrl . self::$endpoints['login'], $recommend_sites);
 
         // 显示支持站点列表
         self::ShowTableSites();
-        self::$clients = empty($configALL['default']['clients']) ? [] : $configALL['default']['clients'];
+        self::$clients = empty($configALL['default']['clients']) ? [] : $configALL['default']['clients'];   // init
 
         // 递归删除上次历史记录
         IFile::rmdir(self::$cacheDir, true);
@@ -92,6 +107,7 @@ class AutoReseed
         // 连接全局客户端
         self::links();
     }
+
     /**
      * 显示支持站点列表
      */
@@ -105,13 +121,12 @@ class AutoReseed
             '【IYUU自动辅种交流】QQ群：859882209、931954050、924099912'.PHP_EOL,
             '正在连接IYUUAutoReseed服务器，查询支持列表……'.PHP_EOL
         ];
-        array_walk($list,function ($v, $k){
+        array_walk($list, function ($v, $k) {
             echo $v.PHP_EOL;
         });
         $res = self::$curl->get(self::$apiUrl.self::$endpoints['sites'].'?sign='.Oauth::getSign().'&version='.self::VER);
         $rs = json_decode($res->response, true);
         $sites = empty($rs['data']['sites']) ? [] : $rs['data']['sites'];
-        // 数据写入本地
         if (empty($sites)) {
             if (!empty($rs['msg'])) {
                 die($rs['msg'].PHP_EOL);
@@ -139,11 +154,12 @@ class AutoReseed
         echo($table->render());
 
         // 生成IYUUPTT使用的JSON
-        $json = array_column($sites, null, 'site');
-        ksort($json);
+        $_sites = array_column($sites, null, 'site');
+        ksort($_sites);
         $sitesConfig = ROOT_PATH.DS.'config'.DS.'sites.json';
-        file_put_contents($sitesConfig, \json_encode($json, JSON_UNESCAPED_UNICODE));
+        file_put_contents($sitesConfig, \json_encode($_sites, JSON_UNESCAPED_UNICODE));
     }
+
     /**
      * 连接远端RPC下载器
      */
@@ -153,7 +169,7 @@ class AutoReseed
             // 跳过未配置的客户端
             if (empty($v['username']) || empty($v['password'])) {
                 self::$links[$k] = array();
-                echo "clients_".$k." 用户名或密码未配置，已跳过".PHP_EOL.PHP_EOL;
+                echo "clients_".$k." 用户名或密码未配置，已跳过！".PHP_EOL.PHP_EOL;
                 continue;
             }
             try {
@@ -167,7 +183,7 @@ class AutoReseed
                 print $v['type'].'：'.$v['host']." Rpc连接 [{$result}]".PHP_EOL;
                 // 检查转移做种 (self::$move为空，移动配置为真)
                 if (is_null(self::$move) && !empty($v['move'])) {
-                    self::$move = array($k,$v['move']);
+                    self::$move = array($k, $v['move']);
                 }
             } catch (\Exception $e) {
                 die('[连接错误] '. $v['host'] . $e->getMessage() . PHP_EOL);
@@ -250,18 +266,20 @@ class AutoReseed
         }
         return false;
     }
+
     /**
      * 辅种或转移，总入口
      */
     public static function call()
     {
-        if (self::$move!==null) {
+        if (self::$move !== null) {
             self::move();
         }
         self::reseed();
         self::wechatMessage();
         exit(self::$ExitCode);
     }
+
     /**
      * IYUUAutoReseed辅种
      */
@@ -315,7 +333,7 @@ class AutoReseed
                 continue;
             }
             // 判断返回值
-            if (isset($res['ret']) && $res['ret']==200) {
+            if (isset($res['ret']) && $res['ret'] === 200) {
                 echo "clients_".$k." 辅种数据下载成功！！！".PHP_EOL.PHP_EOL;
                 echo '【提醒】未配置passkey的站点都会跳过！'.PHP_EOL.PHP_EOL;
             } else {
@@ -348,6 +366,21 @@ class AutoReseed
                     // 种子页规则
                     $download_page = str_replace('{}', $torrent_id, self::$sites[$sid]['download_page']);
 
+                    // 辅种检查规则   2020年12月12日新增
+                    if (!is_array(self::$sites[$sid]['reseed_check'])) {
+                        // 初始化
+                        if (!empty(self::$sites[$sid]['reseed_check'])) {
+                            $reseed_check = explode(',', self::$sites[$sid]['reseed_check']);
+                            array_walk($reseed_check, function (&$v, $k){
+                                $v = trim($v);
+                            });
+                            self::$sites[$sid]['reseed_check'] = $reseed_check;
+                        } else {
+                            self::$sites[$sid]['reseed_check'] = [];
+                        }
+                    }
+                    $reseed_check = self::$sites[$sid]['reseed_check']; // 赋值
+
                     // 临时种子连接（会写入辅种日志）
                     $_url = $protocol . self::$sites[$sid]['base_url']. '/' .$download_page;
                     /**
@@ -359,7 +392,7 @@ class AutoReseed
                     /**
                      * 种子推送方式区分
                      */
-                    if (in_array($siteName, self::$cookieCheck)) {
+                    if (in_array('cookie', $reseed_check)) {
                         // 特殊站点：种子元数据推送给下载器
                         $reseedPass = false;    // 标志：跳过辅种
                         $cookie = trim($configALL[$siteName]['cookie']);
@@ -705,20 +738,24 @@ class AutoReseed
         $torrent_id = $torrent['torrent_id'];
         $info_hash = $torrent['info_hash'];
         $siteName = self::$sites[$sid]['site'];
-
-        // passkey检测 [优先检查passkey，排除用户没有的站点]
-        if (empty($configALL[$siteName]) || empty($configALL[$siteName]['passkey'])) {
-            //echo '-------因当前' .$siteName. "站点未设置passkey，已跳过！！".PHP_EOL.PHP_EOL;
-            self::$wechatMsg['reseedSkip']++;
-            return false;
-        } else {
-            echo "clients_".$k."正在辅种... {$siteName}".PHP_EOL;
-        }
-        // cookie检测
-        if (in_array($siteName, self::$cookieCheck) && empty($configALL[$siteName]['cookie'])) {
-            echo '-------因当前' .$siteName. '站点未设置cookie，已跳过！！' .PHP_EOL.PHP_EOL;
-            self::$wechatMsg['reseedSkip']++;
-            return false;
+        $reseed_check = self::$sites[$sid]['reseed_check'];
+        if ($reseed_check && is_array($reseed_check)) {
+            // 循环检查所有项目
+            foreach ($reseed_check as $item) {
+                echo "clients_".$k."正在循环检查所有项目... {$siteName}".PHP_EOL;
+                $item = ($item === 'uid' ? 'id' : $item);   // 兼容性处理
+                if (empty($configALL[$siteName]) || empty($configALL[$siteName][$item])) {
+                    $msg =  '-------因当前' .$siteName. "站点未设置".$item."，已跳过！！".PHP_EOL.PHP_EOL;
+                    echo $msg;
+                    // 调试代码：begin
+                    if ($siteName == 'pthome') {
+                        sleepIYUU(10, $msg);
+                    }
+                    // 调试代码：end
+                    self::$wechatMsg['reseedSkip']++;
+                    return false;
+                }
+            }
         }
         // 重复做种检测
         if (isset($infohash_Dir[$info_hash])) {
@@ -909,6 +946,8 @@ class AutoReseed
     private static function getTorrentUrl($site = '', $url = '')
     {
         global $configALL;
+        // 注入合作站种子的URL规则
+        $url = self::getRecommendTorrentUrl($site, $url);
         // 兼容旧配置，进行补全
         if (isset($configALL[$site]['passkey']) && $configALL[$site]['passkey']) {
             if (empty($configALL[$site]['url_replace'])) {
@@ -934,6 +973,102 @@ class AutoReseed
         }
         return $url;
     }
+
+    /**
+     * 注入合作站种子的URL规则
+     * @param string $site
+     * @param string $url
+     * @return string
+     */
+    private static function getRecommendTorrentUrl($site = '', $url = '')
+    {
+        global $configALL;
+        if (in_array($site, self::$recommend)) {
+            $now = time();
+            $uid = isset($configALL[$site]['id']) ? $configALL[$site]['id'] : $now;
+            $pk = isset($configALL[$site]['passkey']) ? trim($configALL[$site]['passkey']) : $now;
+
+            $signString = self::getDownloadTorrentSign($site);
+            switch ($site) {
+                case 'pthome':
+                case 'hdhome':
+                case 'hddolby':
+                    //兼容性处理：新旧规则
+                    if (isset($configALL[$site]['rss']) && $configALL[$site]['rss']) {
+                        $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
+                        $pk = $configALL[$site]['rss'];    // 专用下载hash
+                    }
+                    break;
+                case 'ourbits':
+                    // 兼容性处理：新旧规则
+                    if (isset($configALL[$site]['id']) && $configALL[$site]['id']) {
+                        $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
+                    }
+                    // TODO... 注入流控规则 60S/20pcs、3600S/100pcs
+                    break;
+                default:
+                    break;
+            }
+            // 兼容性处理：新旧规则
+            if (isset($configALL[$site]['new']) && $configALL[$site]['new']) {
+                $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
+            }
+            // 注入替换规则
+            $replace = [
+                '{uid}' => $uid,
+                '{hash}'=> md5(trim($pk)),
+                '{passkey}' => $pk,      // 兼容性处理
+            ];
+            $configALL[$site]['url_replace'] = $replace;
+            // 注入拼接规则
+            if (empty($configALL[$site]['url_join'])) {
+                $configALL[$site]['url_join'] = array();
+            }
+            $configALL[$site]['url_join'][] = $signString;
+        }
+
+        return $url;
+    }
+
+    /**
+     * 获取下载合作站种子的签名
+     * @param string $site
+     * @return string
+     */
+    private static function getDownloadTorrentSign($site = '')
+    {
+        global $configALL;
+        $signKEY = 'signString';
+        $expireKEY = 'signExpire';
+        if (isset($configALL[$site][$signKEY]) && isset($configALL[$site][$expireKEY]) && ($configALL[$site][$expireKEY] > time())) {
+            return $configALL[$site][$signKEY];     // 缓存在有效期内，直接返回
+        }
+
+        // 请求IYUU获取签名
+        $data = [
+            'sign' => $configALL['iyuu.cn'],
+            'timestamp' => time(),
+            'version'   => self::VER,
+            'site'      => $site,
+            'uid'       => $configALL[$site]['id']
+        ];
+        $res = self::$curl->get(self::$apiUrl . self::$endpoints['getSign'], $data);
+        $ret = json_decode($res->response, true);
+        $signString = '';
+        if (isset($ret['ret']) && $ret['ret'] === 200) {
+            if (isset($ret['data'][$signKEY]) && isset($ret['data']['expire'])) {
+                $signString = $ret['data'][$signKEY];
+                $expire     = $ret['data']['expire'];
+                $configALL[$site][$signKEY]     = $signString;
+                $configALL[$site][$expireKEY]   = time() + $expire - 60;     // 提前60秒过期
+            }
+        } else {
+            echo $site.' 很抱歉，请求IYUU辅种签名时失败啦，请稍后重新尝试辅种！'.PHP_EOL;
+        }
+
+        return $signString;
+    }
+
     /**
      * 微信模板消息拼接方法
      * @return string           发送情况，json
@@ -942,7 +1077,7 @@ class AutoReseed
     {
         global $configALL;
         if (isset($configALL['notify_on_change']) && $configALL['notify_on_change'] && self::$wechatMsg['reseedSuccess'] == 0 && self::$wechatMsg['reseedError'] == 0) {
-            return;
+            return '';
         }
         $br = PHP_EOL;
         $text = 'IYUU自动辅种-统计报表';
