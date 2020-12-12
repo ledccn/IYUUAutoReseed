@@ -987,6 +987,7 @@ class AutoReseed
             $now = time();
             $uid = isset($configALL[$site]['id']) ? $configALL[$site]['id'] : $now;
             $pk = isset($configALL[$site]['passkey']) ? trim($configALL[$site]['passkey']) : $now;
+            $hash = md5(trim($pk));
 
             $signString = self::getDownloadTorrentSign($site);
             switch ($site) {
@@ -996,11 +997,11 @@ class AutoReseed
                     //兼容性处理：新旧规则
                     if (isset($configALL[$site]['rss']) && $configALL[$site]['rss']) {
                         $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
-                        $pk = $configALL[$site]['rss'];    // 专用下载hash
+                        $hash = $configALL[$site]['rss'];    // 直接提交专用下载hash
                     }
                     break;
                 case 'ourbits':
-                    // 兼容性处理：新旧规则
+                    // 兼容旧版本的IYUU
                     if (isset($configALL[$site]['id']) && $configALL[$site]['id']) {
                         $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
                     }
@@ -1009,15 +1010,11 @@ class AutoReseed
                 default:
                     break;
             }
-            // 兼容性处理：新旧规则
-            if (isset($configALL[$site]['new']) && $configALL[$site]['new']) {
-                $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
-            }
             // 注入替换规则
             $replace = [
                 '{uid}' => $uid,
-                '{hash}'=> md5(trim($pk)),
-                '{passkey}' => $pk,      // 兼容性处理
+                '{hash}'=> $hash,
+                '{passkey}' => $pk,      // 兼容旧版本的IYUU
             ];
             $configALL[$site]['url_replace'] = $replace;
             // 注入拼接规则
