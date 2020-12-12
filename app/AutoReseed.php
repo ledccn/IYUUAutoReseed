@@ -747,11 +747,6 @@ class AutoReseed
                 if (empty($configALL[$siteName]) || empty($configALL[$siteName][$item])) {
                     $msg =  '-------因当前' .$siteName. "站点未设置".$item."，已跳过！！".PHP_EOL.PHP_EOL;
                     echo $msg;
-                    // 调试代码：begin
-                    if ($siteName == 'pthome') {
-                        sleepIYUU(10, $msg);
-                    }
-                    // 调试代码：end
                     self::$wechatMsg['reseedSkip']++;
                     return false;
                 }
@@ -1047,7 +1042,7 @@ class AutoReseed
             'timestamp' => time(),
             'version'   => self::VER,
             'site'      => $site,
-            'uid'       => $configALL[$site]['id']
+            'uid'       => isset($configALL[$site]['id']) ? $configALL[$site]['id'] : 0,
         ];
         $res = self::$curl->get(self::$apiUrl . self::$endpoints['getSign'], $data);
         $ret = json_decode($res->response, true);
@@ -1060,7 +1055,7 @@ class AutoReseed
                 $configALL[$site][$expireKEY]   = time() + $expire - 60;     // 提前60秒过期
             }
         } else {
-            echo $site.' 很抱歉，请求IYUU辅种签名时失败啦，请稍后重新尝试辅种！'.PHP_EOL;
+            echo $site.' 很抱歉，请求IYUU辅种签名时失败啦，请稍后重新尝试辅种！详情：'.$ret['msg'].PHP_EOL;
         }
 
         return $signString;
