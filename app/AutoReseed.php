@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.12';
+    const VER = '1.10.13';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -22,10 +22,8 @@ class AutoReseed
     private static $sites = [];
     // 推荐的合作站点
     private static $recommend = [];
-    // 不辅种的站点 'pt','hdchina'
+    // 不辅种的站点
     private static $noReseed = [];
-    // cookie检查
-    private static $cookieCheck = [];
     // 缓存路径
     public static $cacheDir  = TORRENT_PATH.'cache'.DS;
     public static $cacheHash = TORRENT_PATH.'cachehash'.DS;
@@ -371,7 +369,7 @@ class AutoReseed
                         // 初始化
                         if (!empty(self::$sites[$sid]['reseed_check'])) {
                             $reseed_check = explode(',', self::$sites[$sid]['reseed_check']);
-                            array_walk($reseed_check, function (&$v, $k){
+                            array_walk($reseed_check, function (&$v, $k) {
                                 $v = trim($v);
                             });
                             self::$sites[$sid]['reseed_check'] = $reseed_check;
