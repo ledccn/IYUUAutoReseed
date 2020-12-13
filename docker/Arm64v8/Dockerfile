@@ -1,3 +1,4 @@
+# FROM arm64v8/alpine
 # FROM arm64v8/alpine:latest
 FROM arm64v8/alpine:3.12
 
@@ -20,8 +21,9 @@ RUN set -ex \
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man \
     && echo "${TZ}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && echo '2 */6 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root
-    
-WORKDIR /IYUU
+    && echo '3 */6 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
+    && echo "${cron} /usr/bin/php /IYUU/iyuu.php >/dev/null 2>&1" >>  /etc/crontabs/root \
+    && echo '* * * * * echo "iyuu.cn" >/dev/null 2>&1' >>  /etc/crontabs/root
 
-CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php ; /usr/sbin/crond ; (crontab -l ;echo \"$cron /usr/bin/php /IYUU/iyuu.php &> /dev/null\") | crontab - ; tail -f /dev/null"]
+WORKDIR /IYUU
+CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php; /usr/sbin/crond; tail -f /dev/null"]

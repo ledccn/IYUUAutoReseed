@@ -1,4 +1,5 @@
 #FROM alpine:latest
+#FROM alpine:3.12
 FROM alpine:3.8
 #FROM swoft/alphp:base
 #FROM swoft/alphp:cli
@@ -18,7 +19,7 @@ ARG app_env=prod
 
 ENV APP_ENV=${app_env:-"prod"} \
     TIMEZONE=${timezone:-"Asia/Shanghai"} \
-    cron="9 11 * * 0"
+    cron="0 10 * * 0"
 
 ##
 # ---------- building ----------
@@ -26,7 +27,7 @@ ENV APP_ENV=${app_env:-"prod"} \
 
 RUN set -ex \
         # change apk source repo
-        # && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
+        #&& sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
         && apk update \
         && apk add --no-cache \
         # Install base packages ('ca-certificates' will install 'nghttp2-libs')
@@ -62,6 +63,7 @@ RUN set -ex \
         # php7-pdo_mysql \
         # php7-pdo_sqlite \
         # php7-phar \
+        # php7-pcntl \
         # php7-posix \
         # php7-redis \
         php7-simplexml \
@@ -75,10 +77,10 @@ RUN set -ex \
         # php7-tokenizer \
         php7-zip \
         # php7-zlib \
-        php7-xml \        
-        && git clone https://gitee.com/ledc/IYUUAutoReseed.git /var/www \
-        && cp /var/www/config/config.sample.php /var/www/config/config.php \
-        && ln -sf /var/www/config/config.php /config.php \
+        php7-xml \
+        && git clone https://gitee.com/ledc/IYUUAutoReseed.git /IYUU \
+        && cp /IYUU/config/config.sample.php /IYUU/config/config.php \
+        && ln -sf /IYUU/config/config.php /config.php \
         && apk del --purge *-dev \
         && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/share/php7 \
         #  ---------- some config,clear work ----------
@@ -93,7 +95,8 @@ RUN set -ex \
         # - config timezone
         && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
         && echo "${TIMEZONE}" > /etc/timezone \
-        && echo '2 */5 * * * cd /var/www && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
+        && echo '2 */5 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
+        && echo "${cron} /usr/bin/php /IYUU/iyuu.php &> /dev/null" >>  /etc/crontabs/root \
         # ---------- some config work ----------
         # - ensure 'www-data' user exists(82 is the standard uid/gid for "www-data" in Alpine)
         # && addgroup -g 82 -S ${add_user} \
@@ -104,7 +107,7 @@ RUN set -ex \
         && echo -e "\033[42;37m Build Completed :).\033[0m\n"
 
 EXPOSE 9000
-# VOLUME ["/var/www", "/data"]
-WORKDIR /var/www
+# VOLUME ["/IYUU", "/data"]
+WORKDIR /IYUU
 
-CMD ["sh", "-c", "/usr/bin/php /var/www/iyuu.php ; /usr/sbin/crond ; (crontab -l ;echo \"$cron /usr/bin/php /var/www/iyuu.php &> /dev/null\") | crontab - ; tail -f /dev/null"]
+CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php; /usr/sbin/crond; tail -f /dev/null"]
