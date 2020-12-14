@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.14';
+    const VER = '1.10.15';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -946,15 +946,6 @@ class AutoReseed
             if (empty($configALL[$site]['url_replace'])) {
                 $configALL[$site]['url_replace'] = array('{passkey}' => trim($configALL[$site]['passkey']));
             }
-            if (empty($configALL[$site]['url_join'])) {
-                $configALL[$site]['url_join'] = array();
-                if (in_array($site, array('m-team','hdbd'))) {
-                    if (isset($configALL[$site]['ip_type'])) {
-                        $configALL[$site]['url_join'][] = $configALL[$site]['ip_type'].'=1';
-                    }
-                    $configALL[$site]['url_join'][] = 'https=1';
-                }
-            }
         }
         // 通用操作：替换
         if (isset($configALL[$site]['url_replace']) && $configALL[$site]['url_replace']) {
@@ -982,7 +973,7 @@ class AutoReseed
             $pk = isset($configALL[$site]['passkey']) ? trim($configALL[$site]['passkey']) : $now;
             $hash = md5(trim($pk));
 
-            $signString = self::getDownloadTorrentSign($site);
+            $signString = self::getDownloadTorrentSign($site);  // 检查签名有效期，如果过期获取新的签名
             switch ($site) {
                 case 'pthome':
                 case 'hdhome':
@@ -1003,6 +994,7 @@ class AutoReseed
                 default:
                     break;
             }
+
             // 注入替换规则
             $replace = [
                 '{uid}' => $uid,
@@ -1010,11 +1002,20 @@ class AutoReseed
                 '{passkey}' => $pk,      // 兼容旧版本的IYUU
             ];
             $configALL[$site]['url_replace'] = $replace;
+
             // 注入拼接规则
             if (empty($configALL[$site]['url_join'])) {
-                $configALL[$site]['url_join'] = array();
+                $configALL[$site]['runtime_url_join'] = [];      //保存用户配置规则
+                $configALL[$site]['url_join'] = array($signString);
+            } else {
+                // 用户已配置过url_join 1.先保存用户原来的规则；2.恢复规则；3.注入签名规则
+                if (!isset($configALL[$site]['runtime_url_join'])) {
+                    $configALL[$site]['runtime_url_join'] = $configALL[$site]['url_join'];      //保存用户配置规则
+                } else {
+                    $configALL[$site]['url_join'] = $configALL[$site]['runtime_url_join'];      //恢复用户配置规则
+                }
+                $configALL[$site]['url_join'][] = $signString;
             }
-            $configALL[$site]['url_join'][] = $signString;
         }
 
         return $url;
@@ -1022,6 +1023,7 @@ class AutoReseed
 
     /**
      * 获取下载合作站种子的签名
+     * @descr 检查签名有效期，如果过期将获取新的签名
      * @param string $site
      * @return string
      */
