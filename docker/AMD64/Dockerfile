@@ -19,7 +19,7 @@ ARG app_env=prod
 
 ENV APP_ENV=${app_env:-"prod"} \
     TIMEZONE=${timezone:-"Asia/Shanghai"} \
-    cron="0 10 * * 0"
+    cron="8 14 * * *"
 
 ##
 # ---------- building ----------
@@ -107,7 +107,7 @@ RUN set -ex \
         # && chown -R ${add_user}:${add_user} /data \
         && echo -e "\033[42;37m Build Completed :).\033[0m\n"
 
-EXPOSE 9000
+# EXPOSE 9000
 # VOLUME ["/IYUU", "/data"]
 WORKDIR /IYUU
 

@@ -4,7 +4,7 @@ FROM arm64v8/alpine:3.12
 
 ENV TZ Asia/Shanghai
 
-ENV cron="0 9 * * 0"
+ENV cron="3 15 * * *"
 
 RUN set -ex \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
@@ -21,9 +21,9 @@ RUN set -ex \
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man \
     && echo "${TZ}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    # && echo '* * * * * echo "iyuu.cn" >/dev/null 2>&1' >>  /etc/crontabs/root \
     && echo '3 */6 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
-    && echo "${cron} /usr/bin/php /IYUU/iyuu.php >/dev/null 2>&1" >>  /etc/crontabs/root \
-    && echo '* * * * * echo "iyuu.cn" >/dev/null 2>&1' >>  /etc/crontabs/root
+    && echo "${cron} /usr/bin/php /IYUU/iyuu.php >/dev/null 2>&1" >>  /etc/crontabs/root
 
 WORKDIR /IYUU
 CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php; /usr/sbin/crond; tail -f /dev/null"]
