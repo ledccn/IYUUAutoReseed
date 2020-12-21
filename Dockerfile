@@ -96,7 +96,7 @@ RUN set -ex \
         && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
         && echo "${TIMEZONE}" > /etc/timezone \
         && echo '2 */5 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
-        && echo "${cron} /usr/bin/php /IYUU/iyuu.php &> /dev/null" >>  /etc/crontabs/root \
+        #&& echo "${cron} /usr/bin/php /IYUU/iyuu.php &> /dev/null" >>  /etc/crontabs/root \
         # ---------- some config work ----------
         # - ensure 'www-data' user exists(82 is the standard uid/gid for "www-data" in Alpine)
         # && addgroup -g 82 -S ${add_user} \
@@ -109,5 +109,4 @@ RUN set -ex \
 # EXPOSE 9000
 # VOLUME ["/IYUU", "/data"]
 WORKDIR /IYUU
-
-CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php; /usr/sbin/crond; tail -f /dev/null"]
+ENTRYPOINT ["/IYUU/docker/entrypoint.sh"]

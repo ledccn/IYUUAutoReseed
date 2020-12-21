@@ -19,7 +19,7 @@ ARG app_env=prod
 
 ENV APP_ENV=${app_env:-"prod"} \
     TIMEZONE=${timezone:-"Asia/Shanghai"} \
-    cron="8 14 * * *"
+    cron="3 11 * * *"
 
 ##
 # ---------- building ----------
@@ -27,8 +27,7 @@ ENV APP_ENV=${app_env:-"prod"} \
 
 RUN set -ex \
         # change apk source repo
-        && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
-        # && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.cn/' /etc/apk/repositories \
+        #&& sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
         && apk update \
         && apk add --no-cache \
         # Install base packages ('ca-certificates' will install 'nghttp2-libs')
@@ -47,7 +46,7 @@ RUN set -ex \
         # php7-common \
         # php7-bcmath \
         php7-curl \
-        # php7-ctype \        
+        # php7-ctype \
         php7-dom \
         # php7-fileinfo \
         # php7-gettext \
@@ -78,7 +77,7 @@ RUN set -ex \
         # php7-tokenizer \
         php7-zip \
         # php7-zlib \
-        php7-xml \        
+        php7-xml \
         && git clone https://gitee.com/ledc/IYUUAutoReseed.git /IYUU \
         && cp /IYUU/config/config.sample.php /IYUU/config/config.php \
         && ln -sf /IYUU/config/config.php /config.php \
@@ -97,7 +96,7 @@ RUN set -ex \
         && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
         && echo "${TIMEZONE}" > /etc/timezone \
         && echo '2 */5 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
-        && echo "${cron} /usr/bin/php /IYUU/iyuu.php &> /dev/null" >>  /etc/crontabs/root \
+        #&& echo "${cron} /usr/bin/php /IYUU/iyuu.php &> /dev/null" >>  /etc/crontabs/root \
         # ---------- some config work ----------
         # - ensure 'www-data' user exists(82 is the standard uid/gid for "www-data" in Alpine)
         # && addgroup -g 82 -S ${add_user} \
@@ -110,5 +109,4 @@ RUN set -ex \
 # EXPOSE 9000
 # VOLUME ["/IYUU", "/data"]
 WORKDIR /IYUU
-
-CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php; /usr/sbin/crond; tail -f /dev/null"]
+ENTRYPOINT ["/IYUU/docker/entrypoint.sh"]

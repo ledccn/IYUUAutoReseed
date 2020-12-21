@@ -23,7 +23,8 @@ RUN set -ex \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
     # && echo '* * * * * echo "iyuu.cn" >/dev/null 2>&1' >>  /etc/crontabs/root \
     && echo '3 */6 * * * cd /IYUU && git fetch --all && git reset --hard origin/master' >> /etc/crontabs/root \
-    && echo "${cron} /usr/bin/php /IYUU/iyuu.php >/dev/null 2>&1" >>  /etc/crontabs/root
+    # && echo "${cron} /usr/bin/php /IYUU/iyuu.php >/dev/null 2>&1" >>  /etc/crontabs/root \
+    && echo -e "\033[42;37m Build Completed :).\033[0m\n"
 
 WORKDIR /IYUU
-CMD ["sh", "-c", "/usr/bin/php /IYUU/iyuu.php; /usr/sbin/crond; tail -f /dev/null"]
+ENTRYPOINT ["/IYUU/docker/entrypoint.sh"]
