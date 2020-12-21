@@ -81,7 +81,8 @@ RUN set -ex \
         && git clone https://gitee.com/ledc/IYUUAutoReseed.git /IYUU \
         && cp /IYUU/config/config.sample.php /IYUU/config/config.php \
         && ln -sf /IYUU/config/config.php /config.php \
-        && chmod -R 777 /IYUU/docker/entrypoint.sh \
+        && cp /IYUU/docker/entrypoint.sh /entrypoint.sh \
+        && chmod -R 777 /entrypoint.sh \
         && apk del --purge *-dev \
         && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/share/php7 \
         #  ---------- some config,clear work ----------
@@ -110,4 +111,4 @@ RUN set -ex \
 # EXPOSE 9000
 # VOLUME ["/IYUU", "/data"]
 WORKDIR /IYUU
-ENTRYPOINT ["/IYUU/docker/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
