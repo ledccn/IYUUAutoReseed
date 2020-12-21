@@ -81,6 +81,7 @@ RUN set -ex \
         && git clone https://gitee.com/ledc/IYUUAutoReseed.git /IYUU \
         && cp /IYUU/config/config.sample.php /IYUU/config/config.php \
         && ln -sf /IYUU/config/config.php /config.php \
+        && chmod -R 777 /IYUU/docker/entrypoint.sh \
         && apk del --purge *-dev \
         && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/share/php7 \
         #  ---------- some config,clear work ----------
