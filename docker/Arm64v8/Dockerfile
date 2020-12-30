@@ -18,7 +18,7 @@ RUN set -ex \
     && cp /IYUU/config/config.sample.php /IYUU/config/config.php \
     && ln -sf /IYUU/config/config.php /config.php \
     && cp /IYUU/docker/entrypoint.sh /entrypoint.sh \
-    && chmod -R 777 /entrypoint.sh \
+    && chmod +x /entrypoint.sh \
     && apk del --purge *-dev \
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man \
     && echo "${TZ}" > /etc/timezone \
