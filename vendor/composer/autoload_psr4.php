@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'IYUU\\Client\\' => array($vendorDir . '/ledccn/iyuubittorrentclient/src'),
     'IYUU\\' => array($baseDir . '/app'),
 );

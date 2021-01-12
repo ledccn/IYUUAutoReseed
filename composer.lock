@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "10281f19c929443b7db18d1ab159ec63",
+    "content-hash": "568a690b54981e283a0cc9ee09f5d696",
     "packages": [
         {
             "name": "curl/curl",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-mod/curl.git",
-                "reference": "d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff"
+                "reference": "3ad560b1fc1bbdf5c7681356ab953fb961f255e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-mod/curl/zipball/d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff",
-                "reference": "d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff",
+                "url": "https://api.github.com/repos/php-mod/curl/zipball/3ad560b1fc1bbdf5c7681356ab953fb961f255e5",
+                "reference": "3ad560b1fc1bbdf5c7681356ab953fb961f255e5",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -46,13 +46,13 @@
             ],
             "authors": [
                 {
+                    "name": "php-curl-class",
+                    "homepage": "https://github.com/php-curl-class"
+                },
+                {
                     "name": "Hassan Amouhzi",
                     "email": "hassan@anezi.net",
                     "homepage": "http://hassan.amouhzi.com"
-                },
-                {
-                    "name": "php-curl-class",
-                    "homepage": "https://github.com/php-curl-class"
                 },
                 {
                     "name": "user52",
@@ -65,13 +65,66 @@
                 "curl",
                 "dot"
             ],
-            "time": "2018-12-04T19:47:03+00:00"
+            "time": "2020-03-19T20:07:26+00:00"
+        },
+        {
+            "name": "ledccn/iyuubittorrentclient",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ledccn/IYUUBittorrentClient.git",
+                "reference": "cb59d3380efd8cab7d277eefbc7e2590845bf805"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ledccn/IYUUBittorrentClient/zipball/cb59d3380efd8cab7d277eefbc7e2590845bf805",
+                "reference": "cb59d3380efd8cab7d277eefbc7e2590845bf805",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "curl/curl": "^2.3",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^5.6 | ^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "IYUU\\Client\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "David",
+                    "email": "367013672@qq.com"
+                }
+            ],
+            "description": "实现pt客户端管理的代码库",
+            "homepage": "https://github.com/ledccn/IYUUBittorrentClient",
+            "keywords": [
+                "qbittorrent",
+                "transmission"
+            ],
+            "time": "2021-01-12T06:07:08+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ledccn/iyuubittorrentclient": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -13,7 +13,8 @@
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-curl": "*",
-    "curl/curl": "^2.2"
+    "curl/curl": "^2.2",
+    "ledccn/iyuubittorrentclient": "dev-master"
   },
   "autoload": {
     "psr-4": {

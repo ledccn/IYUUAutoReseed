@@ -13,11 +13,16 @@ class ComposerStaticInitd8553673db02b2a444a853f28e16196e
     public static $prefixLengthsPsr4 = array (
         'I' => 
         array (
+            'IYUU\\Client\\' => 12,
             'IYUU\\' => 5,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'IYUU\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ledccn/iyuubittorrentclient/src',
+        ),
         'IYUU\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',

@@ -1,17 +1,17 @@
 [
     {
         "name": "curl/curl",
-        "version": "2.2.0",
-        "version_normalized": "2.2.0.0",
+        "version": "2.3.0",
+        "version_normalized": "2.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-mod/curl.git",
-            "reference": "d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff"
+            "reference": "3ad560b1fc1bbdf5c7681356ab953fb961f255e5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-mod/curl/zipball/d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff",
-            "reference": "d22086dd2eee5ca02e4c29b9a5bdf3645bfdbbff",
+            "url": "https://api.github.com/repos/php-mod/curl/zipball/3ad560b1fc1bbdf5c7681356ab953fb961f255e5",
+            "reference": "3ad560b1fc1bbdf5c7681356ab953fb961f255e5",
             "shasum": "",
             "mirrors": [
                 {
@@ -28,7 +28,7 @@
             "phpunit/phpunit": "^5.7",
             "squizlabs/php_codesniffer": "~2.1"
         },
-        "time": "2018-12-04T19:47:03+00:00",
+        "time": "2020-03-19T20:07:26+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -42,13 +42,13 @@
         ],
         "authors": [
             {
+                "name": "php-curl-class",
+                "homepage": "https://github.com/php-curl-class"
+            },
+            {
                 "name": "Hassan Amouhzi",
                 "email": "hassan@anezi.net",
                 "homepage": "http://hassan.amouhzi.com"
-            },
-            {
-                "name": "php-curl-class",
-                "homepage": "https://github.com/php-curl-class"
             },
             {
                 "name": "user52",
@@ -63,18 +63,18 @@
         ]
     },
     {
-        "name": "owner888/phpspider",
-        "version": "v2.1.6",
-        "version_normalized": "2.1.6.0",
+        "name": "ledccn/iyuubittorrentclient",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
-            "url": "https://github.com/owner888/phpspider.git",
-            "reference": "e6021148adec201418c16ba26f39bc013ba5b4d9"
+            "url": "https://github.com/ledccn/IYUUBittorrentClient.git",
+            "reference": "cb59d3380efd8cab7d277eefbc7e2590845bf805"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/owner888/phpspider/zipball/e6021148adec201418c16ba26f39bc013ba5b4d9",
-            "reference": "e6021148adec201418c16ba26f39bc013ba5b4d9",
+            "url": "https://api.github.com/repos/ledccn/IYUUBittorrentClient/zipball/cb59d3380efd8cab7d277eefbc7e2590845bf805",
+            "reference": "cb59d3380efd8cab7d277eefbc7e2590845bf805",
             "shasum": "",
             "mirrors": [
                 {
@@ -84,36 +84,35 @@
             ]
         },
         "require": {
-            "php": ">=5.5.0"
+            "curl/curl": "^2.3",
+            "ext-curl": "*",
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": "^5.6 | ^7.0"
         },
-        "suggest": {
-            "ext-pcntl、ext-redis": "For better performance. "
-        },
-        "time": "2018-08-15T08:04:29+00:00",
+        "time": "2021-01-12T06:07:08+00:00",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
-                "phpspider\\": "./"
+                "IYUU\\Client\\": "src"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "MIT"
+            "GPL-3.0-or-later"
         ],
         "authors": [
             {
-                "name": "Seatle Yang",
-                "email": "seatle@foxmail.com",
-                "homepage": "http://www.phpspider.org",
-                "role": "Developer"
+                "name": "David",
+                "email": "367013672@qq.com"
             }
         ],
-        "description": "The PHPSpider Framework.",
-        "homepage": "http://www.phpspider.org",
+        "description": "实现pt客户端管理的代码库",
+        "homepage": "https://github.com/ledccn/IYUUBittorrentClient",
         "keywords": [
-            "framework",
-            "phpspider"
+            "qbittorrent",
+            "transmission"
         ]
     }
 ]
