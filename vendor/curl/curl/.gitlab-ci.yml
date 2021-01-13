@@ -1,0 +1,121 @@
+stages:
+    - build
+    - test
+
+build-test-server:
+    image: docker:latest
+    stage: build
+    services:
+        - docker:dind
+    script:
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+        - docker build --pull -t "$CI_REGISTRY_IMAGE:server-test" tests/server
+        - docker push "$CI_REGISTRY_IMAGE:server-test"
+    only:
+        changes:
+            - tests/server
+
+tests-php5.6:
+    image: alpine:3.7
+    stage: test
+    services:
+        - name: "$CI_REGISTRY_IMAGE:server-test"
+          alias: server_test
+    script:
+        - apk add --no-cache php5-cli php5-curl php5-gd php5-phar php5-json php5-openssl php5-dom php5-xml php5-zlib
+        - ln -s /usr/bin/php5 /usr/bin/php
+        - php --version
+        - if [ ! -f composer.phar ]; then DOWLOAD_COMPOSER=1 ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php composer-setup.php ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php -r "unlink('composer-setup.php');" ; fi;
+        - php composer.phar install
+        - vendor/bin/phpcs --warning-severity=0 --standard=PSR2 src
+        - vendor/bin/phpunit
+    cache:
+        key: php5.6
+        paths:
+            - vendor
+
+tests-php7.0:
+    image: alpine:3.5
+    stage: test
+    services:
+        - name: "$CI_REGISTRY_IMAGE:server-test"
+          alias: server_test
+    script:
+        - apk add --no-cache php7 php7-curl php7-gd php7-phar php7-json php7-openssl php7-dom php7-mbstring
+        - ln -s /usr/bin/php7 /usr/bin/php
+        - php --version
+        - if [ ! -f composer.phar ]; then DOWLOAD_COMPOSER=1 ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php composer-setup.php ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php -r "unlink('composer-setup.php');" ; fi;
+        - php composer.phar install
+        - vendor/bin/phpcs --warning-severity=0 --standard=PSR2 src
+        - nohup php -S localhost:8000 -t tests/server/php-curl-test > phpd.log 2>&1 &
+        - vendor/bin/phpunit
+    cache:
+        key: php7.0
+        paths:
+            - composer.phar
+            - vendor
+
+tests-php7.1:
+    image: alpine:3.7
+    stage: test
+    services:
+        - name: "$CI_REGISTRY_IMAGE:server-test"
+          alias: server_test
+    script:
+        - apk add --no-cache php7-cli php7-curl php7-gd php7-phar php7-json php7-openssl php7-dom php7-simplexml php7-tokenizer php7-mbstring php7-xml
+        - php --version
+        - if [ ! -f composer.phar ]; then DOWLOAD_COMPOSER=1 ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php composer-setup.php ; fi;
+        - if [ -n "$DOWLOAD_COMPOSER" ] ; then php -r "unlink('composer-setup.php');" ; fi;
+        - php composer.phar install
+        - vendor/bin/phpcs --warning-severity=0 --standard=PSR2 src
+        - nohup php -S localhost:8000 -t tests/server/php-curl-test > phpd.log 2>&1 &
+        - vendor/bin/phpunit
+    cache:
+        key: php7.1
+        paths:
+            - composer.phar
+            - vendor
+
+tests-php7.2:
+    image: alpine:3.9
+    stage: test
+    services:
+        - name: "$CI_REGISTRY_IMAGE:server-test"
+          alias: server_test
+    script:
+        - apk add --no-cache composer php7-cli php7-curl php7-gd php7-phar php7-json php7-openssl php7-dom php7-simplexml php7-tokenizer php7-mbstring php7-xml
+        - php --version
+        - composer install
+        - vendor/bin/phpcs --warning-severity=0 --standard=PSR2 src
+        - nohup php -S localhost:8000 -t tests/server/php-curl-test > phpd.log 2>&1 &
+        - vendor/bin/phpunit
+    cache:
+        key: php7.2
+        paths:
+            - vendor
+
+tests-php7.3:
+    image: alpine:3.11
+    stage: test
+    services:
+        - name: "$CI_REGISTRY_IMAGE:server-test"
+          alias: server_test
+    script:
+        - apk add --no-cache composer php7-cli php7-curl php7-gd php7-phar php7-json php7-openssl php7-dom php7-simplexml php7-tokenizer php7-mbstring php7-xml
+        - php --version
+        - composer install
+        - vendor/bin/phpcs --warning-severity=0 --standard=PSR2 src
+        - nohup php -S localhost:8000 -t tests/server/php-curl-test > phpd.log 2>&1 &
+        - vendor/bin/phpunit
+    cache:
+        key: php7.3
+        paths:
+            - vendor
