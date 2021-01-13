@@ -1,0 +1,26 @@
+{
+    "name": "ledccn/bittorrentclient",
+    "description": "实现对下载服务器管理的代码库",
+    "type": "library",
+    "keywords": ["transmission", "qBittorrent"],
+    "homepage": "https://github.com/ledccn/BittorrentClient",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "David",
+            "email": "367013672@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^5.6 | ^7.0",
+        "curl/curl": "^2.3",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "IYUU\\Client\\": "src"
+        }
+    }
+}

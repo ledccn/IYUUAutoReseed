@@ -13,7 +13,7 @@ use IYUU\Library\Table;
 class AutoReseed
 {
     // 版本号
-    const VER = '1.10.19';
+    const VER = '1.10.21';
     // RPC连接
     private static $links = [];
     // 客户端配置
@@ -298,7 +298,7 @@ class AutoReseed
                 continue;
             }
             echo "正在从下载器 clients_".$k." 获取种子哈希……".PHP_EOL;
-            $hashArray = self::$links[$k]['rpc']->getList();
+            $hashArray = self::$links[$k]['rpc']->all();
             if (empty($hashArray)) {
                 continue;
             }
@@ -618,7 +618,7 @@ class AutoReseed
             }
             echo "正在从下载器 clients_".$k." 获取种子哈希……".PHP_EOL;
             $move = [];     // 客户端做种列表 传址
-            $hashArray = self::$links[$k]['rpc']->getList($move);
+            $hashArray = self::$links[$k]['rpc']->all($move);
             if (empty($hashArray)) {
                 // 失败
                 continue;
