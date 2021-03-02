@@ -513,6 +513,10 @@ class AutoReseed
                                     sleepIYUU(15, $siteName.'正则表达式未匹配到种子地址，可能站点已更新，请联系IYUU作者！');
                                 }
                                 break;
+                            case 'dicmusic':
+                                $_url = str_replace('{authkey}', trim($configALL[$siteName]['authkey']), $_url);
+                                $_url = str_replace('{torrent_pass}', trim($configALL[$siteName]['torrent_pass']), $_url);
+                                break;
                             default:
                                 // 默认站点：推送给下载器种子URL链接
                                 break;
@@ -955,6 +959,16 @@ class AutoReseed
         if (isset($configALL[$site]['url_join']) && $configALL[$site]['url_join']) {
             $url = $url.(strpos($url, '?') === false ? '?' : '&').implode('&', $configALL[$site]['url_join']);
         }
+
+        if ($site === 'dicmusic') {
+            if (isset($configALL[$site]['authkey']) && $configALL[$site]['authkey']) {
+                $url = str_replace('{authkey}', trim($configALL[$site]['authkey']), $url);
+            }
+            if (isset($configALL[$site]['torrent_pass']) && $configALL[$site]['torrent_pass']) {
+                $url = str_replace('{torrent_pass}', trim($configALL[$site]['torrent_pass']), $url);
+            }
+        }
+
         return $url;
     }
 
