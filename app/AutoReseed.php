@@ -39,7 +39,9 @@ class AutoReseed
         'recommendSites' => '/Api/GetRecommendSites',
         'getSign'   => '/Api/GetSign'
     );
-    // curl
+    /**
+     * @var null | Curl
+     */
     private static $curl = null;
     // 退出状态码
     public static $ExitCode = 0;
