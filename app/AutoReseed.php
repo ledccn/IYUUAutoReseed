@@ -31,7 +31,7 @@ class AutoReseed
     // API接口配置
     public static $apiUrl = 'http://api.iyuu.cn';
     public static $endpoints = array(
-        'login'   => '/user/login',
+        'login'   => '/App.Api.Bind',
         'sites'   => '/api/sites',
         'infohash'=> '/api/infohash',
         'hash'    => '/api/hash',
