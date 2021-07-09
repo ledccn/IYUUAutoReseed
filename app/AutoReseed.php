@@ -525,7 +525,7 @@ class AutoReseed
                         }
                         $downloadUrl = $_url;
                     } else {
-                        $url = self::getTorrentUrl($siteName, $_url);
+                        $url = self::getTorrentUrl($siteName, $sid, $_url);
                         $downloadUrl = $url;
                     }
 
@@ -935,20 +935,29 @@ class AutoReseed
     /**
      * 获取站点种子的URL
      * @param string $site
+     * @param int $sid
      * @param string $url
      * @return string           带host的完整种子下载连接
      */
-    private static function getTorrentUrl($site = '', $url = '')
+    private static function getTorrentUrl($site = '', $sid = 0, $url = '')
     {
         global $configALL;
-        // 注入合作站种子的URL规则
-        $url = self::getRecommendTorrentUrl($site, $url);
-        // 兼容旧配置，进行补全
-        if (isset($configALL[$site]['passkey']) && $configALL[$site]['passkey']) {
-            if (empty($configALL[$site]['url_replace'])) {
-                $configALL[$site]['url_replace'] = array('{passkey}' => trim($configALL[$site]['passkey']));
+        // 注入URL替换规则
+        if (in_array($site, self::$recommend)) {
+            $url = self::getRecommendTorrentUrl($site, $url);
+        } else {
+            $reseed_check = self::$sites[$sid]['reseed_check'];
+            if ($reseed_check && is_array($reseed_check)) {
+                $replace = [];
+                foreach ($reseed_check as $value) {
+                    $value = ($value === 'uid' ? 'id' : $value);   // 兼容性处理
+                    $key = '{' . $value .'}';
+                    $replace[$key] = empty($configALL[$site][$value]) ? '' : $configALL[$site][$value];
+                }
+                $configALL[$site]['url_replace'] = $replace;
             }
         }
+
         // 通用操作：替换
         if (isset($configALL[$site]['url_replace']) && $configALL[$site]['url_replace']) {
             $url = strtr($url, $configALL[$site]['url_replace']);
@@ -971,24 +980,15 @@ class AutoReseed
         global $configALL;
         if (in_array($site, self::$recommend)) {
             $now = time();
-            $uid = isset($configALL[$site]['id']) ? $configALL[$site]['id'] : $now;
+            $uid = isset($configALL[$site]['id']) ? $configALL[$site]['id'] : 0;
             $pk = isset($configALL[$site]['passkey']) ? trim($configALL[$site]['passkey']) : $now;
             $hash = md5(trim($pk));
 
             $signString = self::getDownloadTorrentSign($site);  // 检查签名有效期，如果过期获取新的签名
             switch ($site) {
-                case 'pthome':
-                case 'hdhome':
-                case 'hddolby':
-                    //兼容性处理：新旧规则
-                    if (isset($configALL[$site]['rss']) && $configALL[$site]['rss']) {
-                        $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
-                        $hash = $configALL[$site]['rss'];    // 直接提交专用下载hash
-                    }
-                    break;
                 case 'ourbits':
                     // 兼容旧版本的IYUU
-                    if (isset($configALL[$site]['id']) && $configALL[$site]['id']) {
+                    if ($uid) {
                         $url = str_replace('passkey={passkey}', 'uid={uid}&hash={hash}', $url);
                     }
                     // TODO... 注入流控规则 60S/20pcs、3600S/100pcs
