@@ -686,5 +686,12 @@ return array(
         'torrent_pass'  => '',              // torrent_pass
         'authkey'       => '',              // authkey
     ),
+    // hudbt 华科蝴蝶
+    'hudbt' => array(
+        'cookie' => '',
+        'passkey' => '',
+        'url_replace' => array(),
+        'url_join' => array(),
+    ),
     // 配置结束，后面的一行不能删除，必须保留！！！
 );
